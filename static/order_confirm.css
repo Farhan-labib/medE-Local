@@ -575,16 +575,14 @@ main .container {
 form {
 	display: flex;
 	justify-content: space-around;
-}
-form .details {
-	margin: 30px 0;
+	margin-top: 20px !important;
 }
 form .details label i {
 	margin-right: 10px;
 	font-size: 20px;
 }
 
-form .details label:nth-of-type(1) {
+form .details .presc-label {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -600,7 +598,7 @@ form .details label:nth-of-type(1) {
 	cursor: pointer;
 	transition: 0.2s ease-in;
 }
-form .details label:nth-of-type(1):hover {
+form .details .presc-label:hover {
 	background-color: transparent;
 	color: var(--red);
 }
@@ -608,10 +606,12 @@ form .details label:nth-of-type(1):hover {
 form .details input[type="file"]{
 	display: none;
 }
-form .details label:nth-of-type(2) {
+form .details .address-label {
 	font: 600 1.2rem 'poppins', sans-serif;
 }
-.details textarea{
+form .details textarea{
+	height: 45%;
+	width: 100%;
 	resize: none;
 	font-weight: 400;
 	font-size: 1rem;
@@ -621,10 +621,6 @@ form .details label:nth-of-type(2) {
 	border-radius: 10px;
 	background-color: rgb(232, 240 ,254);
 	box-shadow: inset 2px 2px 5px 4px hsla(0, 0%, 0%, 0.01);
-}
-
-form .payment {
-	margin: 30px 0;
 }
 
 form .payment p{
@@ -661,7 +657,7 @@ form .payment select {
 	margin-bottom: 20px;
 }
 .bkash-info-taker label {
-	margin-top: 22px;
+	margin-top: 21px;
 	font: 600 1.2rem 'poppins',sans-serif;
 }
 .bkash-info-taker input {
@@ -679,7 +675,7 @@ form .payment select {
     cursor: pointer;
     font-weight: 600;
     color: white;
-    margin-top: 20px;
+    margin-top: 35px !important;
     background-color: var(--red);
     border-radius: 10px;
     width: 100%;
@@ -689,125 +685,6 @@ form .payment select {
 
 .confirm-order:hover {
 	letter-spacing: 1px;
-}
-
-
-/* ------------------------ */
-/* FOOTER */
-/* ------------------------ */
-
-.footer {
-	background-color: hsl(228, 6%, 17%);
-	color: hsl(0, 0%, 53%);
-	background-repeat: no-repeat;
-	background-size: 100%;
-	background-position: top;
-}
-.footer-top {
-	padding-block-start: 100px;
-	border-block-end: 1px solid hsl(220, 2%, 24%);
-}
-
-.footer-top .container {
-	display: grid;
-	gap: 30px;
-}
-
-.footer .logo {
-	margin-block-end: 10px;
-}
-
-.footer-text {
-	font-size: var(--fs-6);
-	margin-block-end: 25px;
-}
-
-.footer-text .link {
-	display: inline-block;
-	color: var(--red);
-}
-
-.contact-item {
-	margin-block-end: 15px;
-	color: white;
-	font-weight: 700;
-	display: flex;
-	align-items: center;
-	gap: 15px;
-
-	& a{
-		color: white;
-		&:hover {
-			color: white;
-		}
-	}
-}
-
-.contact-item ion-icon {
-	flex-shrink: 0;
-	font-size: 22px;
-	color: var(--red);
-}
-
-.social-list {
-	display: flex;
-	gap: 10px;
-}
-
-.social-link {
-	background-color: white;
-	color: black;
-	padding: 12px;
-	border-radius: 50%;
-	transition: 0.25s ease;
-}
-
-.social-link:is(:hover, :focus) {
-	background-color: var(--red);
-	color: white;
-}
-
-.footer-list-title {
-	color: white;
-	font-size: 1.8rem;
-	font-weight: 700;
-	padding-block: 10px;
-}
-
-.footer-link {
-	padding-block: 4px;
-	transition: 0.25s ease;
-}
-
-.footer-link:is(:hover, :focus) {
-	color: var(--red);
-	cursor: pointer;
-}
-
-.footer-bottom {
-	padding-block: 20px;
-}
-
-.copyright {
-	display: flex;
-	letter-spacing: 1.2px;
-	margin-block-end: 10px;
-}
-.copyright a{
-	padding-left: 5px;
-	color: hsl(0, 0%, 53%);
-
-	&:hover {
-		color: hsl(0, 0%, 53%);
-	}
-}
-.copyright-link {
-	display: inline-block;
-}
-
-.footer-bottom .img {
-	width: 100%;
-	max-width: max-content;
 }
 
 /* ------------------------ */
@@ -834,4 +711,87 @@ form .payment select {
 	opacity: 1;
 	visibility: visible;
 	transform: translateY(-10px);
+}
+
+@media (min-width: 0px) {
+	main {
+		margin: 20px 20px;
+	}
+	.purchase-history table thead th{
+		font-size: var(--fs-11);
+		padding: 0.8rem 1rem;
+		letter-spacing: 0.1rem;
+	}
+	.purchase-history table td {
+		font-size: var(--fs-11);
+		padding: 0.8rem 1rem;
+	}
+	form .details .presc-label {
+		font-size: 0.9rem;
+	}
+	form .details .address-label {
+		font-size: 0.9rem;
+	}
+	form .payment select {
+		font-size: 0.8rem;
+		background-size: 16px;
+	}
+	#payment-options{
+		margin-top: 60px;
+	}
+}
+
+@media (min-width: 480px) {
+	.purchase-history table thead th{
+		font-size: var(--fs-8);
+		padding: 1rem 2rem;
+		letter-spacing: 0.3rem;
+	}
+	.purchase-history table td {
+		font-size: var(--fs-8);
+		padding: 1rem 2rem;
+	}
+	form .payment select {
+		font-size: 1rem;
+		background-size: 16px;
+	}
+	.bkash-info-taker h5{
+		font-size: 0.95rem;
+	}
+	.bkash-info-taker label{
+		font-size: 1rem;
+	}
+}
+@media (min-width: 576px) {
+	#payment-options{
+		margin-top: 0px;
+	}
+}
+@media (min-width: 768px) {
+	.purchase-history table thead th,
+	.purchase-history table td {
+		font-size: var(--fs-6);
+	}
+	main {
+		margin: 20px auto;
+	}
+	form .details .presc-label {
+		font-size: 1.2rem;
+	}
+	form .details .address-label {
+		font-size: 1.2rem;
+	}
+	form .payment select {
+		font-size: 1.2rem;
+		background-size: 20px;
+	}
+	.bkash-info-taker h5{
+		font-size: 1.25rem;
+	}
+	.bkash-info-taker label{
+		font-size: 1.2rem;
+	}
+	.bkash-info-taker input {
+		font-size: 1rem;
+	}
 }

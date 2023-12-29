@@ -3,6 +3,8 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>medE</title>
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.png' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -68,11 +70,11 @@
                         
                         {% if prescription_required %}
                             <input type="file" id="file-upload" name="prescription" accept="image/*" required>
-                            <label for="file-upload"><i class="fa-regular fa-image"></i>Upload Your prescription here</label>
+                            <label class="presc-label" for="file-upload"><i class="fa-regular fa-image"></i>Upload Your prescription here</label>
                         {% endif %}
                         
-                        <label for="address">Address:</label>
-                        <textarea rows="6" cols="75" type="text" id="addressInput" name="address" value='{{user_address}}'></textarea>
+                        <label class="address-label" for="address">Address:</label>
+                        <textarea type="text" id="addressInput" name="address" value='{{user_address}}'></textarea>
                     </div>
                     <div class="payment col-sm-6">
                     
@@ -101,7 +103,7 @@
                             <label for="paymentMobile">Your bKash Account Number</label>
                             <input type="phone" name="paymentMobile" placeholder="01XXXXXXXXX">
                             <label for="TxID">Transaction ID</label>
-                            <input type="text" name="TxID" placeholder="Check your Bkash Confirmation Message for TxID">
+                            <input type="text" name="TxID" placeholder="Transaction ID (TxID)">
                         </div>
                     </div>
 
@@ -114,10 +116,6 @@
         </div>
     </main>
     <script>
-        var prescription = document.getElementById("file-upload");
-        prescription.addEventListener('change', function(){
-            document.querySelector(".details :nth-child(6)").innerHTML = `<i class="fa-solid fa-check"></i>Prescription uploaded! Click to upload again`;
-        });
         
         const bkashopt = document.getElementById(bkashOpt);
         const codopt = document.getElementById(codOpt);
@@ -128,6 +126,10 @@
             else if (event.target.value == 'cod') {
                 document.querySelector('.bkash-info-taker').classList.remove('active');
             }
+        });
+        var prescription = document.getElementById("file-upload");
+        prescription.addEventListener('change', function(){
+            document.querySelector(".presc-label").innerHTML = `<i class="fa-solid fa-check"></i>Prescription uploaded! Click to upload again`;
         });
         document.addEventListener('DOMContentLoaded', function () {
             // Get references to the input field and the link

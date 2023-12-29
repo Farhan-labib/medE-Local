@@ -2,6 +2,8 @@
 {% load static %}
 <html>
   <head>
+    <meta charset="UTF-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>medE</title>
 	  <link rel="icon" type="image/x-icon" href="{% static 'Favicon.png' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -54,6 +56,8 @@
       }
       form .details textarea{
         resize: none;
+        height: 100%;
+        width: 100%;
         font-weight: 400;
         font-size: 1rem;
         padding: 15px 0 0 15px;
@@ -164,7 +168,7 @@
                                   <input type="hidden" name="prescription_img" value="{{ p.0 }}">
                                   <input type="hidden" name="days2" value="{{p.1}}">
                                   <label for="address">Address:</label>
-                                  <textarea rows="6" cols="75" type="text" id="addressInput" name="address" value='{{user_address}}' required></textarea>
+                                  <textarea type="text" id="addressInput" name="address" value='{{user_address}}' required></textarea>
                                 </div>
                                 <div class="payment col-sm-12">
                     
