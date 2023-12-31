@@ -1136,6 +1136,7 @@ main .registration-form.active ~ .sidebar li:nth-child(1) {
 
 .list {
   display: none;
+  width: 100%;
 }
 
 .list.active {
@@ -1523,7 +1524,10 @@ td .quantity button.num {
   }
 
   .list table {
-    width: 100vw;
+    width: 100%;
+  }
+  .list .quick-order {
+    font-size: var(--fs-7);
   }
 
   .list table th {
@@ -1628,13 +1632,6 @@ td .quantity button.num {
 	main .sidebar li img{
 		width: 30px;
 	} */
-  .list table {
-    width: 100vw;
-  }
-
-  .list table {
-    width: 100vw;
-  }
 
   .product-grid {
     grid-template-columns: 1fr 1fr;
@@ -2136,10 +2133,6 @@ td .quantity button.num {
     width: 200px;
   }
 
-  .list table {
-    width: 100%;
-  }
-
   .list table th {
     font-size: var(--fs-6);
   }
@@ -2191,11 +2184,11 @@ td .quantity button.num {
     display: table-row;
   }
   .purchase-history table tbody tr {
-    display: inline-flex;
+    display: table-row;
   }
   .purchase-history table td {
     text-align: center;
-    display: flex;
+    display: table-cell;
   }
   .purchase-history table td::before {
     content: "";
