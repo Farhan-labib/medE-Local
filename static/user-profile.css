@@ -1539,9 +1539,14 @@ td .quantity button.num {
   }
 
   .list table tbody .quantity {
-    width: 60px;
-    height: 20px;
+    width: 80px;
+    height: 30px;
   }
+  .mylist-times label{
+    font-size: 0.8rem;
+    padding: 3px 0;
+  }
+  
 
   /* .mylist-times input[type="checkbox"] {
 		line-height: 17px;
@@ -2140,6 +2145,10 @@ td .quantity button.num {
   .list table tbody .quantity {
     width: 200px;
     height: 60px;
+  }
+  .mylist-times label{
+    font-size: 1rem;
+    padding: 0;
   }
 
   /* .registration-form .input-box:not(:nth-child(6)) input,
