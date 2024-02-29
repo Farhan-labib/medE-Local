@@ -24,7 +24,7 @@ async function AddtoCart(id, quantity = 1, doSomething = null, button = null) {
       const productData = await response.json();
 
       if (cart[id] === undefined) {
-        console.log("Added to cart:", id);
+        // console.log("Added to cart:", id);
         
         cart[id] = parseInt(quantity);
       } else if (cart[id] !== undefined && doSomething === null) {
@@ -104,7 +104,7 @@ async function removeFromCart(productId) {
       cartboxElement.style.display = 'none';
     }
   } else {
-    console.log('Product not found in the cart.');
+    // console.log('Product not found in the cart.');
   }
   updateCartBadge();
 }
@@ -117,7 +117,7 @@ function ClearCart() {
   console.log('clearing cart');
   localStorage.removeItem('cart');
   cart = {}
-  console.log(cart)
+  // console.log(cart)
   updateCartBadge();
 }
 
@@ -241,7 +241,7 @@ document.getElementById('checkout-button').addEventListener('click', function ()
   fetch(url, requestOptions)
     .then(function (response) {
       if (response.status === 200) {
-        console.log('Checkout was successful');
+        // console.log('Checkout was successful');
         window.location.href = '/order_confirm/';
       }
     })

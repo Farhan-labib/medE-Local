@@ -96,7 +96,7 @@ backDrop.addEventListener('click', function () {
 
 inputFile.addEventListener('change', function () {
     const image = this.files[0]
-    console.log(image);
+    // console.log(image);
     const reader = new FileReader();
     reader.onload = ()=> {
         const imgUrl = reader.result;
@@ -208,5 +208,5 @@ document.querySelectorAll(".prescriptions img").forEach(image =>{
 $(".days :nth-child(odd)").change(function(){
     $(".days :nth-child(odd)").prop('checked',false);
     $(this).prop('checked',true);
-    console.log($(this).val());
+    // console.log($(this).val());
 });

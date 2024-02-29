@@ -155,7 +155,7 @@ document.querySelectorAll('.remove-button').forEach(button => {
 
 function handleRemoveProduct(productId) {
     // Make a DELETE request to the backend API to remove the product
-    console.log("Removing Product ID: ",productId)
+    // console.log("Removing Product ID: ",productId)
     fetch(`/remove_productList/${productId}/`, {
         method: 'DELETE',
         headers: {
@@ -171,7 +171,7 @@ function handleRemoveProduct(productId) {
             if (rowToRemove) {
                 rowToRemove.remove();
             }
-            console.log('Product removed successfully:', productId);
+            // console.log('Product removed successfully:', productId);
         } else {
             console.error('Failed to remove product:', data.error);
         }

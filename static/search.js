@@ -29,7 +29,7 @@ $(document).ready(function () {
                 } else {
                     resultsDiv.append('<p>No results found.</p>');
                 }
-                console.log(data)
+                // console.log(data)
 
 
             }
@@ -119,7 +119,7 @@ function searchresults() {
         data: { 'q': searchInput },
         dataType: 'json',
         success: function (data) {
-            console.log(data);
+            // console.log(data);
     
             // Make a new AJAX request to pass the data to the searchresult view
             $.ajax({
@@ -128,7 +128,7 @@ function searchresults() {
                 data: { 'search_results': JSON.stringify(data) },
                 success: function (response) {
                     // Handle the response as needed
-                    console.log(response);
+                    // console.log(response);
     
                     // Replace the entire current page with the received HTML
                     document.documentElement.innerHTML = response;
@@ -155,7 +155,7 @@ function searchresults2() {
         data: { 'q': searchInput },
         dataType: 'json',
         success: function (data) {
-            console.log(data);
+            // console.log(data);
     
             // Make a new AJAX request to pass the data to the searchresult view
             $.ajax({
@@ -164,7 +164,7 @@ function searchresults2() {
                 data: { 'search_results': JSON.stringify(data) },
                 success: function (response) {
                     // Handle the response as needed
-                    console.log(response);
+                    // console.log(response);
     
                     // Replace the entire current page with the received HTML
                     document.documentElement.innerHTML = response;
