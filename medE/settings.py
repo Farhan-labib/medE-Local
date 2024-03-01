@@ -91,10 +91,10 @@ WSGI_APPLICATION = 'medE.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "mede",
-        "USER": "admin",
-        "PASSWORD": "adminadmin",
-        "HOST": "127.0.0.1",
+        "NAME": "medE",
+        "USER": "medE",
+        "PASSWORD": "medE@24y",
+        "HOST": "206.189.47.104",
         "PORT": "3306",
     }
 }
