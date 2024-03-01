@@ -12,7 +12,7 @@ from django.core.files.storage import FileSystemStorage
 import os
 # Create your views here.
 def home(request):
-    products = product.objects.all()
+    products = Product.objects.all()
     for product in products:
 
         product.discounted_price = product.p_price - (product.p_price*(product.p_discount/100))	#FOR DISCOUNT
