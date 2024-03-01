@@ -89,16 +89,16 @@ WSGI_APPLICATION = 'medE.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "USER" : "doadmin",
-        "PASSWORD" : "AVNS_eQarRsQIsPGdY-F6YET",
-        "HOST" : "mede-do-user-15848017-0.c.db.ondigitalocean.com",
-        "PORT" : "25060",
-        "DATABASE" : "medE",
-        "SSLMODE" : "REQUIRED",
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'medE',
+        'USER': 'doadmin',
+        'PASSWORD': 'AVNS_eQarRsQIsPGdY-F6YET',
+        'HOST': 'mede-do-user-15848017-0.c.db.ondigitalocean.com',
+        'PORT': '25060',
     }
 }
+
 
 
 # settings.py
