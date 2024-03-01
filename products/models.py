@@ -3,6 +3,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from Home.models import Product
 from django.utils import timezone
+import json
 class main_product(models.Model):
     CATEGORY_CHOICES = (
         ('BABY CARE', 'BABY CARE'),
@@ -126,7 +127,7 @@ class Orders(models.Model):
     ]
     phonenumber = models.CharField(max_length=15)
     ordered_products = models.TextField(default="null")
-    prescriptions = models.JSONField(default="null",blank=True)
+    prescriptions = models.JSONField(default=dict,blank=True)
     total = models.TextField(default="null")
     del_adress = models.TextField(default="null")
     timestamp = models.DateTimeField(default=timezone.now)
