@@ -127,7 +127,7 @@ class Orders(models.Model):
     ]
     phonenumber = models.CharField(max_length=15)
     ordered_products = models.TextField(default="null")
-    prescriptions = models.JSONField(default=dict,blank=True)
+    prescriptions = models.JSONField(default="",blank=True)
     total = models.TextField(default="null")
     del_adress = models.TextField(default="null")
     timestamp = models.DateTimeField(default=timezone.now)
