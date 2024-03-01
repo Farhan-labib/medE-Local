@@ -138,7 +138,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGOUT_REDIRECT_URL = 'home'
 
-ALLOWED_HOSTS = ["127.0.0.1", "192.168.0.106", "192.168.0.108", "192.168.0.104", "192.168.0.110", "192.168.0.112", "192.168.0.101", "localhost"]
+ALLOWED_HOSTS = ["127.0.0.1", "192.168.0.106", "192.168.0.108", "192.168.0.104", "192.168.0.110", "192.168.0.112", "192.168.0.101", "localhost", "206.189.47.104"]
 
 # For Users
 AUTH_USER_MODEL = 'authentication.UserProfile'
