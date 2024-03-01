@@ -91,11 +91,12 @@ WSGI_APPLICATION = 'medE.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "medE",
-        "USER": "medE",
-        "PASSWORD": "medE@24y",
-        "HOST": "206.189.47.104",
-        "PORT": "3306",
+        "USER" = "doadmin",
+        "PASSWORD" = "AVNS_eQarRsQIsPGdY-F6YET",
+        "HOST" = "mede-do-user-15848017-0.c.db.ondigitalocean.com",
+        "PORT" = "25060",
+        "DATABASE" = "medE",
+        "SSLMODE" = "REQUIRED",
     }
 }
 
