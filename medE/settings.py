@@ -15,8 +15,8 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-TEMPLATE_DIR=os.path.join(BASE_DIR,'templates')
-STATIC_DIR=os.path.join(BASE_DIR,'static')
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
@@ -30,10 +30,8 @@ SECRET_KEY = 'django-insecure-!p!jwnxnk_nf)5psc4-bu2n(^so-zk0#-c_t=gl97a-*4(rs0@
 DEBUG = True
 
 ALLOWED_HOSTS = []
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
-SESSION_COOKIE_AGE = 1870050
-
+# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -41,14 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'livereload',
     'django.contrib.staticfiles',
+    'livereload',
     'Home',
     'products',
     'authentication',
- 
-   
-    
 ]
 
 MIDDLEWARE = [
@@ -60,7 +55,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'livereload.middleware.LiveReloadScript',
-    
 ]
 
 ROOT_URLCONF = 'medE.urls'
@@ -83,7 +77,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'medE.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -97,14 +90,6 @@ DATABASES = {
         'PORT': '25060',
     }
 }
-
-
-
-# settings.py
-
-LOGOUT_REDIRECT_URL='home'
-ALLOWED_HOSTS = ["127.0.0.1", "192.168.0.106", "192.168.0.108", "192.168.0.104", "192.168.0.110", "192.168.0.112", "192.168.0.101" ,"localhost"]
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -124,19 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-#For Users
-AUTH_USER_MODEL = 'authentication.UserProfile'
-#For Admins
-# AUTH_USER_MODEL = 'auth.user'
-
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    # ... other authentication backends if any ...
-]
-
-
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -146,22 +118,35 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_L10N = True
 
+USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS=[STATIC_DIR,]
+STATICFILES_DIRS = [STATIC_DIR, ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGOUT_REDIRECT_URL = 'home'
+
+ALLOWED_HOSTS = ["127.0.0.1", "192.168.0.106", "192.168.0.108", "192.168.0.104", "192.168.0.110", "192.168.0.112", "192.168.0.101", "localhost"]
+
+# For Users
+AUTH_USER_MODEL = 'authentication.UserProfile'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    # ... other authentication backends if any ...
+]
+
+# Twilio Configuration
 TWILIO_ACCOUNT_SID = 'AC9208a41b026e1730f6190c699c29a6cd'
 TWILIO_AUTH_TOKEN = '4bc4931a223f7048f8c0567e1b66a69c'
 TWILIO_PHONE_NUMBER = '+17409211140'
-
-
