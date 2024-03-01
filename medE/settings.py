@@ -89,21 +89,19 @@ WSGI_APPLICATION = 'medE.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "mede",
-        "USER": "admin",
-        "PASSWORD": "adminadmin",
-        "HOST": "127.0.0.1",
-        "PORT": "3306",
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'mede',
+            'USER': 'mede',
+            'PASSWORD': 'medE@24y',
+        }
     }
-}
 
 
 # settings.py
 
 LOGOUT_REDIRECT_URL='home'
-ALLOWED_HOSTS = ["127.0.0.1", "192.168.0.106", "192.168.0.108", "192.168.0.104", "192.168.0.110", "192.168.0.112", "192.168.0.101" ,"localhost"]
+ALLOWED_HOSTS = ["127.0.0.1", "192.168.0.106", "192.168.0.108", "192.168.0.104", "192.168.0.110", "192.168.0.112", "192.168.0.101" ,"localhost", "178.128.82.178"]
 
 
 # Password validation
