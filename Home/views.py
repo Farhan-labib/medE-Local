@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import product
+from .models import Product
 from products.models import Orders
 from authentication.models import UserProfile
 from products.models import Profile_MedList
