@@ -1,0 +1,358 @@
+/*** RESETTING CSS ***/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "poppins", sans-serif;
+}
+a {
+  color: inehrit !important;
+  text-decoration: none !important;
+}
+
+address {
+  font-style: normal;
+}
+li {
+  list-style: none;
+}
+button {
+  background: none;
+  font: inherit;
+  border: none;
+  cursor: none;
+}
+html {
+  font-family: "Poppins", sans-serif;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+input {
+  display: block;
+  width: 100%;
+  font: inherit;
+}
+input::placeholder {
+  font: inherit;
+}
+body {
+  background: linear-gradient(to left, #fff8f8, rgb(255, 255, 255));
+  overflow-x: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/*** -------------------------------------- ***/
+
+/* ////////////// */
+/* CONTAINER */
+/* ////////////// */
+
+.container {
+    background-color: white;
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    width: 800px;
+    max-width: 100%;
+    min-height: 500px;
+}
+.container p {
+    font-size: 0.8rem;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    margin: 20px 0;
+}
+
+.container span {
+    font-size: 12px;
+}
+
+.container a {
+    color: white;
+    font-size: 0.8rem;
+    text-decoration: none;
+    margin: 15px 0 10px;
+}
+
+.container button {
+  background-color: #ff7979;
+  color: white;
+  font-size: 0.8rem;
+  padding: 10px 45px;
+  border: 2px solid #ff7979;
+  border-radius: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 10px;
+  cursor: pointer;
+  width: 100%;
+  transition: 0.3s ease;
+}
+.container button:hover {
+  background-color: white;
+  border: 2px solid #ff7979;
+  color: #ff7979;
+}
+.container button:hover a {
+  color: #ff7979;
+}
+
+.container form {
+    background-color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 20px;
+    width: 60%;
+    /* height: 100%; */
+}
+
+/* ////////////////////////////////////////// */
+/* THIS IS TO ACTIVATE SOCIAL ICONS AND LINKS */
+/* ////////////////////////////////////////// */
+
+/* .social-icons {
+  margin: 20px 0;
+}
+
+.social-icons a {
+  border: 1px solid #ccc;
+  border-radius: 20%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 3px;
+  width: 40px;
+  height: 40px;
+} */
+
+.num-input-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.num-input-container input {
+  background-color: #eee;
+    border: none;
+    margin: 8px 0;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 10px;
+    width: 100%;
+    outline: none;
+}
+.container label {
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: rgb(232, 240, 254);
+  padding: 10px 15px;
+  border-radius: 10px;
+}
+
+.container input {
+    background-color: rgb(232, 240, 254);
+    border: none;
+    margin: 8px 0;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 10px;
+    width: 100%;
+    outline: none;
+}
+/* ////////////// */
+/* FORMS */
+/* ////////////// */
+
+.form-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sign-in {
+  align-items: center;
+  justify-content: center;
+  right: 0;
+  width: 50%;
+  z-index: 2;
+}
+.sign-up {
+  align-items: center;
+  justify-content: center;
+  left: 0;
+  width: 50%;
+  z-index: 2;
+}
+
+.toggle-container {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.toggle{
+  position: relative;
+  /* background-color: #ff8080; */
+  height: 100%;
+  color: #fff;
+  left: 0;
+}
+
+.toggle-panel {
+  position: absolute;
+  color: white;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 30px;
+  text-align: center;
+  top: 0;
+}
+
+.toggle-panel h1 {
+  font-size: 2.2rem;
+}
+.toggle-panel p {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+img {
+  position: relative;
+  height: 120px;
+  width: 160px;
+}
+.toggle-right {
+  right: 0%;
+  border-radius: 150px 0 0 100px;
+}
+.toggle-left {
+  left: 0%;
+  border-radius: 0 150px 100px 0;
+}
+.bg-left {
+  background: linear-gradient(to left, #ff9f9f, #ff7979);
+}
+.bg-right {
+  background: linear-gradient(to right, #ff9f9f, #ff7979);
+}
+
+.input-field {
+  display: flex;
+  gap: 10px;
+}
+
+.input-field input {
+  height: 45px;
+  width: 42px;
+  border-radius: 5px;
+  outline: none;
+  text-align: center;
+  font-size: 1.125rem;
+  font-weight: 500;
+  box-shadow: inset 8px 10px 5px 0px rgba(194, 194, 194, 0.1);
+}
+
+.input-field input::-webkit-inner-spin-button,
+.input-field input::-webkit-outer-spin-button{
+  display: none;
+}
+
+
+/* THIS IS TO ACTIVATE/DEACTIVATE AFTER OTP IS SENT */
+
+/* .form-container form:nth-child(3){
+  display: none;
+} */
+
+/* //////////////////////////////////////////////// */
+
+
+/* ////////////// */
+/* RESPONSIVENESS */
+/* ////////////// */
+
+
+@media (min-width: 0px) {
+  .container {
+    border-radius: 0;
+    min-height: 450px;
+    background: linear-gradient(to left, #ff9f9f, #ff7979);
+  }
+  .container form {
+    background: none;
+  }
+  
+  .container h3 {
+    color: white;
+  }
+  .container button {
+    background-color: rgb(255, 209, 209);
+    color: #ff7979;
+    padding: 10px 0;
+    border: none;
+  }
+  .container a {
+    color: #ff7979;
+  }
+  .sign-in,
+  .sign-up {
+    width: 100%;
+  }
+  .toggle-container {
+    display: none;
+  }
+  .form-container form {
+    width: 80%;
+  }
+}
+
+
+@media (min-width: 570px) {
+  .container {
+    border-radius: 30px;
+    min-height: 500px;
+    background: white;
+  }
+  .container button {
+    background-color: #ff7979;
+    color: white;
+    padding: 10px 45px;
+    border: 2px solid #ff7979;
+  }
+  .container a {
+    color: white;
+  }
+  
+  .container h3 {
+    color: #1b1c1e;
+  }
+  .sign-in,
+  .sign-up {
+    width: 50%;
+  }
+  .toggle-container {
+    display: block;
+    width: 50%;
+  }
+  .toggle-panel h1 {
+    font-size: 2.2rem;
+  }
+}

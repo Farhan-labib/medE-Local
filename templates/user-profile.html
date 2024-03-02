@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="csrf-token" content="{{ csrf_token }}">
+	<title>medE</title>
+	<link rel="icon" type="image/x-icon" href="{% static 'Favicon.png' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'user-profile.css' %}">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+	<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+    <header>
+		<div class="header-main" data-header>
+			<div class="container">
+				<a class="header-logo" href="{%url 'home'%}">
+					<img src="{% static 'Logo.jpg' %}" alt=" medX logo" height="50px"width="80px">
+				</a>
+				<div class="header-search-container">
+
+					<input type="search" name="search" id="search-input" class="search-field"
+						placeholder="Type to search products...">
+					<div id="search-results">
+
+
+					</div>
+					<button class="search-btn" onclick="searchresults()">
+						<ion-icon name="search"></ion-icon>
+					</button>
+				</div>
+				<button class="action-btn menu-action" data-mobile-menu-open-btn>
+					<ion-icon name="menu"></ion-icon>
+				</button>
+				<div class="header-user-actions">
+					<div class="search-box">
+						<input class="search-txt" id="search-input2" type="text" placeholder="Type to search...">
+						<button class="mobile-srch-btn action-btn" onclick="searchresults2()">
+							<ion-icon name="search-outline"></ion-icon>
+						</button>
+						<div id="search-results2">
+
+
+						</div>
+					</div>
+
+					{% if user.is_authenticated %}
+					<button id="select-image" class="action-btn">
+						<img src="{%static 'prescription.png'%}" alt="prescription-upload-icon" width="30">
+					</button>
+						{% else %}
+						<a href="{% url 'mylogin' %}"><button >
+							<img src="{%static 'prescription.png'%}" alt="prescription-upload-icon" width="30">
+						</button></a>
+						{% endif %}
+					<button id="user-login-btn" class="action-btn">
+						<ion-icon name="person-outline"></ion-icon>
+					</button>
+					<button id="cart-btn" class="action-btn">
+						<ion-icon name="bag-outline"></ion-icon>
+						<span class="btn-badge"></span>
+					</button>
+					<div class="shopping-cart">
+						<!-- HTML template for a product cartbox -->
+						<div id="cart-container">
+							<!-- <div class="cartbox" id="cartbox-${p_id}">
+									  <button class="cart-trash">
+										<ion-icon name="trash"></ion-icon>
+									  </button>
+									  <img src="" alt="">
+									  <div class="cart-content">
+										<h3 id="productName-${p_id}"></h3>
+										<div style="display: grid; grid-template-columns: 0.5fr 1fr; gap: 1px;">
+										  <span class="cart-content-price" id="productPrice-${p_id}"></span>
+										  <span class="quantity"></span><br>
+										  <span class="quantity">Days: 7</span>
+										</div>
+									  </div>
+									</div> -->
+						</div>
+
+						<div class="total"></div>
+						{% if user.is_authenticated %}
+						<a class="cart-checkout-btn" id="checkout-button">Checkout</a>
+						{% else %}
+						<a href="{% url 'mylogin' %}" class="cart-checkout-btn" id="">Checkout</a>
+						{% endif %}
+					</div>
+
+
+						<div style="text-align:center;" class="user-login">
+							{% if user.is_authenticated %}
+							<a href="#" class="form-btn" id="account-mob">Profile</a>
+							<a href="#" class="form-btn" id="prescription-mob">Prescriptions</a>
+							<a href="#" class="form-btn" id="history-mob">Purchase History</a>
+							<a href="#" class="form-btn" id="list-mob">My List</a>
+							<a href="{% url 'mylogout' %}" class="form-btn">Logout</a>
+						    {% else %}
+							<a href="{% url 'mylogin' %}" class="form-btn">Login</a>
+						    {% endif %}
+						</div>
+				</div>
+			</div>
+		</div>
+		<nav class="desktop-navigation-menu">
+			<div class="container">
+				<ul class="desktop-menu-category-list">
+					<li class="menu-category">
+						<a href="{%url 'home'%}" class="menu-title">Home</a>
+					</li>
+					<li class="menu-category">
+						<a href="#" class="menu-title">Categories</a>
+						<div class="dropdown-panel">
+							<ul class="dropdown-panel-list">
+								<li class="menu-title">
+
+								</li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='Cold & Allergies'%}">Cold & Allergies</a>
+								</li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='Heart Problems'%}">Heart Problems</a></li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='Diabetes'%}">Diabetes</a></li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='Respiratory Problems'%}">Respiratory
+										Problems</a></li>
+							</ul>
+							<ul class="dropdown-panel-list">
+								<li class="menu-title">
+
+								</li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='Neurological Problems'%}">Neurological
+										Problems</a></li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='Arthritis or other types of pain'%}">Arthritis
+										or other types of pain</a></li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='Sexual Wellness'%}">Sexual Wellness</a></li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='Herbal & Ayurvedic'%}">Herbal & Ayurvedic</a>
+								</li>
+							</ul>
+							<ul class="dropdown-panel-list">
+								<li class="menu-title">
+
+								</li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='Infant & Mothers care'%}">Infant & Mothers
+										care</a></li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='Supplements & Nutrition'%}">Supplements &
+										Nutrition</a></li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='More will be added late'%}">More will be
+										added late</a></li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='Cold & Allergies'%}">More will be added
+										late</a></li>
+							</ul>
+							<ul class="dropdown-panel-list">
+								<li class="menu-title">
+
+								</li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='Cold & Allergies'%}">More will be added
+										late</a></li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='Cold & Allergies'%}">More will be added
+										late</a></li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='Cold & Allergies'%}">More will be added
+										late</a></li>
+								<li class="panel-list-item"><a
+										href="{%url 'category' p_category='Cold & Allergies'%}">More will be added
+										late</a></li>
+							</ul>
+						</div>
+					</li>
+					<li class="menu-category">
+						<a href="{%url 'category' p_category='MENS'%}" class="menu-title">Men's</a>
+
+
+					</li>
+					<li class="menu-category">
+						<a href="{%url 'category' p_category='WOMEN'%}" class="menu-title">Women's</a>
+
+					</li>
+					<li class="menu-category">
+						<a href="{%url 'category' p_category='BABY CARE'%}" class="menu-title">Baby Care</a>
+
+
+					</li>
+					<li class="menu-category">
+						<a href="{%url 'category' p_category='Personal Hygiene'%}" class="menu-title">Personal
+							Hygiene</a>
+
+
+					</li>
+					<li class="menu-category">
+						<a href="{%url 'category' p_category='Medical Equipments' %}" class="menu-title">Medical
+							Equipments</a>
+
+					</li>
+				</ul>
+			</div>
+		</nav>
+		<nav class="mobile-navigation-menu has-scrollbar" data-mobile-menu>
+			<div class="menu-top">
+				<h2 class="menu-title">Menu</h2>
+				
+				<button class="menu-close-btn" data-mobile-menu-close-btn>
+					<ion-icon name="close-outline"></ion-icon>
+				</button>
+			</div>
+			<ul class="mobile-menu-category-list">
+				<li class="menu-category">
+					<a href="" class="menu-title">Home</a>
+				</li>
+				<li class="menu-category">
+					<button class="accordion-menu" data-accordion-btn>
+						<p class="menu-title">Categories</p>
+						<div>
+							<ion-icon name="add-outline" class="add-icon"></ion-icon>
+							<ion-icon name="remove-outline" class="remove-icon"></ion-icon>
+						</div>
+					</button>
+
+					<ul class="submenu-category-list" data-accordion>
+						<li class="submenu-category">
+							<a href="#" class="submenu-title">Diabetics</a>
+						</li>
+						<li class="submenu-category">
+							<a href="#" class="submenu-title">Dental Care</a>
+						</li>
+						<li class="submenu-category">
+							<a href="#" class="submenu-title">Sexual Care</a>
+						</li>
+						<li class="submenu-category">
+							<a href="#" class="submenu-title">Baby care</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</nav> 
+	</header>
+	<div class="backdrop"></div>
+	<div class="img-area" id="img-area">
+		<div class="elem-container active" data-img="">
+			<input type="file" id="file-upload" accept="image/*" hidden>
+			<div class="days">
+				<input type="checkbox" name="7Days" value="7">
+				<label for="7Days">7 Days</label>
+				<input type="checkbox" name="15Days" value="15">
+				<label for="15Days">15 Days</label>
+				<input type="checkbox" name="1Month" value="30">
+				<label for="1Month">1 Month</label>
+			</div>
+			<button class="prescription-upload-btn" type="button" onclick="handleUpload()">Upload</button>
+		</div>
+	</div>
+	<main>
+		<div class="sidebar" id="sidebar">
+			<li class="sidebar-sections" id="account">
+				<a href="#">
+					<ion-icon name="person-circle-outline"></ion-icon>
+					<h3 href="#">Account</h3>
+				</a>
+			</li>
+			<li class="sidebar-sections" id="prescription">
+				<a href="#">
+					<img src="{%static 'prescription.png'%}" alt="" width="30">
+					<h3 href="#">Prescriptions</h3>
+				</a>
+			</li>
+			<li class="sidebar-sections" id="history">
+				<a href="#">
+					<ion-icon name="clipboard-outline"></ion-icon>
+					<h3 href="#">Purchase History</h3>
+				</a>
+			</li>
+			<li class="sidebar-sections" id="list">
+				<a href="#">
+					<ion-icon name="list-outline"></ion-icon>
+					<h3 href="#">My List</h3>
+				</a>
+			</li>
+		</div>
+		<!-- <h1>{{ user }}</h1> -->
+		<!-- <div class="container"> -->
+		<form action="{% url 'update_profile' %}" method="post" class="registration-form container row active">
+			{% csrf_token %}
+			<div class="input-box col-sm-6">
+				<label for="">First Name</label>
+				<input class="firstname" type="text" name="first_name" placeholder="First Name" value="{{ user.first_name }}">
+				<!-- <button><ion-icon name="create-outline"></ion-icon></button> -->
+			</div>
+			<div class="input-box col-sm-6">
+				<label for="">Last Name</label>
+				<input class="lastname" type="text" name="last_name" placeholder="Last Name" value="{{ user.last_name }}">
+				<!-- <button><ion-icon name="create-outline"></ion-icon></button> -->
+			</div>
+			<!-- <div class="input-box col-sm-6">
+				<label for="">Phone</label>
+				<input class="phone" type="phone" name="phone_number" placeholder="Phone Number" value="{{ user.phone_number }}">
+				
+			</div> -->
+			<div class="input-box col-sm-6">
+				<label for="">Birth Date</label>				
+				<!-- Manually format user.dob using template tags -->
+				{% with formatted_dob=user.dob|date:'Y-m-d' %}
+				<input class="birthdate" type="date" name="dob" placeholder="Birth Date" value="{{ formatted_dob }}">
+				{% endwith %}
+				<!-- <button><ion-icon name="create-outline"></ion-icon></button> -->
+			</div>
+			
+			
+			<div class="gender input-box">
+				<label for="">Gender</label>
+				<div class="label1">                
+					<input type="radio" class="gendermale" name="gender" value="M" {% if user.gender == 'M' %} checked {% endif %}>
+					<label for="">Male</label>
+				</div>
+				<div class="label2">
+					<input type="radio" class="genderfemale" name="gender" value="F" {% if user.gender == 'F' %} checked {% endif %}>
+					<label for="">Female</label>
+				</div>
+			</div>
+			<div class="input-box">
+				<label for="">Email</label>				
+				<input class="email" type="email" name="email" placeholder="Email" value="{{ user.email }}">
+				<!-- <button><ion-icon name="create-outline"></ion-icon></button> -->
+			</div>
+			<div class="input-box">
+				<label for="">Address</label>				
+				<input class="address" type="text" name="address" placeholder="Address" value="{{ user.address }}">
+				<!-- <button><ion-icon name="create-outline"></ion-icon></button> -->
+			</div>
+			<button type="submit">Update Profile</button>
+		</form>
+
+		
+		<div class="prescriptions container" id="prescriptions">
+			{% for item in p_order %}
+				
+					<div class="presc-box">
+						<img src="../../media/{{ item.prescription_img }}" alt="{{ item.prescription_img }}">
+						<h3>{{item.Delivery_status}}</h3>
+					</div>
+					<div class="popup-image"><img src="../../media/{{ item.prescription_img }}" alt="{{ item.prescription_img }}"></div>
+				{% endfor %}
+
+		</div>
+		
+	
+
+		<div class="purchase-history container">
+			<table>
+				<thead>
+					<th>Invoice No.</th>
+					<th>Orders</th>
+					<th>Amount</th>
+					<th>Date</th>
+					<th>Status</th>
+				</thead>
+				<tbody>
+					{% for key, value in temp.items %}
+					<tr>
+						<td data-title="Invoice No">{{ key }}</td>
+						<td data-title="Orders">
+							<ul>
+								{% for item in value.0 %}
+									<li>{{ item }}</li>
+								{% endfor %}
+							</ul>
+						</td>
+						<td data-title="Amount">{{ value.1 }}</td>
+						<td data-title="Date">{{ value.2|date:"d F Y" }}</td>
+						{% if value.3 == "pending" %}
+						<td data-title="Status" ><p style="background-color: #f1c40f;">{{ value.3 }}</p></td>
+						{%else%}
+						<td data-title="Status" ><p style="background-color: #30cb83;">{{ value.3 }}</p></td>
+						{% endif %}
+					</tr>
+					{% endfor %}
+				</tbody>
+				
+			</table>
+		</div>
+		<div class="list container">
+			<table>
+				<thead>
+					<th colspan="2" style="padding: 0 2px;">Products</th>
+					<th>Times</th>
+					<th>Days</th>
+				</thead>
+				<tbody id="medListBody">
+					{% for item in medList %}
+						{% for medicine_id, details in item.med_list.items %}
+						<tr data-product-name="{{ medicine_id }}">
+							<td class="product-image"></td>
+							<td class="product-name"></td>
+								<td class="mylist-times">
+									<div>
+										<input type="checkbox" name="MorningD" value="Morning" {% if 'Morning' in details.0 %}checked{% endif %}>
+										<label for="Morning">Morning</label>
+									</div>
+									<div>
+										<input type="checkbox" name="DayD" value="Day" {% if 'Day' in details.0 %}checked{% endif %}>
+										<label for="Day">Day</label>
+									</div>
+									<div>
+										<input type="checkbox" name="NightD" value="Night" {% if 'Night' in details.0 %}checked{% endif %}>
+										<label for="Night">Night</label>
+									</div>
+								</td>
+								<td>
+									<div class="quantity">
+										<button class="day-decrease-btn">-</button>
+										<input type="text" id="Daynum{{ medicine_id }}" class="num" value="{{ details.1 }}">
+										<button class="day-increase-btn">+</button>
+									</div>
+								</td>
+								<td>
+									<button class="remove-button" data-product-id="{{ medicine_id }}">Remove</button>
+								</td>
+							</tr>
+						{% endfor %}
+					{% endfor %}
+				</tbody>
+			</table>
+			<a href="{% url 'quickorder' %}" class="quick-order" id="">Quick Order</a>
+		</div>
+								
+	</main>
+
+	<footer class="footer">
+		<div class="footer-top section">
+			<div class="container">
+				<div class="footer-brand">
+					<a href="#" class="logo"><img style="border-radius: 10px;" src="{% static 'Favicon.png' %}" width="80" alt="logo"></a>
+					<p class="footer-text">
+						If you have any queries please contact us at <a href="mailto:support@gmail.com" class="link">support@gmail.com</a>
+					</p>
+					<ul class="contact-list">
+						<li class="contact-item">
+							<ion-icon name="location-outline" aria-hidden="true"></ion-icon>
+							<address class="address">
+								Online Store, Narayanganj
+							</address>
+						</li>
+						<li class="contact-item">
+							<ion-icon name="call-outline" aria-hidden="true"></ion-icon>
+							<a href="tel:(+880)XXXXXXXXXX" class="contact-link">(+880)XXXXXXXXXX</a>
+						</li>
+					</ul>
+					<ul class="social-list">
+						<li>
+							<a href="#" class="social-link">
+								<ion-icon name="logo-facebook"></ion-icon>
+							</a>
+						</li>
+						<li>
+							<a href="#" class="social-link">
+								<ion-icon name="logo-instagram"></ion-icon>
+							</a>
+						</li>
+						<li>
+							<a href="#" class="social-link">
+								<ion-icon name="logo-twitter"></ion-icon>
+							</a>
+						</li>
+						<li>
+							<a href="#" class="social-link">
+								<ion-icon name="logo-linkedin"></ion-icon>
+							</a>
+						</li>
+					</ul>
+				</div>
+				
+				<ul class="footer-list">
+					<li>
+						<p class="footer-list-title">Corporate</p>
+					</li>
+					<li>
+						<p class="footer-link">About Us</p>
+					</li>
+					<li>
+						<p class="footer-link">Contact Us</p>
+					</li>
+					<li>
+						<p class="footer-link">FAQs</p>
+					</li>
+				</ul>
+				<ul class="footer-list">
+					<li>
+						<p class="footer-list-title">Information</p>
+					</li>
+					<li>
+						<p class="footer-link">Privacy Policy</p>
+					</li>
+					<li>
+						<p class="footer-link">Refund Policy</p>
+					</li>
+					<li>
+						<p class="footer-link">Shipping Policy</p>
+					</li>
+					<li>
+						<p class="footer-link">Terms of Service</p>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="footer-bottom">
+			<div class="container">
+				<p class="copyright">
+					&copy; 2023 Made by <a href="#">Team NJ<sup>2</sup>.</a>
+				</p>
+				<!-- <img src="assets/payment/payment.png" width="380" height="90" loading="lazy" alt="payment method" class="img"> -->
+			</div>
+		</div>
+	</footer>
+
+	<a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
+		<ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
+	</a>
+	
+
+	
+	
+	
+	<script>
+
+
+async function fetchData(productName) {
+    try {
+        let response = await fetch(`/get_product_info/${productName}/`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        let productData = await response.json();
+        return productData;
+    } catch (error) {
+        console.error('Error:', error);
+        // Handle errors, show a placeholder, or handle them as per your application's requirements
+        return null;
+    }
+}
+
+document.querySelectorAll('tr').forEach(async (row) => {
+    let productName = row.dataset.productName;
+    
+    if (productName) {
+        let productData = await fetchData(productName);
+        let productNameCell = row.querySelector('.product-name');
+        let productImageCell = row.querySelector('.product-image');
+
+        if (productNameCell && productData && productData.p_name) {
+            let imgElement = document.createElement('img');
+            imgElement.setAttribute('src', `../../media/${productData.p_image}`);
+            imgElement.setAttribute('alt', 'Product Image');
+            productImageCell.innerHTML = '';
+            productImageCell.appendChild(imgElement);
+
+            // Create an anchor element for the product name
+            let productLink = document.createElement('a');
+            productLink.setAttribute('href', `/product/${productData.p_name}/`); // Set the correct product page URL
+            productLink.textContent = productData.p_name;
+            
+            // Append the anchor element to the productNameCell
+            productNameCell.innerHTML = '';
+            productNameCell.appendChild(productLink);
+        } else {
+            // productNameCell.textContent = 'N/A';
+            productImageCell.textContent = 'Image Not Available';
+        }
+    } else {
+        let productNameCell = row.querySelector('.product-name');
+        // productNameCell.textContent = 'N/A';
+        let productImageCell = row.querySelector('.product-image');
+        productImageCell.textContent = 'Image Not Available';
+    }
+});
+
+
+ 
+</script>
+<script type="text/javascript" src="{% static 'cart.js' %}"></script>
+<script type="text/javascript" src="{% static 'list.js' %}"></script>
+<script type="text/javascript" src="{% static 'prescription.js' %}"></script>
+<script type="text/javascript" src="{% static 'user-profile.js' %}"></script>
+<script type="text/javascript" src="{% static 'search.js' %}"></script>
+</body>
+</html> 
