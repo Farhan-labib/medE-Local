@@ -14,7 +14,9 @@ from products.models import Orders
 import ast
 from products.models import Profile_MedList
 from products.models import presciption_order
+from django.views.decorators.csrf import csrf_protect
 
+@csrf_protect
 def mylogin(request):
     if request.method == 'POST':
         phone_number = '+880'+request.POST.get('phone_number')
