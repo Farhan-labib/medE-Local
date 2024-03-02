@@ -153,7 +153,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/collected_static/'
-STATICFILES_DIRS=[STATIC_ROOT,]
 
 
 # Default primary key field type
