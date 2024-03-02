@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'medE.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mede',
+        'NAME': 'medE',
         'USER': 'medE',
         'PASSWORD': 'medE@24y',
     }
