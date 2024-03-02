@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import product
+from .models import Product
 from products.models import Orders
 from authentication.models import UserProfile
 from products.models import Profile_MedList
@@ -11,8 +11,9 @@ from products.models import main_product
 from django.core.files.storage import FileSystemStorage
 import os
 # Create your views here.
+
 def home(request):
-    products = product.objects.all()
+    products = Product.objects.all()
     for product in products:
 
         product.discounted_price = product.p_price - (product.p_price*(product.p_discount/100))	#FOR DISCOUNT
