@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-class product(models.Model):
+class Product(models.Model):
     p_name = models.CharField(max_length=255)
     p_category = models.CharField(max_length=255)
     p_image= models.ImageField(upload_to='media/',default='static\cat-icons\syringe.png')  # 'images/' is the upload directory
