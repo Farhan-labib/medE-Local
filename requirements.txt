@@ -1,4 +1,9 @@
-pip install django
-pip install twilio
-pip install pillow
-pip install livereload
+Django==4.2.3
+mysqlclient==2.1.0  # This version might vary depending on your MySQL version and compatibility with Django
+django-livereload-server==0.3.2  # Ensure this is the correct package for your live reload functionality
+Pillow==9.0.1  # Adjust the version number as needed for your project's requirements
+
+# Twilio for SMS functionality (if you're planning to use the Twilio API in your project)
+twilio==7.7.0  # Version may vary; check for the latest compatible version
+
+# It's good practice to freeze all dependencies to avoid unexpected issues
