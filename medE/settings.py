@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-!p!jwnxnk_nf)5psc4-bu2n(^so-zk0#-c_t=gl97a-*4(rs0@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "192.168.0.106", "192.168.0.108", "192.168.0.104", "192.168.0.110", "192.168.0.112", "192.168.0.101", "localhost", "178.128.83.106"]
+ALLOWED_HOSTS = ["127.0.0.1", "192.168.0.106", "mede-dxyxn.ondigitalocean.app", "192.168.0.104", "192.168.0.110", "192.168.0.112", "192.168.0.101", "localhost", "178.128.83.106"]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1870050
