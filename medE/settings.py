@@ -91,7 +91,7 @@ DATABASES = {
         'PORT': '25060',
         'OPTIONS': {
             'ssl': {
-                'ca': '/medE/ca-certificate.crt'  # replace with path to your CA certificate file
+                'ca': 'ca-certificate.crt'  # replace with path to your CA certificate file
             }
         }
     }
