@@ -59,6 +59,8 @@ MIDDLEWARE = [
     'livereload.middleware.LiveReloadScript',
 ]
 
+if DEBUG:
+    MIDDLEWARE.append('livereload.middleware.LiveReloadScript')
 ROOT_URLCONF = 'medE.urls'
 
 TEMPLATES = [
