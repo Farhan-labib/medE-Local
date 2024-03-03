@@ -84,11 +84,19 @@ WSGI_APPLICATION = 'medE.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mede',
-        'USER': 'mede',
-        'PASSWORD': 'medE@24y',
+        'NAME': 'defaultdb',
+        'USER': 'doadmin',
+        'PASSWORD': 'AVNS_L16sgy-KIK4T-8-Yc--',  # your database password
+        'HOST': 'db-mysql-nyc3-19803-do-user-15848017-0.c.db.ondigitalocean.com',
+        'PORT': '25060',
+        'OPTIONS': {
+            'ssl': {
+                'ca': '/path/to/ca-cert.pem'  # replace with path to your CA certificate file
+            }
+        }
     }
 }
+
 
 LOGOUT_REDIRECT_URL = 'home'
 
