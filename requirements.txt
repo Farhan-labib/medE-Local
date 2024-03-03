@@ -7,5 +7,5 @@ mysqlclient==2.1.0
 
 # Twilio for SMS functionality (if you're planning to use the Twilio API in your project)
 twilio==7.7.0  # Version may vary; check for the latest compatible version
-
+whitenoise==6.0.0
 # It's good practice to freeze all dependencies to avoid unexpected issues
