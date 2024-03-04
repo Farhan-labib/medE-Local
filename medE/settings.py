@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'medE.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'defaultdb',
+        'NAME': 'medE',
         'USER': 'doadmin',
         'PASSWORD': 'AVNS_L16sgy-KIK4T-8-Yc--',  # your database password
         'HOST': 'db-mysql-nyc3-19803-do-user-15848017-0.c.db.ondigitalocean.com',
