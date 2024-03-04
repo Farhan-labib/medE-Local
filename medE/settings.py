@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-!p!jwnxnk_nf)5psc4-bu2n(^so-zk0#-c_t=gl97a-*4(rs0@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "192.168.0.106", "mede-dxyxn.ondigitalocean.app", "192.168.0.104", "192.168.0.110", "192.168.0.112", "192.168.0.101", "localhost", "178.128.83.106"]
+ALLOWED_HOSTS = ["mede-dxyxn.ondigitalocean.app", "localhost", "167.71.202.130"]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1870050
@@ -81,21 +81,34 @@ WSGI_APPLICATION = 'medE.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'defaultdb',
+#         'USER': 'doadmin',
+#         'PASSWORD': 'AVNS_L16sgy-KIK4T-8-Yc--',  # your database password
+#         'HOST': 'db-mysql-nyc3-19803-do-user-15848017-0.c.db.ondigitalocean.com',
+#         'PORT': '25060',
+#         'OPTIONS': {
+#             'ssl': {
+#                 'ca': 'ca-certificate.crt'  # replace with path to your CA certificate file
+#             }
+#         }
+#     }
+# }
+
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'defaultdb',
-        'USER': 'doadmin',
-        'PASSWORD': 'AVNS_L16sgy-KIK4T-8-Yc--',  # your database password
-        'HOST': 'db-mysql-nyc3-19803-do-user-15848017-0.c.db.ondigitalocean.com',
-        'PORT': '25060',
-        'OPTIONS': {
-            'ssl': {
-                'ca': 'ca-certificate.crt'  # replace with path to your CA certificate file
-            }
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'medE',
+            'USER': 'medE',
+            'PASSWORD': 'medE@24y',
         }
     }
-}
+
+
 
 
 LOGOUT_REDIRECT_URL = 'home'
