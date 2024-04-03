@@ -9,8 +9,8 @@ from django.utils.html import format_html
 admin.site.register(main_product)
 
 class OrdersAdmin(admin.ModelAdmin):
-    list_display = ('id','phonenumber', 'status', 'timestamp','Delivery_status',)  # Add any other fields you want to display
-    list_filter = ('status','Delivery_status',)  # Filter by the 'status' field
+    list_display = ('id','phonenumber', 'status', 'timestamp','Delivery_status','payment_options')  # Add any other fields you want to display
+    list_filter = ('status','Delivery_status','payment_options')  # Filter by the 'status' field
     search_fields = ('phonenumber',)
     def photos_display(self, obj):
         if obj.prescriptions:

@@ -93,19 +93,25 @@
                             <option id="codOpt" value="cod">COD (Cash on Delivery)</option>
                             <option id="bkashOpt" value="bKash">bKash</option>
                         </select>
-                        
-                        
 
+                        <div class="bkash-info-taker-cod">
+                            <h5>Please pay only the delivery charge: 60 taka</h5>
+                        </div>
+        
 
                         <div class="bkash-info-taker">
-                            <h5>Account type: <b>Personal</b></h5>
-                            <h5>Account Number: <b>01XXXXXXXXX</b></h5>
-                            <label for="paymentMobile">Your bKash Account Number</label>
-                            <input type="phone" name="paymentMobile" placeholder="01XXXXXXXXX">
-                            <label for="TxID">Transaction ID</label>
-                            <input type="text" name="TxID" placeholder="Transaction ID (TxID)">
+                            <h5>Please pay the full amount</h5>
                         </div>
+
+                        <h5>Account type: <b>Personal</b></h5>
+                        <h5>Account Number: <b>01XXXXXXXXX</b></h5>
+                        <label for="paymentMobile">Your bKash Account Number</label>
+                        <input type="phone" name="paymentMobile" placeholder="01XXXXXXXXX">
+                        <label for="TxID">Transaction ID</label>
+                        <input type="text" name="TxID" placeholder="Transaction ID (TxID)">
+                       
                     </div>
+
 
                     <button class="confirm-order" type="submit">Confirm Order</button>
                 </form>
@@ -117,16 +123,23 @@
     </main>
     <script>
         
-        const bkashopt = document.getElementById(bkashOpt);
-        const codopt = document.getElementById(codOpt);
-        document.getElementById("payment-options").addEventListener('change', function (event){
-            if (event.target.value == 'bKash') {
-                document.querySelector('.bkash-info-taker').classList.add('active');
-            }
-            else if (event.target.value == 'cod') {
-                document.querySelector('.bkash-info-taker').classList.remove('active');
-            }
-        });
+        const bkashOpt = 'bkashOpt'; // Assuming these are the IDs of your elements
+        const codOpt = 'codOpt';
+window.addEventListener("load", function (event) {
+    document.querySelector('.bkash-info-taker-cod').classList.add('active');
+});
+document.getElementById("payment-options").addEventListener('change', function (event) {
+    const bkashInfoTaker = document.querySelector('.bkash-info-taker');
+    const bkashInfoTakerCod = document.querySelector('.bkash-info-taker-cod');
+    if (event.target.value === 'bKash') {
+        bkashInfoTaker.classList.add('active');
+        bkashInfoTakerCod.classList.remove('active');
+    } else if (event.target.value === 'cod') {
+        bkashInfoTaker.classList.remove('active');
+        bkashInfoTakerCod.classList.add('active');
+    }
+});
+
         var prescription = document.getElementById("file-upload");
         prescription.addEventListener('change', function(){
             document.querySelector(".presc-label").innerHTML = `<i class="fa-solid fa-check"></i>Prescription uploaded! Click to upload again`;

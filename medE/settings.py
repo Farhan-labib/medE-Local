@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-!p!jwnxnk_nf)5psc4-bu2n(^so-zk0#-c_t=gl97a-*4(rs0@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["mede-dxyxn.ondigitalocean.app", "localhost", "167.71.202.130"]
+ALLOWED_HOSTS = ["mede-dxyxn.ondigitalocean.app", "localhost", "167.71.202.130","127.0.0.1"]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1870050
@@ -42,9 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'livereload',
     'django.contrib.staticfiles',
+    'authentication',
     'Home',
     'products',
-    'authentication',
 ]
 
 MIDDLEWARE = [
@@ -82,20 +82,18 @@ WSGI_APPLICATION = 'medE.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'medE',
-        'USER': 'doadmin',
-        'PASSWORD': 'AVNS_L16sgy-KIK4T-8-Yc--',  # your database password
-        'HOST': 'db-mysql-nyc3-19803-do-user-15848017-0.c.db.ondigitalocean.com',
-        'PORT': '25060',
-        'OPTIONS': {
-            'ssl': {
-                'ca': 'ca-certificate.crt'  # replace with path to your CA certificate file
-            }
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'medE',
+            'USER': 'mede',
+            'PASSWORD': 'Bangladesh1971%',
+            'HOST': 'localhost',
+            'PORT': '3306',
+            'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
         }
     }
-}
 
 
 
@@ -162,9 +160,9 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-TWILIO_ACCOUNT_SID = 'AC9208a41b026e1730f6190c699c29a6cd'
-TWILIO_AUTH_TOKEN = '4bc4931a223f7048f8c0567e1b66a69c'
-TWILIO_PHONE_NUMBER = '+17409211140'
+TWILIO_ACCOUNT_SID = 'ACa90ef24c23a0f78aa2bdc91b99ee7111'
+TWILIO_AUTH_TOKEN = '9b7aef6d6cbd2b805b411b319bff4f5c'
+TWILIO_PHONE_NUMBER = '+13235242838'
 
 if DEBUG:
     MIDDLEWARE.append('livereload.middleware.LiveReloadScript')

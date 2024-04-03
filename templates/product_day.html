@@ -319,7 +319,10 @@
 
 					<div class="buttons row">
 						<button class="addtocart col-sm-5" onclick="AddtoCart('{{product_details.p_id}}',parseInt(document.getElementById('num').innerText),'replace')">Add to Cart</button>
+						{% if product_details.add_to_list == "yes" %}
 						<button id="addtolist" class="addtolist col-sm-5">Add To List</button>
+					{% endif %}
+					{% if product_details.add_to_list == "yes" %}
 						<div class="addtolistddown col-sm-5">
 							<div>
 								<input type="checkbox" name="MorningD" value="Morning">
@@ -340,7 +343,7 @@
 							</div>
 							<button id="addtolist2" class="addtolist addtolist2 col-sm-12" onclick="AddToList('{{ user }}', '{{ product_details.p_id }}')">Add To List</button>
 						</div>
-						
+						{%endif%}
 						<div id="message"></div>
 					</div>
                 </div>

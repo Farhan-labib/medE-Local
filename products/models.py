@@ -20,7 +20,7 @@ class main_product(models.Model):
     )
     feature_CHOICES = (('yes', 'yes'), ('no', 'no'))
     OTC_CHOICES = (('yes', 'Yes'),('no', 'No'))
-
+    add_list= (('yes', 'Yes'),('no', 'No'))
     p_id = models.AutoField(primary_key=True)
     p_name = models.CharField(max_length=255)
     p_type = models.CharField(max_length=255)
@@ -45,6 +45,7 @@ class main_product(models.Model):
     p_Storage = models.CharField(max_length=255)
     p_category = models.CharField(max_length=255, choices=CATEGORY_CHOICES)
     feature = models.CharField(max_length=255, choices=feature_CHOICES)
+    add_to_list = models.CharField(max_length=255, choices=add_list, default='yes')
 
     def __str__(self):
         return self.p_name
@@ -134,6 +135,7 @@ class Orders(models.Model):
     Delivery_status=models.CharField(max_length=20, choices=delivery_stat, default='Pending', blank=True)
     paymentMobile = models.CharField(max_length=15, blank=True, null=True)
     TxID = models.CharField(max_length=50, blank=True, null=True)
+    payment_options=models.CharField(max_length=20, default='cod', blank=True)
 
 
 class Profile_MedList(models.Model):

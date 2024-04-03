@@ -644,23 +644,23 @@ form .payment select {
 	cursor: pointer;
 }
 .bkash-info-taker {
-	visibility: none;
+	display: none;
 	opacity: 0;
 	margin-top: 16px;
 	transition: 0.2s ease;
 }
 .bkash-info-taker.active {
-	visibility: visible;
+	display: block;
 	opacity: 1;
 }
 .bkash-info-taker h5{
 	margin-bottom: 20px;
 }
-.bkash-info-taker label {
+.payment label {
 	margin-top: 21px;
 	font: 600 1.2rem 'poppins',sans-serif;
 }
-.bkash-info-taker input {
+.payment input {
 	font: 400 1rem 'poppins',sans-serif;
 	padding: 8px 0px 8px 8px;
 	outline: none;
@@ -668,7 +668,19 @@ form .payment select {
 	border-radius: 5px;
 	background-color: rgb(232, 240 ,254);
 }
-
+.bkash-info-taker-cod {
+	display: none;
+	opacity: 0;
+	margin-top: 16px;
+	transition: 0.2s ease;
+}
+.bkash-info-taker-cod.active {
+	display: block;
+	opacity: 1;
+}
+.bkash-info-taker-cod h5{
+	margin-bottom: 20px;
+}
 
 .confirm-order {
 	font-size: 1.2rem;
@@ -758,8 +770,11 @@ form .payment select {
 	.bkash-info-taker h5{
 		font-size: 0.95rem;
 	}
-	.bkash-info-taker label{
+	.payment label{
 		font-size: 1rem;
+	}
+	.bkash-info-taker-cod h5{
+		font-size: 0.95rem;
 	}
 }
 @media (min-width: 576px) {
@@ -788,10 +803,13 @@ form .payment select {
 	.bkash-info-taker h5{
 		font-size: 1.25rem;
 	}
-	.bkash-info-taker label{
+	.payment label{
 		font-size: 1.2rem;
 	}
-	.bkash-info-taker input {
+	.payment input {
 		font-size: 1rem;
+	}
+	.bkash-info-taker-cod h5{
+		font-size: 1.25rem;
 	}
 }

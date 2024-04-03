@@ -92,6 +92,7 @@ def get_product_info(request, p_id):
             'discounted_price':product.p_price - (product.p_price * (product.p_discount / 100)),
             'medPerStrip':product.medPerStrip,
             'p_image':str(product.p_image),
+            'add_to_list':product.add_to_list,
             # Add other fields as needed
         }
         return JsonResponse(product_data)
@@ -163,6 +164,9 @@ def order_complete(request):
         del_address = request.POST.get('address')
         payment_mobile = request.POST.get('paymentMobile')
         tx_id = request.POST.get('TxID')
+        payment_options=request.POST.get('payment-options')
+        print(tx_id, payment_options)
+        
 
         if prescription_file:
             # Create the user's prescription folder if it doesn't exist.
@@ -185,7 +189,8 @@ def order_complete(request):
             del_adress=del_address,
             status='pending',  # Set the initial status to 'pending'
             paymentMobile=payment_mobile,
-            TxID=tx_id
+            TxID=tx_id,
+            payment_options = payment_options
         )
         order.save()
 
