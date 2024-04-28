@@ -26,27 +26,31 @@ class main_product(models.Model):
     p_type = models.CharField(max_length=255)
     otc_status = models.CharField(max_length=3, choices=OTC_CHOICES, default='yes')
     p_image=models.ImageField(upload_to='media/',default='static\cat-icons\syringe.png')  # 'images/' is the upload directory
-    p_generics = models.CharField(max_length=255)
+    p_generics = models.CharField(max_length=255,blank=True)
     p_company = models.CharField(max_length=255)
 
     medPerStrip = models.DecimalField(max_digits=10, decimal_places=2)
     p_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     p_discount = models.DecimalField(max_digits=5, decimal_places=2)
-    p_Indications = models.TextField()
-    p_Pharmacology = models.TextField()
-    p_Dosage = models.TextField()
-    p_Interaction = models.TextField()
-    p_Contradictions = models.TextField()
-    p_Side_Effects = models.TextField()
-    p_Pregnancy = models.TextField()
-    p_Precautions = models.TextField()
-    p_Therapeutic = models.TextField()
-    p_Storage = models.CharField(max_length=255)
+    p_Indications = models.TextField(blank=True)
+    p_Pharmacology = models.TextField(blank=True)
+    p_Dosage = models.TextField(blank=True)
+    p_Interaction = models.TextField(blank=True)
+    p_Contradictions = models.TextField(blank=True)
+    p_Side_Effects = models.TextField(blank=True)
+    p_Pregnancy = models.TextField(blank=True)
+    p_Precautions = models.TextField(blank=True)
+    p_Therapeutic = models.TextField(blank=True)
+    p_Storage = models.CharField(max_length=255,blank=True)
     p_category = models.CharField(max_length=255, choices=CATEGORY_CHOICES)
     feature = models.CharField(max_length=255, choices=feature_CHOICES)
     add_to_list = models.CharField(max_length=255, choices=add_list, default='yes')
-
+    sku = models.CharField(max_length=255, blank=True)
+    inventory_quantity=models.IntegerField(default=0, blank=True)
+    description=models.TextField(blank=True)
+    size=models.CharField(max_length=255, blank=True)
+    
     def __str__(self):
         return self.p_name
 

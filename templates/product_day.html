@@ -350,26 +350,56 @@
                 
             </div>
             <section class="product-medications">
+				{% if product_details.p_Indications != "" %}
                 <h2>Indications</h2>
                 <p>{{ product_details.p_Indications }}</p>
+				{% endif %}
+				{% if product_details.p_Pharmacology != "" %}
                 <h2>Pharmacology</h2>
                 <p>{{ product_details.p_Pharmacology }}</p>
+				{% endif %}
+				{% if product_details.p_Dosage != "" %}
                 <h2>Dosage & Administration</h2>
                <p>{{ product_details.p_Dosage }}</p>
+				{% endif %}
+				{% if product_details.p_Interaction != "" %}
                     <h2>Interaction</h2>
                     <p>{{ product_details.p_Interaction }}</p>
+				{% endif %}
+				{% if product_details.p_Contradictions != "" %}
                     <h2>Contradictions</h2>
                     <p>{{ product_details.p_Contradictions }}</p>
+				{% endif %}
+				{% if product_details.p_Side_Effects != "" %}
                     <h2>Side Effects</h2>
                     <p>{{ product_details.p_Side_Effects }}</p>
-                    <h2>Pregnancy and Lactation</h2>
-                    <p>{{ product_details.p_Pregnancy }}</p>
-                    <h2>Precautions and Warnings</h2>
-                    <p>{{ product_details.p_Precautions}}</p>
-                    <h2>Therapeutic Class</h2>
-                    <p>{{ product_details.p_Therapeutic}}</p>
-                    <h2>Storage Conditions</h2>
-                    <p>{{ product_details.p_Storage}}</p>
+				{%endif%}
+				{% if product_details.p_Pregnancy != "" %}
+					<h2>Pregnancy and Lactation</h2>
+					<p>{{ product_details.p_Pregnancy }}</p>
+				{% endif %}
+				{% if product_details.p_Precautions != "" %}
+					<h2>Precautions and Warnings</h2>
+					<p>{{ product_details.p_Precautions}}</p>
+				{% endif %}
+				{% if product_details.p_Therapeutic != "" %}
+					<h2>Therapeutic Class</h2>
+					<p>{{ product_details.p_Therapeutic}}</p>
+				{% endif %}
+				{% if product_details.p_Storage != "" %}
+					<h2>Storage Conditions</h2>
+					<p>{{ product_details.p_Storage}}</p>
+				{% endif %}
+                {%if product_details.description != "" %}
+				<h2>Description</h2>
+				<p>{{product_details.description}}</p>
+				{%endif%}
+				{% if product_details.size != "" %}
+					<h2>Size</h2>
+					<p>{{ product_details.size }}</p>
+				{% endif %}
+				
+
             </section>
 		</div>
 	</main>
@@ -384,9 +414,9 @@
 					<ul class="contact-list">
 						<li class="contact-item">
 							<ion-icon name="location-outline" aria-hidden="true"></ion-icon>
-							<address class="address">
+							<a class="address">
 								Online Store, Narayanganj
-							</address>
+							</a>
 						</li>
 						<li class="contact-item">
 							<ion-icon name="call-outline" aria-hidden="true"></ion-icon>
