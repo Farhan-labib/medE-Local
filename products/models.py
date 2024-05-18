@@ -66,6 +66,9 @@ class main_product(models.Model):
                 product_instance.p_price = self.p_price
                 product_instance.p_discount = self.p_discount
                 product_instance.p_image = self.p_image
+                product_instance.p_type = self.p_type
+                product_instance.p_Dosage = self.p_Dosage
+                
                 product_instance.save()
             except Product.DoesNotExist:
                 pass  # Handle the case where the Product does not exist
@@ -80,7 +83,11 @@ class main_product(models.Model):
                 p_price=self.p_price,
                 p_discount=self.p_discount,
                 p_id=self.p_id,
-                p_image=self.p_image
+                p_image=self.p_image,
+                p_Dosage=self.p_Dosage,
+                p_type=self.p_type
+
+
             )
 
     def delete(self, *args, **kwargs):

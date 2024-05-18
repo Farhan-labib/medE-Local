@@ -11,31 +11,32 @@ from .models import Orders
 from django.utils import timezone
 from django.core.files.storage import FileSystemStorage
 
-# Create your views here.
-def prod(request, p_name):
+
+def prod(request, p_name, p_type, p_Dosage):
     product_details = {
         'name': p_name,
+        'type': p_type,
+        'Dosage': p_Dosage,
     }
 
     try:
-        product = main_product.objects.get(p_name=product_details['name'])
-        product.discounted_price = product.p_price - (product.p_price*(product.p_discount/100))	#FOR DISCOUNT
-        
+        product = main_product.objects.get(p_name=product_details['name'], p_type=product_details['type'], p_Dosage=product_details['Dosage'])
+
+        product.discounted_price = product.p_price - (product.p_price * (product.p_discount / 100))  # FOR DISCOUNT
     except main_product.DoesNotExist:
         product = None
-        
 
     if request.user.is_authenticated:
-        # Check if the user is logged in
-            try:
-                user_profile = UserProfile.objects.get(pk=request.user.id)
-                if user_profile.user_type == 'quantity':
-                    # Check if the user's type is 'quantity'
-                    return render(request, 'product.html', {'product_details': product})
-            except UserProfile.DoesNotExist:
-                pass  # Handle the case where the user profile does not exist
+        try:
+            user_profile = UserProfile.objects.get(pk=request.user.id)
+            if user_profile.user_type == 'quantity':
+                return render(request, 'product.html', {'product_details': product})
+        except UserProfile.DoesNotExist:
+            pass  # Handle the case where the user profile does not exist
+    
     # Default case if the user is not logged in or their type is not 'quantity'
     return render(request, 'product_day.html', {'product_details': product})
+
 
 
 
