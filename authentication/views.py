@@ -178,7 +178,7 @@ def send_otp(request):
         except TwilioRestException as e:
             # Log the error or handle it appropriately
             print(f"Twilio Error: {e}")
-            return JsonResponse({'status': 'error', 'message': 'Failed to send OTP. Please try again.'})
+            return JsonResponse({'status': 'error', 'message': 'Failed to send OTP. Please try again {e}.'})
     return HttpResponse("Invalid request method")
 
 
