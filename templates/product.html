@@ -190,7 +190,7 @@
 			</div>
 			<ul class="mobile-menu-category-list">
 				<li class="menu-category">
-					<a href="" class="menu-title">Home</a>
+					<a href="{%url 'home'%}" class="menu-title">Home</a>
 				</li>
 				<li class="menu-category">
 					<button class="accordion-menu" data-accordion-btn>
@@ -285,7 +285,7 @@
                     <h1>{{ product_details.p_name }}</h1>
                     <h2>{{ product_details.p_type }}</h2>
                     <h3>Generics: {{ product_details.p_generics }}</h3>
-                    <a href=""><h3>{{ product_details.p_company }}</h3></a>
+					<a href=""><h3 style="color: red;">{{ product_details.p_company }}</h3></a>
                     <div class="price-box">
                         <p class="price">৳{{ product_details.discounted_price|floatformat:"2"}}</p>
 						{% if product_details.p_discount > 0 %}

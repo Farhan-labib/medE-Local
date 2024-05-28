@@ -30,7 +30,7 @@
 	box-sizing: border-box;
 }
 a {
-	color: inehrit !important;
+	color: red;
 	text-decoration: none !important;
 }
 
@@ -898,7 +898,7 @@ main .container {
 }
 
 .product-details .addtocart {
-	background-color: #385399;
+	background-color: black;
 	font-size: 1.2rem;
 	color: white;
 	padding: 20px 0;
