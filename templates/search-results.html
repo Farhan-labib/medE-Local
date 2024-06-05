@@ -285,7 +285,7 @@
 		</div>
 
 		<div class="showcase-content">
-			<a href="{% url 'prod' p_name=product.p_name p_type=product.p_type p_Dosage=product.p_Dosage %}" class="showcase-category">{{ product.p_name }}</a>
+			<a href="{% url 'prod' p_name=product.p_name p_type=product.p_type p_Dosage=product.p_Dosage %}" class="showcase-category">{{ product.p_name }}<span style="font-size: 0.9em; color: black; opacity: 0.6; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; text-transform: lowercase; margin-left: 8px;">{{ product.p_Dosage_Strength }}</span></a>
 
 			<a href="{% url 'prod' p_name=product.p_name p_type=product.p_type p_Dosage=product.p_Dosage %}">
 				<h3 class="showcase-title">{{ product.p_category }}</h3>

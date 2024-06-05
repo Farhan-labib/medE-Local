@@ -50,7 +50,7 @@ class main_product(models.Model):
     inventory_quantity=models.IntegerField(default=0, blank=True)
     description=models.TextField(blank=True)
     size=models.CharField(max_length=255, blank=True)
-    
+    p_Dosage_Strength=models.CharField(max_length=255, blank=True)
     def __str__(self):
         return self.p_name
 
@@ -68,6 +68,7 @@ class main_product(models.Model):
                 product_instance.p_image = self.p_image
                 product_instance.p_type = self.p_type
                 product_instance.p_Dosage = self.p_Dosage
+                product_instance.p_Dosage_Strength = self.p_Dosage_Strength
                 
                 product_instance.save()
             except Product.DoesNotExist:
@@ -85,7 +86,8 @@ class main_product(models.Model):
                 p_id=self.p_id,
                 p_image=self.p_image,
                 p_Dosage=self.p_Dosage,
-                p_type=self.p_type
+                p_type=self.p_type,
+                p_Dosage_Strength=self.p_Dosage_Strength
 
 
             )
