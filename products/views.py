@@ -12,15 +12,15 @@ from django.utils import timezone
 from django.core.files.storage import FileSystemStorage
 
 
-def prod(request, p_name, p_type, p_Dosage):
+def prod(request, p_name, p_type, p_Dosage_Strength):
     product_details = {
         'name': p_name,
         'type': p_type,
-        'Dosage': p_Dosage,
+        'Dosage_Strength':p_Dosage_Strength,
     }
 
     try:
-        product = main_product.objects.get(p_name=product_details['name'], p_type=product_details['type'], p_Dosage=product_details['Dosage'])
+        product = main_product.objects.get(p_name=product_details['name'], p_type=product_details['type'], p_Dosage_Strength=product_details['Dosage_Strength'])
 
         product.discounted_price = product.p_price - (product.p_price * (product.p_discount / 100))  # FOR DISCOUNT
     except main_product.DoesNotExist:
