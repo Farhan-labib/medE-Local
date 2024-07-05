@@ -16,21 +16,22 @@
   <body>
     <div class="container" id="container">
         <div class="form-container sign-in">
-          <div>
-              {% if messages %}
-              {% for message in messages %}
-                  <h6>{{ message }}</h6>
-              {% endfor %}
-              {% endif %}
-          </div>
+          
             <form name="form" method="post" action="{% url 'mylogin' %}">
                 {% csrf_token %}
                 <img src="{% static 'favicon.png' %}" alt=" medX logo">
                 <div class="num-input-container">
-                  <label for="phone_number">+880</label>
+                  <label for="phone_number">+88</label>
                   <input class="phone-number" type="tel" name="phone_number" placeholder="Phone Number" pattern="[0]\d{10}" title="Enter a valid phone number" required/>
                 </div>
                 <input type="password" name="password" placeholder="Password" required/>
+                <div class="messages">
+                  {% if messages %}
+                  {% for message in messages %}
+                   <p class="{{ message.tags }}">{{ message }}</p>
+                  {% endfor %}
+                  {% endif %}
+              </div>
                 <button type="submit">Login</button>
                 <button><a href="{% url 'forgotpassword' %}">Forgot Password?</a></button>
                 <button id="login"><a href="{% url 'myregister' %}">Register Now</a></button>

@@ -51,6 +51,9 @@ urlpatterns = [
     path('prescription_confirm/', secondactivity.pres_confirm, name='prescription_confirm'),
     path('prescriptions_order/', secondactivity.presciptions_order, name='presciptions_order'),
     path('searchresult/', firstactivity.searchresult, name='search_results'),
+    path('signup/', authenticationViews.signup,name='signup'),
+    path('forgot_pass2/', authenticationViews.forgot_pass2, name='forgot_pass2'),
+    path('send_forgot_otp/', authenticationViews.send_forgot_otp, name='send_forgot_otp'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

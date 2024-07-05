@@ -19,41 +19,27 @@
       
       <div class="form-container sign-up" style="display: flex;flex-direction: column;">
         <img src="{% static 'favicon.png' %}" alt=" medX logo">
-        <form style="padding: 0;" method="post" action="{% url 'send_forgot_otp' %}">
-            {% csrf_token %}
-            <div class="num-input-container">
-              <label for="phone_number">+88</label>
-              <input id="phone_number" type="text" name="phone_number" placeholder="{% if phone_number %}{{ phone_number|slice:'4:' }}{% else %} Phone Number {%endif%}" pattern="[0]\d{10}" title="Enter a valid phone number"  required/>
-            </div>
-            <button type="submit">Send OTP</button>
-            {%if message%}
-            <div>{{message}}</div>
-            {%endif%}
-        </form>
+       
 
-        <!-- OTP Verification Form -->
-
-        <form style="padding: 0;" action="{% url 'verify_forgot_password_otp' %}" method="POST">
+        <form style="padding: 0;" action="{% url 'signup' %}" method="POST">
           {% csrf_token %}
-          
-          <h3 for="otp">Enter OTP:</h3>
-          <div class="input-field" id="otp-container">
-            <input required type="number" name="otp1" id="otp1" class="otp-input" maxlength="1" />
-            <input required type="number" name="otp2" id="otp2" class="otp-input" maxlength="1" disabled />
-            <input required  type="number" name="otp3" id="otp3" class="otp-input" maxlength="1" disabled />
-            <input required type="number" name="otp4" id="otp4" class="otp-input" maxlength="1" disabled />
-          </div>  
-          <input type="hidden" name="phone_number" value="{{ phone_number }}" />
-            {% if messages %}
+          <input required class="firstname" type="text" name="first_name" placeholder="First Name">
+          <input required class="lastname" type="text" name="last_name" placeholder="Last Name">
+          <input required type="password" name="password" id="password" placeholder="Password" required/>
+          <input required type="password" name="c_password" id="c_password" placeholder="Confirm password" required/>
+          {% if messages %}
             <div class="messages">
               {% for message in messages %}
                 <p class="{{ message.tags }}">{{ message }}</p>
               {% endfor %}
             </div>
             {% endif %}
-          <button type="submit">Verify OTP</button>
+
+          <input type="hidden" name="phone_number" value="{{ phone_number }}" />
+           
+          <button type="submit">Sign Up</button>
         </form>
-        
+    
       </div>
       
       <div class="toggle-container toggle-right">

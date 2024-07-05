@@ -161,7 +161,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 TWILIO_ACCOUNT_SID = 'ACa90ef24c23a0f78aa2bdc91b99ee7111'
-TWILIO_AUTH_TOKEN = '9b7aef6d6cbd2b805b411b319bff4f5c'
+TWILIO_AUTH_TOKEN = 'a2934933bf875b8c33923482b877dd83'
 TWILIO_PHONE_NUMBER = '+13235242838'
 
 if DEBUG:
