@@ -12,16 +12,20 @@ from django.utils import timezone
 from django.core.files.storage import FileSystemStorage
 
 
-def prod(request, p_name, p_type, p_Dosage_Strength):
+def prod(request, p_name, p_type, size):
+    # Replace hyphens with spaces
+    p_name = p_name.replace('-', ' ')
+    p_type = p_type.replace('-', ' ')
+    size = size.replace('-', ' ')
+
     product_details = {
         'name': p_name,
         'type': p_type,
-        'Dosage_Strength':p_Dosage_Strength,
+        'size': size,
     }
 
     try:
-        product = main_product.objects.get(p_name=product_details['name'], p_type=product_details['type'], p_Dosage_Strength=product_details['Dosage_Strength'])
-
+        product = main_product.objects.get(p_name=product_details['name'], p_type=product_details['type'], size=product_details['size'])
         product.discounted_price = product.p_price - (product.p_price * (product.p_discount / 100))  # FOR DISCOUNT
     except main_product.DoesNotExist:
         product = None
@@ -36,6 +40,7 @@ def prod(request, p_name, p_type, p_Dosage_Strength):
     
     # Default case if the user is not logged in or their type is not 'quantity'
     return render(request, 'product_day.html', {'product_details': product})
+
 
 
 
@@ -68,6 +73,7 @@ def live_search(request):
             {
                 'p_name': product.p_name,
                 'p_type': product.p_type,
+                'size': product.size,
                 'p_id':product.p_id,
             }
             for product in results

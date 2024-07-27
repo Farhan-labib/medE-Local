@@ -485,7 +485,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 .submenu-category-list.active {
-	max-height: 100vh;
+	max-height: 300vh;
 	visibility: visible;
 }
 

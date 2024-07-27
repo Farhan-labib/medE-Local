@@ -1,6 +1,5 @@
 $(document).ready(function () {
-    // Function to fetch and display search results
-    
+    // Function to fetch and display search results for the first search input
     function fetchSearchResults(query) {
         // Check if the query is empty
         if (!query) {
@@ -15,23 +14,19 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (data) {
                 var resultsDiv = $('#search-results');
-                // console.log(data);
                 resultsDiv.empty(); // Clear previous search results
 
                 if (data.length > 0) {
                     $.each(data, function (index, item) {
                         // Construct the URL for the product details page
-                        var url = '/product/' + item.p_name + '/';
+                        var url = '/product/' + item.p_name.replace(/ /g, '-') + '/' + item.p_type.replace(/ /g, '-') + '/' + item.size.replace(/ /g, '-') + '/';
 
-                        // Display the search results with the constructed URL
-                        resultsDiv.append('<li><a href="' + url + '">' + item.p_name + '</a></li>');
+                        // Display the search results with the constructed URL and combined name-type-size
+                        resultsDiv.append('<li><a href="' + url + '">' + item.p_name + ' - ' + item.p_type + ' - ' + item.size + '</a></li>');
                     });
                 } else {
                     resultsDiv.append('<p>No results found.</p>');
                 }
-                // console.log(data)
-
-
             }
         });
     }
@@ -39,7 +34,6 @@ $(document).ready(function () {
     $('#search-input').on('input', function () {
         var query = $(this).val();
         fetchSearchResults(query);
-        
     });
 
     // Clear search results when clicking somewhere else on the page
@@ -51,13 +45,8 @@ $(document).ready(function () {
     });
 });
 
-
-
-
-
-
 $(document).ready(function () {
-    // Function to fetch and display search results
+    // Function to fetch and display search results for the second search input
     function fetchSearchResults(query) {
         // Check if the query is empty
         if (!query) {
@@ -77,10 +66,10 @@ $(document).ready(function () {
                 if (data.length > 0) {
                     $.each(data, function (index, item) {
                         // Construct the URL for the product details page
-                        var url = '/product/' + item.p_name + '/';
+                        var url = '/product/' + item.p_name.replace(/ /g, '-') + '/' + item.p_type.replace(/ /g, '-') + '/' + item.size.replace(/ /g, '-') + '/';
 
-                        // Display the search results with the constructed URL
-                        resultsDiv.append('<li><a href="' + url + '">' + item.p_name + '</a></li>');
+                        // Display the search results with the constructed URL and combined name-type-size
+                        resultsDiv.append('<li><a href="' + url + '">' + item.p_name + ' - ' + item.p_type + ' - ' + item.size + '</a></li>');
                     });
                 } else {
                     resultsDiv.append('<p>No results found.</p>');
@@ -119,25 +108,19 @@ function searchresults() {
         data: { 'q': searchInput },
         dataType: 'json',
         success: function (data) {
-            // console.log(data);
-    
             // Make a new AJAX request to pass the data to the searchresult view
             $.ajax({
                 url: '/searchresult/',
                 method: 'POST',
                 data: { 'search_results': JSON.stringify(data) },
                 success: function (response) {
-                    // Handle the response as needed
-                    // console.log(response);
-    
                     // Replace the entire current page with the received HTML
                     document.documentElement.innerHTML = response;
                 }
             });
         }
     });
-    
-};
+}
 
 function searchresults2() {
     var searchInput = document.getElementById('search-input2').value;
@@ -155,23 +138,16 @@ function searchresults2() {
         data: { 'q': searchInput },
         dataType: 'json',
         success: function (data) {
-            // console.log(data);
-    
             // Make a new AJAX request to pass the data to the searchresult view
             $.ajax({
                 url: '/searchresult/',
                 method: 'POST',
                 data: { 'search_results': JSON.stringify(data) },
                 success: function (response) {
-                    // Handle the response as needed
-                    // console.log(response);
-    
                     // Replace the entire current page with the received HTML
                     document.documentElement.innerHTML = response;
                 }
             });
         }
     });
-    
 }
-

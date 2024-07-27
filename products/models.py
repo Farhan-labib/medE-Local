@@ -5,23 +5,36 @@ from Home.models import Product
 from django.utils import timezone
 class main_product(models.Model):
     CATEGORY_CHOICES = (
-        ('BABY CARE', 'BABY CARE'),
-        ('MENS','MENS'),
-        ('Cold & Allergies','Cold & Allergies'),
-        ('Heart Problems','Heart Problems'),
-        ('Diabetes','Diabetes'),
-        ('Respiratory Problems','Respiratory Problems'),
-        ('Neurological Problems','Neurological Problems'),
-        ('Arthritis or other types of pain','Arthritis or other types of pain'),
-        ('Sexual Wellness','Sexual Wellness'),
-        ('Herbal & Ayurvedic','Herbal & Ayurvedic'),
-        ('Infant & Mothers care','Infant & Mothers care'),
-        ('Supplements & Nutrition','Supplements & Nutrition')
+    ('General Health', 'General Health'),
+    ('Cold & Allergies Remedies', 'Cold & Allergies Remedies'),
+    ('Heart Health', 'Heart Health'),
+    ('Diabetes Care', 'Diabetes Care'),
+    ('Lungs & Respiratory Health', 'Lungs & Respiratory Health'),
+    ('Brain & Neurological Health', 'Brain & Neurological Health'),
+    ('Muscles & Bone Health', 'Muscles & Bone Health'),
+    ('Digestive Health', 'Digestive Health'),
+    ('Medical Devices', 'Medical Devices'),
+    ('Sexual Health', 'Sexual Health'),
+    ('Women Health', 'Women Health'),
+    ('Infant care', 'Infant care'),
+    ('Supplements & Nutrition', 'Supplements & Nutrition'),
+    ('Personal Health', 'Personal Health'),
+    ('Blood and Circulatory Health', 'Blood and Circulatory Health'),
+    ('Mental Health', 'Mental Health'),
+    ('Kidney and Renal Health', 'Kidney and Renal Health'),
+    ('Infection Management', 'Infection Management'),
+    ('Immune System Health', 'Immune System Health'),
+    ('Liver Health', 'Liver Health'),
+    ('Thyroids and Hormones', 'Thyroids and Hormones'),
+    ('Physical Injury', 'Physical Injury'),
+    ('Pain Relief', 'Pain Relief'),
     )
+
     feature_CHOICES = (('yes', 'yes'), ('no', 'no'))
     OTC_CHOICES = (('yes', 'Yes'),('no', 'No'))
     add_list= (('yes', 'Yes'),('no', 'No'))
     p_id = models.AutoField(primary_key=True)
+    product_code = models.CharField(max_length=255, blank=True)
     p_name = models.CharField(max_length=255)
     p_type = models.CharField(max_length=255)
     otc_status = models.CharField(max_length=3, choices=OTC_CHOICES, default='yes')
@@ -46,7 +59,6 @@ class main_product(models.Model):
     p_category = models.CharField(max_length=255, choices=CATEGORY_CHOICES)
     feature = models.CharField(max_length=255, choices=feature_CHOICES)
     add_to_list = models.CharField(max_length=255, choices=add_list, default='yes')
-    sku = models.CharField(max_length=255, blank=True)
     inventory_quantity=models.IntegerField(default=0, blank=True)
     description=models.TextField(blank=True)
     size=models.CharField(max_length=255, blank=True)
@@ -69,6 +81,7 @@ class main_product(models.Model):
                 product_instance.p_type = self.p_type
                 product_instance.p_Dosage = self.p_Dosage
                 product_instance.p_Dosage_Strength = self.p_Dosage_Strength
+                product_instance.size = self.size
                 
                 product_instance.save()
             except Product.DoesNotExist:
@@ -87,7 +100,8 @@ class main_product(models.Model):
                 p_image=self.p_image,
                 p_Dosage=self.p_Dosage,
                 p_type=self.p_type,
-                p_Dosage_Strength=self.p_Dosage_Strength
+                p_Dosage_Strength=self.p_Dosage_Strength,
+                size=self.size
 
 
             )

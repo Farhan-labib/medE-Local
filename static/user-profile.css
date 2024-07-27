@@ -622,7 +622,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 .submenu-category-list.active {
-  max-height: 148px;
+  max-height: 300vh;
   visibility: visible;
 }
 
