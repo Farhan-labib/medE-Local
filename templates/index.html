@@ -471,7 +471,7 @@
 					{% for product in products %}
 					<div class="showcase">
 						<div class="showcase-banner">
-							<a href="{% url 'prod' p_name=product.p_name|slugify p_type=product.p_type|slugify size=product.size|slugify %}" class="showcase-category">
+							<a href="{% url 'prod' p_link=product.p_link %}" class="showcase-category">
 								<img class="product-img default" src="media/{{ product.p_image }}"
 									alt="{{ product.p_name }}" width="300">
 								<img class="product-img hover" src="media/{{ product.p_image }}"
@@ -494,13 +494,13 @@
 						</div>
 
 						<div class="showcase-content">
-							<a href="{% url 'prod' p_name=product.p_name|slugify p_type=product.p_type|slugify size=product.size|slugify %}" class="showcase-category">
+							<a href="{% url 'prod' p_link=product.p_link %}" class="showcase-category">
 
 								{{ product.p_name }} <span style="font-size: 0.9em; color: black; opacity: 0.6; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; text-transform: lowercase; margin-left: 2px;">{{ product.p_Dosage_Strength }}</span>
 							  </a>
 							  
 
-							  <a href="{% url 'prod' p_name=product.p_name|slugify p_type=product.p_type|slugify size=product.size|slugify %}" class="showcase-category">
+							  <a href="{% url 'prod' p_link=product.p_link %}" class="showcase-category">
 								<h3 class="showcase-title">{{ product.p_category }}</h3>
 							</a>
 
@@ -518,7 +518,7 @@
 					{%endfor%}
 				</div>
 			</div>
-
+-
 	</main>
 
 	<footer class="footer">

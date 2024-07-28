@@ -12,20 +12,14 @@ from django.utils import timezone
 from django.core.files.storage import FileSystemStorage
 
 
-def prod(request, p_name, p_type, size):
-    # Replace hyphens with spaces
-    p_name = p_name.replace('-', ' ')
-    p_type = p_type.replace('-', ' ')
-    size = size.replace('-', ' ')
-
+def prod(request, p_link):
+    
     product_details = {
-        'name': p_name,
-        'type': p_type,
-        'size': size,
+        'p_link': p_link,
     }
 
     try:
-        product = main_product.objects.get(p_name=product_details['name'], p_type=product_details['type'], size=product_details['size'])
+        product = main_product.objects.get(p_link=product_details['p_link'])
         product.discounted_price = product.p_price - (product.p_price * (product.p_discount / 100))  # FOR DISCOUNT
     except main_product.DoesNotExist:
         product = None
@@ -75,6 +69,7 @@ def live_search(request):
                 'p_type': product.p_type,
                 'size': product.size,
                 'p_id':product.p_id,
+                'p_link':product.p_link,
             }
             for product in results
         ]

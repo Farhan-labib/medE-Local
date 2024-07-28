@@ -19,7 +19,7 @@ $(document).ready(function () {
                 if (data.length > 0) {
                     $.each(data, function (index, item) {
                         // Construct the URL for the product details page
-                        var url = '/product/' + item.p_name.replace(/ /g, '-') + '/' + item.p_type.replace(/ /g, '-') + '/' + item.size.replace(/ /g, '-') + '/';
+                        var url = '/product/' + item.p_link
 
                         // Display the search results with the constructed URL and combined name-type-size
                         resultsDiv.append('<li><a href="' + url + '">' + item.p_name + ' - ' + item.p_type + ' - ' + item.size + '</a></li>');
@@ -66,8 +66,7 @@ $(document).ready(function () {
                 if (data.length > 0) {
                     $.each(data, function (index, item) {
                         // Construct the URL for the product details page
-                        var url = '/product/' + item.p_name.replace(/ /g, '-') + '/' + item.p_type.replace(/ /g, '-') + '/' + item.size.replace(/ /g, '-') + '/';
-
+                        var url = '/product/' + item.p_link
                         // Display the search results with the constructed URL and combined name-type-size
                         resultsDiv.append('<li><a href="' + url + '">' + item.p_name + ' - ' + item.p_type + ' - ' + item.size + '</a></li>');
                     });

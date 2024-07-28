@@ -63,11 +63,14 @@ class main_product(models.Model):
     description=models.TextField(blank=True)
     size=models.CharField(max_length=255, blank=True)
     p_Dosage_Strength=models.CharField(max_length=255, blank=True)
+    p_link = models.CharField(max_length=765, blank=True)
+
     def __str__(self):
         return self.p_name
 
     def save(self, *args, **kwargs):
         # Check if the main_product instance is being updated
+        self.p_link = f"{self.p_name.replace(' ', '-')}-{self.p_type.replace(' ', '-')}-{self.size.replace(' ', '-')}"
         if self.pk:
             # Check if the associated Product instance exists
             try:
@@ -82,6 +85,7 @@ class main_product(models.Model):
                 product_instance.p_Dosage = self.p_Dosage
                 product_instance.p_Dosage_Strength = self.p_Dosage_Strength
                 product_instance.size = self.size
+                product_instance.p_link = self.p_link
                 
                 product_instance.save()
             except Product.DoesNotExist:
@@ -101,7 +105,8 @@ class main_product(models.Model):
                 p_Dosage=self.p_Dosage,
                 p_type=self.p_type,
                 p_Dosage_Strength=self.p_Dosage_Strength,
-                size=self.size
+                size=self.size,
+                p_link=self.p_link
 
 
             )

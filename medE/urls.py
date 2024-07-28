@@ -27,7 +27,6 @@ from authentication import views as authenticationViews
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',firstactivity.home, name='home'),
-    path('product/<str:p_name>/', secondactivity.prod, name='prod'),
     path("Category<str:p_category>/",secondactivity.category,name='category'),
     path('live_search/', secondactivity.live_search, name='live_search'),
     path('get_product_info/<int:p_id>/', secondactivity.get_product_info, name='get_product_info'),
@@ -40,7 +39,7 @@ urlpatterns = [
     path('logout/', authenticationViews.mylogout, name='mylogout'),
     path('profile/',firstactivity.profile, name='profile'),
     path('profile/update_profile/', authenticationViews.update_profile, name='update_profile'),
-    path('product/<str:p_name>/<str:p_type>/<str:size>/', secondactivity.prod, name='prod'),
+    path('product/<str:p_link>', secondactivity.prod, name='prod'),
     path('order_confirm/',secondactivity.order_confirm, name='order_confirm'),
     path('checkout/', secondactivity.checkout_view, name='checkout'),
     path('confirm/', secondactivity.order_complete, name='confirm'),

@@ -13,5 +13,6 @@ class Product(models.Model):
     p_Dosage = models.TextField(blank=True)
     p_Dosage_Strength = models.CharField(max_length=255, blank=True)
     size=models.CharField(max_length=255, blank=True)
+    p_link = models.CharField(max_length=765, blank=True)
     def __str__(self):
       return self.p_name
