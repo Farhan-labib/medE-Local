@@ -33,10 +33,14 @@ def mylogin(request):
             if user is not None:
                 login(request, user)
                 return redirect('home')  # Redirect to the home page after successful login
+        elif user_profile is None:
+            # User authentication failed, show error message
+            messages.error(request, 'Invalid phone number.')
+            return redirect('mylogin')  # Redirect back to the login page if authentication fails
         else:
             # User authentication failed, show error message
-            messages.error(request, 'Invalid phone number or password. Please try again.')
-            return redirect('mylogin')  # Redirect back to the login page if authentication fails
+            messages.error(request, 'Incorrect password, please try again.')
+            return redirect('mylogin')
 
     return render(request, 'login.html')
 

@@ -3,6 +3,7 @@ from django.utils.html import format_html
 from django.utils.timezone import localtime
 from .models import Orders, main_product, presciption_order
 from django.conf import settings
+from django.urls import reverse
 
 # Registering the main_product model
 class MainProductAdmin(admin.ModelAdmin):
@@ -11,7 +12,7 @@ class MainProductAdmin(admin.ModelAdmin):
 admin.site.register(main_product, MainProductAdmin)
 
 class OrdersAdmin(admin.ModelAdmin):
-    list_display = ('id', 'phonenumber', 'status', 'formatted_datetime', 'Delivery_status', 'payment_options')
+    list_display = ('id', 'phonenumber_link', 'status', 'formatted_datetime', 'Delivery_status', 'payment_options')
     list_filter = ('status', 'Delivery_status', 'payment_options')
     search_fields = ('phonenumber',)
 
@@ -22,6 +23,13 @@ class OrdersAdmin(admin.ModelAdmin):
         formatted_datetime = local_time.strftime('%Y-%m-%d %I.%M %p')
         return formatted_datetime
     formatted_datetime.short_description = 'Date and Time'
+
+    def phonenumber_link(self, obj):
+        # Create a clickable link for the phone number
+        url = reverse('admin:products_orders_change', args=[obj.id])  # Adjust the URL pattern name as necessary
+        return format_html('<a href="{}">{}</a>', url, obj.phonenumber)
+    phonenumber_link.short_description = 'Phone Number'
+    phonenumber_link.admin_order_field = 'phonenumber'
 
     def photos_display(self, obj):
         if obj.prescriptions:

@@ -35,7 +35,7 @@ def profile(request):
             d.append(str(name+"X"+number))
 
 
-        temp[i.id]=[d,i.total,i.timestamp,i.Delivery_status]
+        temp[i.id]=[d,i.total,i.timestamp,i.status]
 
     # Medlist  From here
 
@@ -49,7 +49,7 @@ def profile(request):
     data_list = list(saved_data)
     # print(data_list)
     print(p_order)
-    return render(request, 'user-profile.html', {'temp': temp,'medList': data_list, 'p_order':p_order})
+    return render(request, 'user-profile.html', {'temp': temp,'medList': data_list, 'p_order':p_order,  'user_phone_number': phonenumber})
 
 
 def quick_order(request):

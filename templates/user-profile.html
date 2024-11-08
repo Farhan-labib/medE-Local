@@ -395,7 +395,7 @@
 				
 					<div class="presc-box">
 						<img src="../../media/{{ item.prescription_img }}" alt="{{ item.prescription_img }}">
-						<h3>{{item.Delivery_status}}</h3>
+						<h3>{{item.status}}</h3>
 					</div>
 					<div class="popup-image"><img src="../../media/{{ item.prescription_img }}" alt="{{ item.prescription_img }}"></div>
 				{% endfor %}
@@ -428,6 +428,8 @@
 						<td data-title="Date">{{ value.2|date:"d F Y" }}</td>
 						{% if value.3 == "pending" %}
 						<td data-title="Status" ><p style="background-color: #f1c40f;">{{ value.3 }}</p></td>
+						{%elif value.3 == "Rejected" %}
+						<td data-title="Status" ><p style="background-color: red;">{{ value.3 }}</p></td>
 						{%else%}
 						<td data-title="Status" ><p style="background-color: #30cb83;">{{ value.3 }}</p></td>
 						{% endif %}
@@ -450,37 +452,49 @@
 						<tr data-product-name="{{ medicine_id }}">
 							<td class="product-image"></td>
 							<td class="product-name"></td>
-								<td class="mylist-times">
-									<div>
-										<input type="checkbox" name="MorningD" value="Morning" {% if 'Morning' in details.0 %}checked{% endif %}>
-										<label for="Morning">Morning</label>
-									</div>
-									<div>
-										<input type="checkbox" name="DayD" value="Day" {% if 'Day' in details.0 %}checked{% endif %}>
-										<label for="Day">Day</label>
-									</div>
-									<div>
-										<input type="checkbox" name="NightD" value="Night" {% if 'Night' in details.0 %}checked{% endif %}>
-										<label for="Night">Night</label>
-									</div>
-								</td>
-								<td>
-									<div class="quantity">
-										<button class="day-decrease-btn">-</button>
-										<input type="text" id="Daynum{{ medicine_id }}" class="num" value="{{ details.1 }}">
-										<button class="day-increase-btn">+</button>
-									</div>
-								</td>
-								<td>
-									<button class="remove-button" data-product-id="{{ medicine_id }}">Remove</button>
-								</td>
-							</tr>
+							<td class="mylist-times">
+								<div>
+									<input type="checkbox" name="MorningD" value="Morning" {% if 'Morning' in details.0 %}checked{% endif %}>
+									<label for="Morning">Morning</label>
+								</div>
+								<div>
+									<input type="checkbox" name="DayD" value="Day" {% if 'Day' in details.0 %}checked{% endif %}>
+									<label for="Day">Day</label>
+								</div>
+								<div>
+									<input type="checkbox" name="NightD" value="Night" {% if 'Night' in details.0 %}checked{% endif %}>
+									<label for="Night">Night</label>
+								</div>
+							</td>
+							<td>
+								<div class="quantity">
+									<button class="day-decrease-btn">-</button>
+									<input type="text" id="Daynum{{ medicine_id }}" class="num" value="{{ details.1 }}">
+									<button class="day-increase-btn">+</button>
+								</div>
+							</td>
+							<td>
+								<button class="remove-button" data-product-id="{{ medicine_id }}">Remove</button>
+							</td>
+						</tr>
 						{% endfor %}
+						
 					{% endfor %}
 				</tbody>
 			</table>
-			<a href="{% url 'quickorder' %}" class="quick-order" id="">Quick Order</a>
+			<br/>
+	
+			<div class="day-buttons" style="display: flex; align-items: center; gap: 10px; margin: 20px 0;">
+				<button class="set-days" data-days="7" style="background-color: black; color: white; border: none; padding: 8px 12px; margin: 0; cursor: pointer; font-size: 14px; border-radius: 5px 0 0 5px; border-right: 1px solid white;">7 Days</button>
+				<button class="set-days" data-days="15" style="background-color: black; color: white; border: none; padding: 8px 12px; margin: 0; cursor: pointer; font-size: 14px; border-right: 1px solid white;">15 Days</button>
+				<button class="set-days" data-days="30" style="background-color: black; color: white; border: none; padding: 8px 12px; margin: 0; cursor: pointer; font-size: 14px; border-radius: 0 5px 5px 0;">30 Days</button>
+			</div>
+			
+
+			
+			<a href="{% url 'quickorder' %}" class="quick-order" id="">Order</a>
 		</div>
+		
 								
 	</main>
 
@@ -580,61 +594,130 @@
 	
 	
 	<script>
+		 var userPhoneNumber = "{{ user_phone_number }}";
+		async function fetchData(productName) {
+			try {
+				let response = await fetch(`/get_product_info/${productName}/`);
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				let productData = await response.json();
+				return productData;
+			} catch (error) {
+				console.error('Error:', error);
+				// Handle errors, show a placeholder, or handle them as per your application's requirements
+				return null;
+			}
+		}
+		
+		document.querySelectorAll('tr').forEach(async (row) => {
+			let productName = row.dataset.productName;
+			
+			if (productName) {
+				let productData = await fetchData(productName);
+				let productNameCell = row.querySelector('.product-name');
+				let productImageCell = row.querySelector('.product-image');
+		
+				if (productNameCell && productData && productData.p_name) {
+					let imgElement = document.createElement('img');
+					imgElement.setAttribute('src', `../../media/${productData.p_image}`);
+					imgElement.setAttribute('alt', 'Product Image');
+					productImageCell.innerHTML = '';
+					productImageCell.appendChild(imgElement);
+		
+					// Create an anchor element for the product name
+					let productLink = document.createElement('a');
+					productLink.setAttribute('href', `/product/${productData.p_name}/`); // Set the correct product page URL
+					productLink.textContent = productData.p_name;
+					
+					// Append the anchor element to the productNameCell
+					productNameCell.innerHTML = '';
+					productNameCell.appendChild(productLink);
+				} else {
+					// productNameCell.textContent = 'N/A';
+					productImageCell.textContent = 'Image Not Available';
+				}
+			} else {
+				let productNameCell = row.querySelector('.product-name');
+				// productNameCell.textContent = 'N/A';
+				let productImageCell = row.querySelector('.product-image');
+				productImageCell.textContent = 'Image Not Available';
+			}
+		});
+		
 
 
-async function fetchData(productName) {
-    try {
-        let response = await fetch(`/get_product_info/${productName}/`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        let productData = await response.json();
-        return productData;
-    } catch (error) {
-        console.error('Error:', error);
-        // Handle errors, show a placeholder, or handle them as per your application's requirements
-        return null;
-    }
-}
+		document.querySelectorAll('.set-days').forEach(button => {
+    button.addEventListener('click', function () {
+        const days = this.getAttribute('data-days'); // Get the number of days from the button
+        const rows = document.querySelectorAll('#medListBody tr'); // Select all rows in the med list
+        
+        // Initialize an object to store the data
+        let medListData = {};
 
-document.querySelectorAll('tr').forEach(async (row) => {
-    let productName = row.dataset.productName;
-    
-    if (productName) {
-        let productData = await fetchData(productName);
-        let productNameCell = row.querySelector('.product-name');
-        let productImageCell = row.querySelector('.product-image');
-
-        if (productNameCell && productData && productData.p_name) {
-            let imgElement = document.createElement('img');
-            imgElement.setAttribute('src', `../../media/${productData.p_image}`);
-            imgElement.setAttribute('alt', 'Product Image');
-            productImageCell.innerHTML = '';
-            productImageCell.appendChild(imgElement);
-
-            // Create an anchor element for the product name
-            let productLink = document.createElement('a');
-            productLink.setAttribute('href', `/product/${productData.p_name}/`); // Set the correct product page URL
-            productLink.textContent = productData.p_name;
+        rows.forEach(row => {
+            const input = row.querySelector('.quantity input[type="text"]');
+            const medicineId = row.getAttribute('data-product-name'); // Get medicine ID from data attribute
             
-            // Append the anchor element to the productNameCell
-            productNameCell.innerHTML = '';
-            productNameCell.appendChild(productLink);
-        } else {
-            // productNameCell.textContent = 'N/A';
-            productImageCell.textContent = 'Image Not Available';
-        }
-    } else {
-        let productNameCell = row.querySelector('.product-name');
-        // productNameCell.textContent = 'N/A';
-        let productImageCell = row.querySelector('.product-image');
-        productImageCell.textContent = 'Image Not Available';
-    }
+            // Set the input value to the selected number of days
+            input.value = days;
+
+            // Collect checked times for each medicine
+            let selectedTimes = [];
+            row.querySelectorAll('.mylist-times input[type="checkbox"]:checked').forEach(checkbox => {
+                selectedTimes.push(checkbox.value);
+            });
+
+            // Store the data in the required format
+            if (medicineId) {
+                medListData[medicineId] = [selectedTimes, parseInt(days)];
+            }
+        });
+
+
+        // Send data to the server
+        fetch('/update_medlist/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken') // Make sure to include CSRF token for security
+            },
+            body: JSON.stringify({
+                medListData: medListData
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('Data updated successfully!');
+            } else {
+                console.error('Error updating data:', response.statusText);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
 });
 
+// Helper function to get CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Check if this cookie string begins with the name we want
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
- 
-</script>
+
+
+		</script>
+		
 <script type="text/javascript" src="{% static 'cart.js' %}"></script>
 <script type="text/javascript" src="{% static 'list.js' %}"></script>
 <script type="text/javascript" src="{% static 'prescription.js' %}"></script>

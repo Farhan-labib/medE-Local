@@ -207,7 +207,7 @@ async function totalBill() {
     // console.log(total) 
     const totalElement = document.querySelector('.total');
     if (totalElement) {
-      totalElement.textContent = `Total:` + total;
+      totalElement.textContent = `Total:` + total.toFixed(2);
     }
 
 

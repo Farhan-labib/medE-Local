@@ -27,6 +27,17 @@
           <input required class="lastname" type="text" name="last_name" placeholder="Last Name">
           <input required type="password" name="password" id="password" placeholder="Password" required/>
           <input required type="password" name="c_password" id="c_password" placeholder="Confirm password" required/>
+          
+          <p style="margin: 0; font-size: 14px; line-height: 1.5;">
+            <input required type="checkbox" id="consent" name="consent" style="margin: 0; padding: 0; width: auto; height: auto; vertical-align: middle; display: inline;">
+            <span style="vertical-align: middle; display: inline;">By clicking "Sign Up", I agree to the 
+            <a href="#" style="color: blue; text-decoration: underline;">Terms & Conditions</a> 
+            and 
+            <a href="#" style="color: blue; text-decoration: underline;">Privacy Policy</a> 
+            associated with MedE.</span>
+        </p>
+        
+        
           {% if messages %}
             <div class="messages">
               {% for message in messages %}

@@ -110,26 +110,47 @@ def checkout_view(request):
         try:
             data = json.loads(request.body.decode('utf-8'))
             # Process the cart_data as needed (e.g., complete the checkout)
-            output={}
-            total=0
+            output = {}
+            total = 0
             prescription_required = False
+            product_index = 1  # Initialize the product index
+
             for key, value in data.items():
                 product = main_product.objects.get(p_id=key)
+
+                # Create a numbered key in the format "1. ProductName"
+                unique_key = f"{product_index}. {product.p_name}"
+                product_index += 1  # Increment the index for each product
+
+                # Check if a prescription is required
                 if product.otc_status == "no":
                     prescription_required = True
-                total += value * (product.p_price - (product.p_price * (product.p_discount / 100)))
-                output[product.p_name] = f"{str(value)};{str(value * (product.p_price - (product.p_price * (product.p_discount / 100))))}"
+
+                # Calculate the product price after discount and round to 2 decimal places
+                product_price_after_discount = round(product.p_price - (product.p_price * (product.p_discount / 100)), 2)
+                
+                # Calculate the total for the product (quantity * price) and round to 2 decimal places
+                product_total = round(value * product_price_after_discount, 2)
+
+                # Update the overall total and round it
+                total += product_total
+
+                # Store product info in output with the numbered key
+                output[unique_key] = f"{str(value)};{format(product_total, '.2f')}"
 
             print(output)
             print(prescription_required)
-            if(total>0):
-                total+=60
 
+            # Add shipping cost (fixed at 60) if total is greater than 0
+            if total > 0:
+                total = round(total + 60, 2)
+
+            # Save information to the session
             request.session['prescription_required'] = prescription_required
             request.session['checkout_output'] = output
-            request.session['checkout_total'] = str(total)
+            request.session['checkout_total'] = format(total, '.2f')
 
-            # You can return a JSON response to the client (e.g., JSON response)
+            # Return a successful response
             return JsonResponse({'message': 'Checkout successful'})
 
         except json.JSONDecodeError as e:
@@ -141,6 +162,8 @@ def checkout_view(request):
 
     # For other HTTP methods (e.g., GET), return a method not allowed response
     return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+
 def order_confirm(request):
     output = request.session.get('checkout_output')
     total = request.session.get('checkout_total')
@@ -163,7 +186,12 @@ def order_complete(request):
         ordered_products = request.POST.get('ordered_products')
         prescription_file = request.FILES.get('prescription')
         total = request.POST.get('total')
-        del_address = request.POST.get('address')
+        division = request.POST.get('division')
+        zilla = request.POST.get('zilla')
+        upazila = request.POST.get('upazila')
+        union = request.POST.get('union')
+        address=request.POST.get('address')
+        del_address = division + ', ' + zilla + ', ' + upazila + ', ' + union + ', ' + address
         payment_mobile = request.POST.get('paymentMobile')
         tx_id = request.POST.get('TxID')
         payment_options=request.POST.get('payment-options')
@@ -278,3 +306,21 @@ def presciptions_order(request):
         )
         prescription_order_obj.save()
     return render(request,'confirm.html')
+
+
+def update_medlist(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        med_list_data = data.get('medListData', {})
+
+        # Get the logged-in user's phone number (assuming you're using Django's authentication)
+        user_phone_number = request.user.phone_number   # Adjust this according to your user model
+
+        # Update the Profile_MedList
+        Profile_MedList.objects.filter(phone_number=user_phone_number).update(
+                med_list=med_list_data  # Update this according to your actual data structure
+            )
+
+        return JsonResponse({'status': 'success'})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
