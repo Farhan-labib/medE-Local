@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'confirm.css' %}" />
+  </head>
+  <body>
+    <header>
+      <div class="header-main" data-header>
+        <div class="container">
+          <a class="header-logo" href="{% url 'home' %}">
+            <img
+              src="{% static 'Logo.jpg' %}"
+              alt=" medX logo"
+              height="50px"
+              width="80px"
+            />
+          </a>
+        </div>
+      </div>
+    </header>
+   <h1 style="text-align: center; color: red;">You Are Not Authorized!!!</h1>
+  </body>
+</html>

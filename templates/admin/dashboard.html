@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'confirm.css' %}" />
+    <style>
+      .card-container {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 30px;
+        gap: 20px;
+        flex-wrap: wrap;
+        width: 100%; /* Ensure full width */
+      }
+      .card {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        width: 200px;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+      }
+      .card:hover {
+        transform: translateY(-10px);
+      }
+      .card-icon {
+        font-size: 40px;
+        color: #4CAF50;
+      }
+      .card-title {
+        font-size: 18px;
+        margin-top: 15px;
+      }
+
+      /* Specific style for the Inventory Management card */
+      .card.inventory-management {
+        width: 420px; /* Takes 2 card spaces */
+      }
+
+      .card-container .inventory-management .card-icon {
+        font-size: 50px;
+      }
+
+      /* Additional styling for hr and br */
+      .card-container hr {
+        width: 100%;
+        border: 0;
+        height: 1px;
+        background-color: #ddd;
+        margin: 20px 0; /* Adjust spacing above and below hr */
+      }
+
+      /* Optional: styling for br if you want extra space */
+      .card-container .spacer {
+        height: 20px; /* Create spacing between cards */
+      }
+
+      @media (max-width: 768px) {
+        .card-container {
+          flex-direction: column;
+          align-items: center;
+        }
+        .card.inventory-management {
+          width: 200px; /* Keep it smaller on mobile */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-main" data-header>
+        <div class="container">
+          <a class="header-logo" href="{% url 'home' %}">
+            <img
+              src="{% static 'Logo.jpg' %}"
+              alt=" medX logo"
+              height="50px"
+              width="80px"
+            />
+          </a>
+        </div>
+      </div>
+    </header>
+    
+    <h1 style="text-align: center;">Welcome To Admin Panel</h1>
+    
+    <div class="card-container">
+      <div class="card">
+        <div class="card-icon">👥</div>
+        <div class="card-title">Users</div>
+      </div>
+      
+      <a href="{%url 'admin_product'%}">
+        <div class="card">
+          <div class="card-icon">📦</div>
+          <div class="card-title">Products</div>
+        </div>
+      </a>
+      
+      <div class="card">
+        <div class="card-icon">💊</div>
+        <div class="card-title">Medicines</div>
+      </div>
+      
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <div class="card-title">Orders</div>
+      </div>
+      
+      <div class="card">
+        <div class="card-icon">📝</div>
+        <div class="card-title">Prescription Orders</div>
+      </div>
+
+      <!-- Line break for spacing -->
+      <div class="spacer"></div>
+
+      <!-- Horizontal rule -->
+      <hr>
+
+      <!-- Inventory Management card -->
+      <div class="card inventory-management">
+        <div class="card-icon">⚙️</div> <!-- Example Icon -->
+        <div class="card-title">Inventory Management</div>
+      </div>
+    </div>
+
+  </body>
+</html>

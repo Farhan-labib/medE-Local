@@ -64,6 +64,7 @@ class main_product(models.Model):
     size=models.CharField(max_length=255, blank=True)
     p_Dosage_Strength=models.CharField(max_length=255, blank=True)
     p_link = models.CharField(max_length=765, blank=True)
+    m_or_p = models.CharField(max_length=25, blank=True)
 
     def __str__(self):
         return self.p_name

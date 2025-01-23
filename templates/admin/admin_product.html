@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'confirm.css' %}" />
+    <style>
+      /* Global Styles */
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+      }
+      
+      /* Header Styles */
+      header {
+        padding: 20px;
+        text-align: center;
+      }
+      
+      header img {
+        width: 80px;
+        height: auto;
+      }
+
+      /* Main Section */
+      h1 {
+        text-align: center;
+        font-size: 28px;
+        margin-top: 30px;
+        color: #333;
+      }
+
+      .add-product-link {
+        display: block;
+        text-align: center;
+        margin: 20px 0;
+        font-size: 18px;
+        color: #2980b9;
+        text-decoration: none;
+      }
+      
+      .add-product-link:hover {
+        text-decoration: underline;
+      }
+
+      /* Table Styling */
+      table {
+        width: 90%;
+        margin: 30px auto;
+        border-collapse: collapse;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      table th,
+      table td {
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #ddd;
+      }
+
+      table th {
+        background-color: #2980b9;
+        color: #fff;
+      }
+
+      table tr:hover {
+        background-color: #f2f2f2;
+      }
+
+      /* Table Action Buttons */
+      .action-button {
+        padding: 8px 16px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+        display: inline-block;
+        margin: 5px;
+        text-align: center;
+      }
+
+      .edit-button {
+        background-color: #f39c12;
+        color: white;
+      }
+
+      .edit-button:hover {
+        background-color: #e67e22;
+      }
+
+      .delete-button {
+        background-color: #e74c3c;
+        color: white;
+      }
+
+      .delete-button:hover {
+        background-color: #c0392b;
+      }
+
+      /* Pagination Styles */
+      .pagination {
+        display: flex;
+        justify-content: center;
+        padding: 20px 0;
+      }
+
+      .pagination li {
+        list-style: none;
+        margin: 0 5px;
+      }
+
+      .pagination a {
+        text-decoration: none;
+        color: #2980b9;
+        padding: 8px 16px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+
+      .pagination a:hover {
+        background-color: #2980b9;
+        color: #fff;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        table {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-main">
+        <div class="container">
+          <a class="header-logo" href="{% url 'admin' %}">
+            <img src="{% static 'Logo.jpg' %}" alt="medX logo" />
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <h1>Main Products</h1>
+
+    <a href="{% url 'create_product' %}" class="add-product-link">+Add New Product</a>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Product Code</th>
+          <th>Product Name</th>
+          <th>Price</th>
+          <th>Discount</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+        <tr>
+          <td>{{ product.product_code }}</td>
+          <td>{{ product.p_name }}</td>
+          <td>{{ product.p_price }}</td>
+          <td>{{ product.p_discount }}</td>
+          <td>
+            <a href="{% url 'update_product' product.p_id %}" class="action-button edit-button">Edit</a> |
+            <a href="{% url 'delete_product' product.p_id %}" class="action-button delete-button" onclick="return confirm('Are you sure?')">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
