@@ -29,8 +29,12 @@ urlpatterns = [
     #path('admin/', admin.site.urls),
     path('admin/',custom_admin.dashboard, name='admin'),
     path('admin/product/',custom_admin.product, name='admin_product'),
+    path('admin/medicine/',custom_admin.medicine, name='admin_medicine'),
+    path('admin/general/',custom_admin.general, name='admin_general'),
+    path('admin/general/create_general/', custom_admin.create_general, name='create_general'),
     path('admin/product/create/', custom_admin.create_product, name='create_product'),
     path('admin/product/update/<int:p_id>/', custom_admin.update_product, name='update_product'),
+    path('admin/general/update/<int:p_id>/', custom_admin.update_general, name='update_general'),
     path('admin/product/delete/<int:p_id>/', custom_admin.delete_product, name='delete_product'),
 
 

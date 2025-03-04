@@ -33,19 +33,25 @@ class main_product(models.Model):
     feature_CHOICES = (('yes', 'yes'), ('no', 'no'))
     OTC_CHOICES = (('yes', 'Yes'),('no', 'No'))
     add_list= (('yes', 'Yes'),('no', 'No'))
+    m_or_g= (('Medicines', 'Medicines'),('Generals', 'Generals'))
     p_id = models.AutoField(primary_key=True)
     product_code = models.CharField(max_length=255, blank=True)
-    p_name = models.CharField(max_length=255)
-    p_type = models.CharField(max_length=255)
     otc_status = models.CharField(max_length=3, choices=OTC_CHOICES, default='yes')
-    p_image=models.ImageField(upload_to='media/',default='static\cat-icons\syringe.png')  # 'images/' is the upload directory
+    p_name = models.CharField(max_length=255)
+    Brand = models.CharField(max_length=255, blank=True)
+    Manufacturer = models.CharField(max_length=255, blank=True)
     p_generics = models.CharField(max_length=255,blank=True)
-    p_company = models.CharField(max_length=255)
-
-    medPerStrip = models.DecimalField(max_digits=10, decimal_places=2)
+    p_type = models.CharField(max_length=255, blank=True)
+    p_image=models.ImageField(upload_to='media/',default='static\cat-icons\syringe.png')  # 'images/' is the upload directory
+    p_Dosage_Strength=models.CharField(max_length=255, blank=True)
+    Variant=models.CharField(max_length=255, blank=True)
+    p_category = models.CharField(max_length=255, choices=CATEGORY_CHOICES)
+    p_Administration = models.TextField(blank=True)
+    Features_Specifications = models.TextField(blank=True)
+    medPerStrip = models.DecimalField(max_digits=10, decimal_places=2, default=1)
     p_price = models.DecimalField(max_digits=10, decimal_places=2)
 
-    p_discount = models.DecimalField(max_digits=5, decimal_places=2)
+    p_discount = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     p_Indications = models.TextField(blank=True)
     p_Pharmacology = models.TextField(blank=True)
     p_Dosage = models.TextField(blank=True)
@@ -56,16 +62,14 @@ class main_product(models.Model):
     p_Precautions = models.TextField(blank=True)
     p_Therapeutic = models.TextField(blank=True)
     p_Storage = models.CharField(max_length=255,blank=True)
-    p_category = models.CharField(max_length=255, choices=CATEGORY_CHOICES)
     feature = models.CharField(max_length=255, choices=feature_CHOICES)
     add_to_list = models.CharField(max_length=255, choices=add_list, default='yes')
-    inventory_quantity=models.IntegerField(default=0, blank=True)
     description=models.TextField(blank=True)
     size=models.CharField(max_length=255, blank=True)
-    p_Dosage_Strength=models.CharField(max_length=255, blank=True)
     p_link = models.CharField(max_length=765, blank=True)
-    m_or_p = models.CharField(max_length=25, blank=True)
-
+    m_or_g = models.CharField(max_length=255, choices=m_or_g, default='Medicines')
+    FAQ=models.TextField(blank=True)
+    Suggestions=models.TextField(blank=True)
     def __str__(self):
         return self.p_name
 

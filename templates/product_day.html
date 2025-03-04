@@ -331,7 +331,7 @@
                     <h1>{{ product_details.p_name }}<span style="font-size: 0.5em; color: black; opacity: 0.6; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; text-transform: lowercase; margin-left: 8px;">{{ product_details.p_Dosage_Strength }}</span></h1>
                     <h2>{{ product_details.p_type }}</h2>
                     <h3>Generics: {{ product_details.p_generics }}</h3>
-                    <a href=""><h3 style="color: red;">{{ product_details.p_company }}</h3></a>
+                    <a href=""><h3 style="color: red;">{{ product_details.Brand }}</h3></a>
                     <div class="price-box">
                         <p class="price">৳{{ product_details.discounted_price|floatformat:"2"}}</p>
                         {% if product_details.p_discount > 0 %}
@@ -388,6 +388,10 @@
                 
             </div>
             <section class="product-medications">
+				{% if product_details.Manufacturer != "" %}
+                <h2>Manufacturer</h2>
+                <p>{{ product_details.Manufacturer }}</p>
+				{% endif %}
 				{% if product_details.p_Indications != "" %}
                 <h2>Indications</h2>
                 <p>{{ product_details.p_Indications }}</p>
@@ -397,8 +401,12 @@
                 <p>{{ product_details.p_Pharmacology }}</p>
 				{% endif %}
 				{% if product_details.p_Dosage != "" %}
-                <h2>Dosage & Administration</h2>
+                <h2>Administration of Dosage</h2>
                <p>{{ product_details.p_Dosage }}</p>
+				{% endif %}
+				{% if product_details.Variant != "" %}
+                <h2>Variant</h2>
+               <p>{{ product_details.Variant }}</p>
 				{% endif %}
 				{% if product_details.p_Interaction != "" %}
                     <h2>Interaction</h2>
@@ -435,6 +443,14 @@
 				{% if product_details.size != "" %}
 					<h2>Size</h2>
 					<p>{{ product_details.size }}</p>
+				{% endif %}
+				{% if product_details.FAQ != "" %}
+					<h2>FAQ</h2>
+					<p>{{ product_details.FAQ }}</p>
+				{% endif %}
+				{% if product_details.Suggestions != "" %}
+					<h2>Suggestions</h2>
+					<p>{{ product_details.Suggestions }}</p>
 				{% endif %}
 				
 
