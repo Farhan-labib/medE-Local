@@ -36,7 +36,11 @@ urlpatterns = [
     path('admin/product/update/<int:p_id>/', custom_admin.update_product, name='update_product'),
     path('admin/general/update/<int:p_id>/', custom_admin.update_general, name='update_general'),
     path('admin/product/delete/<int:p_id>/', custom_admin.delete_product, name='delete_product'),
-
+    path('admin/users/', custom_admin.user_list, name='user_list'),
+    path('admin/users/edit/<int:user_id>/', custom_admin.edit_user, name='edit_user'),
+    path('admin/users/delete/<int:user_id>/', custom_admin.delete_user, name='delete_user'),
+    path('admin/orders/', custom_admin.order_list, name='order_list'),
+    path('admin/order_details/<int:order_id>/', custom_admin.order_details, name='order_details'),
 
     path('',firstactivity.home, name='home'),
     path("Category<str:p_category>/",secondactivity.category,name='category'),

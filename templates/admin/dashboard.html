@@ -86,12 +86,14 @@
     
     <h1 style="text-align: center;">Welcome To Admin Panel</h1>
     
+    <a href="{% url 'user_list' %}">
     <div class="card-container">
       <div class="card">
         <div class="card-icon">👥</div>
         <div class="card-title">Users</div>
       </div>
-      
+    </a>
+    
       <a href="{%url 'admin_product'%}">
         <div class="card">
           <div class="card-icon">📦</div>
@@ -99,10 +101,12 @@
         </div>
       </a>
       
-      <div class="card">
-        <div class="card-icon">📋</div>
-        <div class="card-title">Orders</div>
-      </div>
+      <a href="{%url 'order_list'%}">
+        <div class="card">
+          <div class="card-icon">📋</div>
+          <div class="card-title">Orders</div>
+        </div>
+      </a>
       
       <div class="card">
         <div class="card-icon">📝</div>

@@ -157,10 +157,12 @@ class Orders(models.Model):
     Approved = 'Approved'
     Rejected = 'Rejected'
     pending = 'pending'
-    prescription_status = [
-        (Approved, 'Approved'),
-        (Rejected, 'Rejected'),
-        (pending, 'pending'),
+    status = [
+        (Pending, 'Pending'),
+        (Confirmed, 'Confirmed'),
+        (Shipping , 'Shipping'),
+        (Completed , 'Completed'),
+        (Failed , 'Failed'),
     ]
     phonenumber = models.CharField(max_length=15)
     ordered_products = models.TextField(default="null")
@@ -168,7 +170,7 @@ class Orders(models.Model):
     total = models.TextField(default="null")
     del_adress = models.TextField(default="null")
     timestamp = models.DateTimeField(default=timezone.now)
-    status=models.CharField(max_length=20, choices=prescription_status, default='pending', blank=True)
+    status=models.CharField(max_length=20, choices=status, default='pending', blank=True)
     Delivery_status=models.CharField(max_length=20, choices=delivery_stat, default='Pending', blank=True)
     paymentMobile = models.CharField(max_length=15, blank=True, null=True)
     TxID = models.CharField(max_length=50, blank=True, null=True)
@@ -188,7 +190,7 @@ class presciption_order(models.Model):
     Approved = 'Approved'
     Rejected = 'Rejected'
     Pending = 'Pending'
-    prescription_status = [
+    status = [
         (Approved, 'Approved'),
         (Rejected, 'Rejected'),
         (Pending, 'Pending'),
@@ -212,7 +214,7 @@ class presciption_order(models.Model):
     days = models.TextField(default="null")
     del_adress = models.TextField(default="null")
     timestamp = models.DateTimeField(default=timezone.now)
-    status=models.CharField(max_length=20, choices=prescription_status, default='Pending', blank=True)
+    status=models.CharField(max_length=20, choices=status, default='Pending', blank=True)
     Delivery_status=models.CharField(max_length=20, choices=delivery_stat, default='Pending', blank=True)
     paymentMobile = models.CharField(max_length=15, blank=True, null=True)
     TxID = models.CharField(max_length=50, blank=True, null=True)
