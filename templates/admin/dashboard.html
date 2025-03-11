@@ -90,9 +90,10 @@
     <div class="card-container">
       <div class="card">
         <div class="card-icon">👥</div>
-        <div class="card-title">Users</div>
+        <div class="card-title">Customer</div>
       </div>
     </a>
+
     
       <a href="{%url 'admin_product'%}">
         <div class="card">
@@ -113,11 +114,17 @@
         <div class="card-title">Prescription Orders</div>
       </div>
 
-      <!-- Line break for spacing -->
       <div class="spacer"></div>
 
-      <!-- Horizontal rule -->
       <hr>
+
+      <a href="{% url 'admin_list' %}">
+        <div class="card-container">
+          <div class="card">
+            <div class="card-icon">💼</div>
+            <div class="card-title">Admin</div>
+          </div>
+        </a>
 
       <!-- Inventory Management card -->
       <div class="card inventory-management">

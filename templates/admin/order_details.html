@@ -7,28 +7,32 @@
     <style>
         /* General Styles */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f4f7fa;
             margin: 0;
             padding: 0;
+            color: #333;
         }
         
         .container {
-            width: 80%;
+            width: 70%;
             margin: 0 auto;
-            padding: 20px;
+            padding: 30px;
             background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
         }
 
         h1, h2 {
             color: #333;
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
         }
 
         h2 {
+            font-size: 1.4em;
             margin-top: 20px;
-            font-size: 1.5em;
         }
 
         /* Table Styles */
@@ -39,60 +43,73 @@
         }
 
         table th, table td {
-            padding: 12px;
+            padding: 15px;
             text-align: left;
             border: 1px solid #ddd;
             font-size: 1em;
+            color: #555;
         }
 
         table th {
-            background-color: #f4f4f4;
+            background-color: #f9f9f9;
+            font-weight: bold;
         }
 
         table td {
-            background-color: #f9f9f9;
+            background-color: #ffffff;
+        }
+
+        table tr:nth-child(even) td {
+            background-color: #f8f8f8;
+        }
+
+        table td[colspan="3"] {
+            text-align: center;
         }
 
         /* Order Summary Section */
         .order-summary {
-            margin-top: 20px;
-            font-size: 1.1em;
+            margin-top: 30px;
+            font-size: 1.2em;
+            border-top: 2px solid #ddd;
+            padding-top: 20px;
         }
 
         .info {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .info strong {
             font-weight: bold;
-            color: #333;
+            color: #555;
         }
 
         /* Prescription Images */
         .prescription-images img {
             max-width: 100%;
             height: auto;
-            margin-top: 10px;
+            margin-top: 20px;
             border-radius: 5px;
+            border: 1px solid #ddd;
         }
 
         .prescription-images {
-            margin-top: 20px;
+            margin-top: 30px;
         }
 
         /* Form Styles */
         form {
             margin-top: 30px;
-            background-color: #f9f9f9;
             padding: 20px;
+            background-color: #fafafa;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
         }
 
         label {
             display: block;
             margin-bottom: 10px;
-            font-weight: bold;
+            font-weight: 600;
             color: #555;
         }
 
@@ -102,52 +119,51 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 1em;
+            background-color: #fff;
+            color: #333;
             margin-bottom: 20px;
         }
 
-        select {
-            background-color: #fff;
-        }
-
         button {
-            background-color: #4CAF50;
+            background-color: #007bff;
             color: white;
             cursor: pointer;
-            border: none;
-            text-align: center;
+            font-weight: bold;
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #0056b3;
         }
 
         /* Success Message */
         .messages {
-            background-color: #e7f7e7;
-            color: #4CAF50;
+            background-color: #e9f7f0;
+            color: #28a745;
             padding: 15px;
             border-radius: 4px;
             margin-top: 20px;
+            border: 1px solid #c3e6cb;
         }
 
         .message {
             font-size: 1.1em;
+            font-weight: 500;
         }
 
         /* Media Queries for responsiveness */
         @media (max-width: 768px) {
             .container {
-                width: 95%;
+                width: 90%;
                 padding: 15px;
             }
 
             table th, table td {
-                padding: 8px;
-                font-size: 0.9em;
+                padding: 10px;
+                font-size: 0.95em;
             }
 
             button {
-                font-size: 1em;
+                font-size: 1.1em;
             }
         }
     </style>
@@ -200,7 +216,6 @@
                 <h2>Prescriptions</h2>
                 {% for prescription in order.prescriptions %}
                     <img src="../../../media/{{ prescription }}" alt="Prescription Image">
-                   
                 {% endfor %}
             </div>
         {% else %}
