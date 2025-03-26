@@ -17,7 +17,7 @@ class MainMedicineForm(ModelForm):
         model = main_product
         fields = [
             'product_code', 'otc_status', 'add_to_list', 'p_name', 'Brand',
-            'feature', 'medPerStrip', 'p_price', 'p_discount', 'description',
+            'feature', 'description',
             'size', 'Manufacturer', 'p_generics', 'p_type', 'p_image',
             'p_Dosage_Strength', 'Variant', 'p_category', 'p_Indications',
             'p_Administration', 'p_Pharmacology', 'p_Side_Effects',
@@ -40,8 +40,8 @@ class MainGeneralForm(ModelForm):
     class Meta:
         model = main_product
         fields = [
-            'product_code', 'p_name', 'Brand', 'feature', 'p_price',
-            'p_discount', 'description', 'size', 'Manufacturer',
+            'product_code', 'p_name', 'Brand', 'feature',
+             'description', 'size', 'Manufacturer',
             'p_type', 'p_image', 'Variant', 'p_category', 'Features_Specifications',]
 
 
@@ -288,7 +288,7 @@ def prescription(request):
 
 def pres_details(request, order_id):
     order = get_object_or_404(presciption_order, pk=order_id)
-    medicines = main_product.objects.all()
+    medicines = main_product.objects.filter(inventory=1)
 
     # Calculate discounted price for each product
     for product in medicines:
@@ -382,25 +382,7 @@ def inventory(request):
     }
     return render(request, 'admin/inventory.html', context)
 
-def add_to_inventory(request):
-    # Parse the JSON request body
-    try:
-        data = json.loads(request.body)
-        product_id = data.get('product_id')
-        print(f"Received product_id: {product_id}")  # Debugging log
 
-        # Try to find the product using the p_id field (AutoField)
-        product = main_product.objects.get(p_id=product_id)
-        
-        # Assuming you want to increase the inventory by 1
-        product.inventory = 1  # Or set it to a specific number
-        product.save()
-
-        return JsonResponse({'success': True, 'message': 'Product added to inventory'})
-    except main_product.DoesNotExist:
-        return JsonResponse({'success': False, 'message': 'Product not found'})
-    except json.JSONDecodeError:
-        return JsonResponse({'success': False, 'message': 'Invalid JSON data'})
     
 
 def inventory_dashboard(request):
@@ -409,3 +391,71 @@ def inventory_dashboard(request):
     
     # Pass the products to the template
     return render(request, 'admin/inventory_dashboard.html', {'products': products})
+
+
+class ProductEditForm(forms.Form):
+    p_type = forms.CharField(max_length=255)
+    p_name = forms.CharField(max_length=255)
+    product_code = forms.CharField(max_length=255)
+    SKU = forms.CharField(max_length=255, required=False)
+    Batch = forms.CharField(max_length=255, required=False)
+    MFG_Date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=False)
+    EXP_Date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=False)
+    Stock = forms.IntegerField(required=False)
+    Purchase_Price = forms.DecimalField(max_digits=10, decimal_places=2)
+    p_price = forms.DecimalField(max_digits=10, decimal_places=2)
+    p_discount = forms.DecimalField(max_digits=5, decimal_places=2)
+    medPerStrip = forms.DecimalField(max_digits=10, decimal_places=2)
+    
+    # Hidden field for inventory
+    inventory = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+
+def inventory_edit(request, product_id):
+    # Fetch the product instance
+    product = get_object_or_404(main_product, p_id=product_id)
+
+    if request.method == 'POST':
+        # If the form is submitted, bind the form with the posted data
+        form = ProductEditForm(request.POST)
+
+        if form.is_valid():
+            # Update the product's attributes from the form data
+            product.p_type = form.cleaned_data['p_type']
+            product.p_name = form.cleaned_data['p_name']
+            product.product_code = form.cleaned_data['product_code']
+            product.SKU = form.cleaned_data['SKU']
+            product.Batch = form.cleaned_data['Batch']
+            product.MFG_Date = form.cleaned_data['MFG_Date']
+            product.EXP_Date = form.cleaned_data['EXP_Date']
+            product.Stock = form.cleaned_data['Stock']
+            product.Purchase_Price = form.cleaned_data['Purchase_Price']
+            product.p_price = form.cleaned_data['p_price']
+            product.p_discount = form.cleaned_data['p_discount']
+            product.medPerStrip = form.cleaned_data['medPerStrip']
+            product.inventory = 1
+            
+            # Save the updated product to the database
+            product.save()
+
+            # Redirect to the inventory dashboard (or another appropriate page)
+            return redirect('inventory_dashboard')
+    else:
+        # If it's a GET request, pre-fill the form with the product's existing data
+        initial_data = {
+            'p_type': product.p_type,
+            'product_code': product.product_code,
+            'p_name': product.p_name,
+            'SKU': product.SKU,
+            'Batch': product.Batch,
+            'MFG_Date': product.MFG_Date,
+            'EXP_Date': product.EXP_Date,
+            'Stock': product.Stock,
+            'Purchase_Price': product.Purchase_Price,
+            'p_price': product.p_price,
+            'p_discount': product.p_discount,
+            'medPerStrip': product.medPerStrip,
+        }
+
+        form = ProductEditForm(initial=initial_data)
+
+    return render(request, 'admin/edit_inventory.html', {'form': form, 'product': product})

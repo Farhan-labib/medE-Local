@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,46 +10,76 @@
             font-family: Arial, sans-serif;
             padding: 20px;
         }
-
+        
+        .search-form {
+            margin-bottom: 20px;
+        }
+        
         .product-list {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
         }
-
+        
         .product-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Ensure space between content and button */
             border: 1px solid #ddd;
             border-radius: 5px;
             padding: 10px;
             width: 200px;
             text-align: center;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            min-height: 300px; /* Use min-height instead of fixed height */
         }
-
+        
         .product-card img {
-    width: 100%; /* Ensure image takes up full width of the card */
-    max-width: 100%; /* Ensure image doesn't exceed card width */
-    max-height: 150px; /* Limit image height */
-    height: auto; /* Maintain aspect ratio */
-    object-fit: cover; /* Ensures image fits well */
-}
-
+            width: 100%; /* Ensure image takes up full width of the card */
+            max-width: 100%; /* Ensure image doesn't exceed card width */
+            max-height: 150px; /* Limit image height */
+            height: auto; /* Maintain aspect ratio */
+            object-fit: cover; /* Ensures image fits well */
+        }
+        
         .product-card h3 {
             font-size: 16px;
             margin: 10px 0;
         }
-        .add-link {
-        display: block;
-        text-align: center;
-        margin: 20px 0;
-        font-size: 18px;
-        color: #2980b9;
-        text-decoration: none;
-      }
-    </style>
+        
+        .add-to-inventory {
+            padding: 10px 20px; /* Increase padding for a larger button */
+            font-size: 16px; /* Increase font size */
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: auto; /* Push the button to the bottom */
+        }
+        
+        .add-to-inventory:hover {
+            background-color: #45a049;
+        }
+        </style>
+        
 </head>
 <body>
-    <a href="{% url 'inventory' %}" class="add-link">+Add New Items</a>
+    <header>
+        <div class="header-main" data-header>
+          <div class="container">
+            <a class="header-logo" href="{% url 'admin' %}">
+              <img
+                src="{% static 'Logo.jpg' %}"
+                alt=" medX logo"
+                height="50px"
+                width="80px"
+              />
+            </a>
+          </div>
+        </div>
+      </header>
+    <a href="{% url 'inventory' %}" class="add-link"><button class="add-to-inventory">+Add New Items</button></a>
     <h1>Products In Inventory</h1>
 
     <div class="product-list">
@@ -57,6 +88,8 @@
                 <img src="{{ product.p_image.url }}" alt="{{ product.p_name }}">
                 <h3>{{ product.p_name }}</h3>
                 <p>Product Code: {{ product.product_code }}</p>
+                <p>Stock: {{product.Stock}}</p>
+                <a href="{% url 'inventory_edit' product_id=product.p_id %}" class="edit-button"><button class="add-to-inventory">Update</button></a>
             </div>
         {% empty %}
             <p>No products with inventory of 1 found.</p>

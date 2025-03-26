@@ -49,7 +49,7 @@ class main_product(models.Model):
     p_Administration = models.TextField(blank=True)
     Features_Specifications = models.TextField(blank=True)
     medPerStrip = models.DecimalField(max_digits=10, decimal_places=2, default=1)
-    p_price = models.DecimalField(max_digits=10, decimal_places=2)
+    p_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     p_discount = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     p_Indications = models.TextField(blank=True)
@@ -71,6 +71,13 @@ class main_product(models.Model):
     FAQ=models.TextField(blank=True)
     Suggestions=models.TextField(blank=True)
     inventory=models.IntegerField(default=0)
+    SKU=models.CharField(max_length=255, blank=True)
+    Batch=models.CharField(max_length=255, blank=True)
+    MFG_Date=models.DateField(blank=True, null=True)
+    EXP_Date=models.DateField(blank=True, null=True)
+    Stock=models.IntegerField(default=0)
+    Purchase_Price=models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
     def __str__(self):
         return self.p_name
 
