@@ -1,163 +1,33 @@
 <!DOCTYPE html>
-{% load static %}
-<html>
-  <head>
-    <meta charset="UTF-8">
-	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>medE</title>
-	  <link rel="icon" type="image/x-icon" href="{% static 'Favicon.png' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <style>
-      .header-main .container {
-        border-bottom: 1px solid hsl(0, 0%, 93%);
-        /* flex-wrap: wrap; */
-        padding: 5px 0;
-        margin-bottom: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .header-logo {
-        display: block;
-      }
-      .header-logo img{
-        margin: 0 auto;
-      }
-      .purchase-history {
-        display: flex;
-        margin-top: 30px;
-        /* flex-direction: column; */
-        /* align-items: center; */
-        justify-content: space-evenly;
-      }
-      .presc-image {
-        height: 100%;
-        width: 600px;
-      }
-      /* #addressInput {
-        outline: none;
-        border: none;
-        border-radius: 15px;
-        font: 400 18px "poppins", sans-serif;
-        padding: 0px 10px;
-        background-color: rgb(232, 240, 254);
-        width: calc(100% - 20px);
-      } */
-      form {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-      }
-
-      form .details label {
-        font: 600 1.2rem 'poppins', sans-serif;
-      }
-      form .details textarea{
-        resize: none;
-        height: 100%;
-        width: 100%;
-        font-weight: 400;
-        font-size: 1rem;
-        padding: 15px 0 0 15px;
-        outline: none;
-        border: none;
-        border-radius: 10px;
-        background-color: rgb(232, 240 ,254);
-        box-shadow: inset 2px 2px 5px 4px hsla(0, 0%, 0%, 0.01);
-      }
-
-      form .payment {
-        margin: 30px 0;
-      }
-
-      form .payment p{
-        line-height: 2rem;
-      }
-
-      form .payment select {
-        width: 100%;
-        margin-top: 10px;
-        padding: 15px;
-        font-size: 1.2rem;
-        color: white;
-        font-weight: 600;
-        outline: none;
-        border: 2px solid #de0000;
-        border-radius: 10px;
-        box-shadow: 0 8px 16px hsla(0, 0%, 0%, 0.15);
-        appearance: none;
-        background: #de0000 url(caret-down-solid.svg) no-repeat;
-        background-position: 95% 40%;
-        background-size: 20px;
-        cursor: pointer;
-      }
-      .bkash-info-taker {
-        visibility: none;
-        opacity: 0;
-        margin-top: 16px;
-        transition: 0.2s ease;
-      }
-      .bkash-info-taker.active {
-        visibility: visible;
-        opacity: 1;
-      }
-      .bkash-info-taker h5{
-        margin-bottom: 20px;
-      }
-      .bkash-info-taker label {
-        margin: 10px 0;
-        font: 600 1.2rem 'poppins',sans-serif;
-      }
-      .bkash-info-taker input {
-        width: 100%;
-        font: 400 1rem 'poppins',sans-serif;
-        padding: 8px 0px 8px 8px;
-        outline: none;
-        border: none;
-        border-radius: 5px;
-        background-color: rgb(232, 240 ,254);
-      }
-      .confirm-order {
-        border: none;
-        outline: none;
-        cursor: pointer;
-        font: 600 20px "poppins", sans-serif;
-        color: white;
-        margin-top: 10px;
-        background-color: #de0000;
-        border-radius: 10px;
-        width: 100%;
-        padding: 10px 20px;
-        transition: 0.2s ease;
-      }
-      .confirm-order:hover {
-        letter-spacing: 1px;
-      }
-    </style>
-
-  </head>
-  <body>
-    <header>
-      <div class="header-main" data-header>
-        <div class="container">
-          <a class="header-logo" href="{%url 'home'%}">
-            <img
-              src="{% static 'Logo.jpg' %}"
-              alt=" medX logo"
-              height="50px"
-              width="80px"
-            />
-          </a>
-        </div>
-      </div>
-      
-    </header>
-    <main>
-        <div class="container">
-            <div class="purchase-history row">
-                {% for item in medList %}
+    {% load static %}
+    <html>
+    
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>medE</title>
+        <link rel="icon" type="image/x-icon" href="{% static 'favicon.png' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <link rel="stylesheet" type="text/css" href="{% static 'order_confirm.css' %}" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    </head>
+    
+    <body>
+        <header>
+            <div class="header-main" data-header>
+                <div class="container">
+                    <a class="header-logo" href="{%url 'home'%}">
+                        <img src="{% static 'Logo.jpg' %}" alt=" medX logo" height="50px" width="120px" />
+                    </a>
+                </div>
+            </div>
+        </header>
+        <main>
+            <div class="container">
+                <div class="purchase-history">
+                  {% for item in medList %}
                     {% for p in item.prescriptions %}
 
                         {% if forloop.last %}
@@ -167,28 +37,225 @@
                                   {% csrf_token %}
                                   <input type="hidden" name="prescription_img" value="{{ p.0 }}">
                                   <input type="hidden" name="days2" value="{{p.1}}">
-                                  <label for="address">Address:</label>
-                                  <textarea type="text" id="addressInput" name="address" value='{{user_address}}' required></textarea>
                                 </div>
-                                <button class="confirm-order" type="submit">Confirm Order</button>
                                 
-                            </form>
+                            
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
+                   
+                </div>
+                <div class="">
+                        <div class="details col-sm-6">
+                            {% csrf_token %}
+                            <input type="hidden" name="phonenumber" value="{{ user }}">
+                            <input type="hidden" name="ordered_products" value="{{ product_data_list }}">
+                            <input type="hidden" name="total" value="{{ total }}">
+    
+                        <div class="container">
+    
+                            <label style="background-color: #de0000; color: white; border-radius: 3px;" for="division">Division</label>
+                            <select name="division" id="division" required>
+                                <option value="" disabled selected>Select Division</option>
+                                <option value="Dhaka">Dhaka</option>
+                            </select>
+                            <br/>
+    
+                            <label style="background-color: #de0000; color: white; border-radius: 3px;" for="zilla">Zilla</label>
+                            <select name="zilla" id="zilla" required>
+                                <option value="" disabled selected>Select Zilla</option>
+                            </select>
+                            <br/>
+    
+                            <label style="background-color: #de0000; color: white; border-radius: 3px;" for="upazila">Upazila</label>
+                            <select name="upazila" id="upazila" required>
+                                <option value="" disabled selected>Select Upazila</option>
+                            </select>
+                            <br/>
+    
+                            <label style="background-color: #de0000; color: white; border-radius: 3px;" for="union">Union</label>
+                            <select name="union" id="union" required>
+                                <option value="" disabled selected>Select Union</option>
+                            </select>
+                            <br/>
+                        
+    
+                            {% if prescription_required %}
+                            <input type="file" id="file-upload" name="prescription" accept="image/*" required>
+                            <label class="presc-label" for="file-upload"><i class="fa-regular fa-image"></i>Upload Your prescription here</label>
+                            {% endif %}
+                            <br/>
+                            <label class="address-label" for="address">Address:</label>
+                            <textarea type="text" id="addressInput" name="address" required></textarea>
+                        </div>
+                        </div>
+                        <div class="payment col-sm-6">
+                            <select name="payment-options" id="payment-options">
+                                <option id="codOpt" value="cod">COD (Cash on Delivery)</option>
+                                <option id="bkashOpt" value="bKash">bKash</option>
+                            </select>
+    
+                            <div class="bkash-info-taker">
+                                <h5>Account type: <b>Personal</b></h5>
+                                <h5>Account Number: <b>01XXXXXXXXX</b></h5>
+                                <label for="paymentMobile">Your bKash Account Number</label>
+                                <input required type="tel" name="paymentMobile" placeholder="01XXXXXXXXX">
+                                <label for="TxID">Transaction ID</label>
+                                <input required type="text" name="TxID" placeholder="Transaction ID (TxID)">
+                            </div>
+                        </div>
+    
+                        <button class="confirm-order" type="submit">Confirm Order</button>
+                    </form>
+                </div>
             </div>
-        </div>
+        </main>
+        <script>
+            const zillaData = {
+                Dhaka: ['Narayanganj'],
+            };
+    
+            const upazilaData = {
+                Narayanganj: [
+                    'Araihazar',
+                    'Bandar',
+                    'Narayanganj Sadar', // Ensure this key matches correctly
+                    'Rupganj',
+                    'Sonargaon',
+                ],
+            };
+    
+            const unionData = {
+                Araihazar: [
+                    'Satgram',
+                    'Duptara',
+                    'Bramondi',
+                    'Fotehpur',
+                    'Bishnondi',
+                    'Mahmudpur',
+                    'Haijadi',
+                    'Uchitpura',
+                    'Kalapaharia',
+                    'Khadkanda',
+                ],
+                Bandar: [
+                    'Musapur',
+                    'Modonpur',
+                    'Bandar Union',
+                    'Dhamgar',
+                    'Kalagachia',
+                ],
+                'Narayanganj Sadar': [
+                    'City Corporation',
+                    'Fatullah',
+                    'Alirtek',
+                    'Kashipur',
+                    'Kutubpur',
+                    'Gonagar',
+                    'Boktaboli',
+                    'Enayetnagar',
+                ],
+                Rupganj: [
+                    'Murapara',
+                    'Vulta',
+                    'Goalkandail',
+                    'Daudpur',
+                    'Kayetpara',
+                    'Rupganj Union',
+                    'Kayetpara',
+                    'Bholabo',
+                ],
+                Sonargaon: [
+                    'Pirojpur',
+                    'Shomvupura',
+                    'Mograpara',
+                    'Baiddarbazar',
+                    'Barodi',
+                    'Noagao',
+                    'Jampur',
+                    'Sadipur',
+                    'Sonmandi',
+                    'Kachpur',
+                ],
+            };
+    
+            // Event listener for division selection
+            document.getElementById('division').addEventListener('change', function () {
+                const selectedDivision = this.value;
+                const zillaSelect = document.getElementById('zilla');
+                zillaSelect.innerHTML = '<option value="" disabled selected>Select Zilla</option>';
+                if (zillaData[selectedDivision]) {
+                    zillaData[selectedDivision].forEach(zilla => {
+                        zillaSelect.innerHTML += `<option value="${zilla}">${zilla}</option>`;
+                    });
+                }
+                resetDependentFields(); // Reset dependent fields
+            });
+    
+            // Event listener for zilla selection
+            document.getElementById('zilla').addEventListener('change', function () {
+                const selectedZilla = this.value;
+                const upazilaSelect = document.getElementById('upazila');
+                upazilaSelect.innerHTML = '<option value="" disabled selected>Select Upazila</option>';
+                if (upazilaData[selectedZilla]) {
+                    upazilaData[selectedZilla].forEach(upazila => {
+                        upazilaSelect.innerHTML += `<option value="${upazila}">${upazila}</option>`;
+                    });
+                }
+                
+            });
+    
+            // Event listener for upazila selection
+            document.getElementById('upazila').addEventListener('change', function () {
+                const selectedUpazila = this.value;
+                const unionSelect = document.getElementById('union');
+                unionSelect.innerHTML = '<option value="" disabled selected>Select Union</option>';
+                if (unionData[selectedUpazila]) {
+                    unionData[selectedUpazila].forEach(union => {
+                        unionSelect.innerHTML += `<option value="${union}">${union}</option>`;
+                    });
+                }
+            });
+    
         
- 
+        </script>
+         <script>
             
-
-              
-        
-      </div>
-    </main>
-
-      
-  
-    <script type="text/javascript" src="{% static 'script.js' %}"></script>
-  </body>
-</html>
+            const bkashopt = document.getElementById(bkashOpt);
+            const codopt = document.getElementById(codOpt);
+            document.getElementById("payment-options").addEventListener('change', function (event){
+                if (event.target.value == 'bKash') {
+                    document.querySelector('.bkash-info-taker').classList.add('active');
+                }
+                else if (event.target.value == 'cod') {
+                    document.querySelector('.bkash-info-taker').classList.remove('active');
+                }
+            });
+            var prescription = document.getElementById("file-upload");
+            prescription.addEventListener('change', function(){
+                document.querySelector(".presc-label").innerHTML = `<i class="fa-solid fa-check"></i>Prescription uploaded! Click to upload again`;
+            });
+            document.addEventListener('DOMContentLoaded', function () {
+                // Get references to the input field and the link
+                const addressInput = document.getElementById('addressInput');
+                // const confirmLink = document.getElementById('confirmLink');
+                const fileInput = document.getElementById('file-upload');
+    
+                // Add a click event listener to the button
+                // confirmLink.addEventListener('click', function (event) {
+                //     // Get the current value from the input field
+                //     const userAddress = addressInput.value;
+    
+                //     // Update the href attribute of the link with the user's address
+                //     confirmLink.href += encodeURIComponent(userAddress);
+                // });
+            });
+            
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    </body>
+    
+    </html>
+    

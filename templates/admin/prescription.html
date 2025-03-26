@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'confirm.css' %}" />
+    <style>
+      /* Global Styles */
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Header Styles */
+      header {
+        padding: 20px;
+        text-align: center;
+      }
+
+      header img {
+        width: 80px;
+        height: auto;
+      }
+
+      /* Main Section */
+      h1 {
+        text-align: center;
+        font-size: 28px;
+        margin-top: 30px;
+        color: #333;
+      }
+
+      .add-product-link {
+        display: block;
+        text-align: center;
+        margin: 20px 0;
+        font-size: 18px;
+        color: #2980b9;
+        text-decoration: none;
+      }
+
+      .add-product-link:hover {
+        text-decoration: underline;
+      }
+
+      /* Sorting Section */
+      .sorting-container {
+        width: 90%;
+        margin: 20px auto;
+        text-align: right;
+      }
+
+      .sorting-container select {
+        padding: 10px 15px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        margin-right: 10px;
+      }
+
+      .sorting-container button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #2980b9;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .sorting-container button:hover {
+        background-color: #1f6391;
+      }
+
+      /* Table Styling */
+      table {
+        width: 90%;
+        margin: 30px auto;
+        border-collapse: collapse;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      table th,
+      table td {
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #ddd;
+      }
+
+      table th {
+        background-color: #2980b9;
+        color: #fff;
+      }
+
+      table tr:hover {
+        background-color: #f2f2f2;
+      }
+
+      /* Pagination Styles */
+      .pagination {
+        display: flex;
+        justify-content: center;
+        padding: 20px 0;
+      }
+
+      .pagination li {
+        list-style: none;
+        margin: 0 5px;
+      }
+
+      .pagination a {
+        text-decoration: none;
+        color: #2980b9;
+        padding: 8px 16px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+
+      .pagination a:hover {
+        background-color: #2980b9;
+        color: #fff;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        table {
+          width: 100%;
+        }
+
+        .sorting-container {
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-main">
+        <div class="container">
+          <a class="header-logo" href="{% url 'admin' %}">
+            <img src="{% static 'Logo.jpg' %}" alt="medX logo" />
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <h1>Prescription Orders</h1>
+
+    <div class="sorting-container">
+      <form method="get">
+        <select name="payment_method">
+          <option value="">Select Payment Method</option>
+          <option value="bkash">Bkash</option>
+          <option value="cod">COD</option>
+        </select>
+        <select name="status">
+          <option value="">Select Order Status</option>
+          <option value="Pending">Pending</option>
+          <option value="Created">Created</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+        <button type="submit">Filter</button>
+      </form>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Phone Number</th>
+          <th>Order Status</th>
+          <th>Payment Method</th>
+          <th>Time</th>
+          <th>Action</th> <!-- New column for the details button -->
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td>{{ order.phonenumber }}</td>
+          <td>{{ order.Order_status }}</td>
+          <td>{{ order.payment_options }}</td>
+          <td>{{ order.timestamp }}</td>
+          <td><a href="{% url 'pres_details' order.id %}" class="action-button">Details</a></td> <!-- Details button with link to order details page -->
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

@@ -1,11 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from authentication.models import UserProfile
-from products.models import main_product, Orders
+from products.models import main_product, Orders, presciption_order
 from django.forms import ModelForm
 from django import forms
 import ast
 from functools import wraps
 from django.db.models import Q
+from django.utils import timezone
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 # Form for main_product
 class MainMedicineForm(ModelForm):
@@ -255,3 +259,108 @@ def order_details(request, order_id):
         'ordered_products': ordered_products,  # Add the parsed ordered_products to the context
     }
     return render(request, 'admin/order_details.html', context)
+
+
+@admin_required
+def prescription(request):
+    sort_by = request.GET.get('sort_by', '')
+    payment_method = request.GET.get('payment_method', '')
+    status = request.GET.get('status', '')
+    
+    orders = presciption_order.objects.all()
+
+    if payment_method:
+        orders = orders.filter(payment_options=payment_method)
+    
+    if status:
+        orders = orders.filter(Order_status=status)
+    
+    if sort_by:
+        orders = orders.order_by('-timestamp')  
+  
+    orders = orders.order_by('-timestamp')  
+    
+    context = {
+        'orders': orders,
+    }
+
+    return render(request, 'admin/prescription.html', context)
+
+def pres_details(request, order_id):
+    order = get_object_or_404(presciption_order, pk=order_id)
+    medicines = main_product.objects.all()
+
+    # Calculate discounted price for each product
+    for product in medicines:
+        discounted_price = product.p_price - (product.p_price * (product.p_discount / 100))
+        product.discounted_price = discounted_price
+
+    return render(request, 'admin/pres_details.html', {'order': order, 'medicines': medicines})
+
+    
+@csrf_protect
+def create_order(request):
+    if request.method == "POST":
+        try:
+            # Get data from request body
+            data = json.loads(request.body)
+
+            # Extract product details
+            products = data['products']
+            ordered_products = []
+            total_amount = 0.0
+
+            # Format ordered products as [('Medicine Name', 'Quantity', 'Total Price')]
+            for product in products:
+                ordered_products.append((product[0], product[1], product[2]))
+                total_amount += float(product[2])
+
+
+            prescriptions_list = []
+            if data.get("prescriptions") and data["prescriptions"] != "null":
+                    prescriptions_list.append(data['prescriptions'])
+        
+            # Create the order in the database
+            order = Orders.objects.create(
+                phonenumber=data['phone_number'],
+                ordered_products=str(ordered_products),  # Save as a string of the tuple
+                total=total_amount,
+                del_adress=data['delivery_address'],
+                payment_options=data['payment_method'],
+                status="Pending",
+                TxID=data.get('TxID'),
+                paymentMobile=data.get('payment_mobile'),
+                prescriptions=prescriptions_list,
+                Delivery_status="Pending",
+                timestamp=timezone.now(),
+            )
+
+            # Send success response
+            return JsonResponse({"message": "Order Created Successfully", "order_id": order.id}, status=201)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+        
+
+
+@csrf_exempt
+def update_order_status(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            order_id = data.get("order_id")
+            new_status = data.get("order_status")
+
+            # Fetch and update the order status
+            order = presciption_order.objects.get(id=order_id)
+            order.Order_status = new_status
+            order.save()
+
+            return JsonResponse({"message": "Order status updated successfully!"}, status=200)
+
+        except presciption_order.DoesNotExist:
+            return JsonResponse({"error": "Order not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request"}, status=400)

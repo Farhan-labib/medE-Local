@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription Order Details</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            margin: 20px;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            margin-right: 20px;
+        }
+        .right-panel {
+            flex: 1;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .label {
+            font-weight: bold;
+        }
+        select, input, button {
+            display: block;
+            margin-top: 10px;
+            padding: 8px;
+            width: 100%;
+        }
+        .medicine-list {
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Left Side: Order Details -->
+    <div class="container">
+        <h2>Prescription Order Details</h2>
+        <p><span class="label">Phone Number:</span> {{ order.phonenumber }}</p>
+        <p><span class="label">Delivery Address:</span> {{ order.del_adress }}</p>
+        <p><span class="label">Order Status:</span> {{ order.Order_status }}</p>
+        <p><span class="label">Payment Method:</span> {{ order.payment_options }}</p>
+        <p><span class="label">payment Mobile:</span> {{ order.paymentMobile }}</p>
+        <p><span class="label">Transaction ID:</span> {{ order.TxID|default:"N/A" }}</p>
+        <p><span class="label">Days:</span> {{ order.days }}</p>
+        <p><span class="label">Timestamp:</span> {{ order.timestamp }}</p>
+
+        {% if order.prescription_img != "null" %}
+            <h3>Prescription Image:</h3>
+            <img src="../../../media/{{ order.prescription_img }}" alt="Prescription Image" width="100%">
+        {% else %}
+            <p><strong>No Prescription Image Available</strong></p>
+        {% endif %}
+    </div>
+
+    <!-- Right Side: Medicine Search & Selection -->
+    <div class="right-panel">
+        <h2>Select Medicines</h2>
+        
+        <!-- Medicine Dropdown -->
+        <label for="medicine">Search Medicine:</label>
+        <select id="medicine">
+            <option value="">Select Medicine</option>
+            {% for product in medicines %}
+                <option value="{{ product.p_name }}" 
+                        data-price="{{ product.discounted_price|floatformat:2 }}" 
+                        data-code="{{ product.product_code }}">
+                    {{ product.p_name }} (Code: {{ product.product_code }}) - ${{ product.discounted_price|floatformat:2 }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <!-- Quantity Input -->
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" min="1" value="1">
+
+        <!-- Add Button -->
+        <button onclick="addMedicine()">Add Medicine</button>
+
+        <!-- Selected Medicines List -->
+        <div class="medicine-list">
+            <h3>Selected Medicines</h3>
+            <ul id="selected-medicines"></ul>
+        </div>
+
+        <!-- Create Order Button -->
+        <button onclick="createOrder()">Create Order</button>
+
+        <!-- Order Status Dropdown -->
+         <br>
+<label for="order-status">Order Status:</label>
+<select id="order-status">
+    <option value="Pending" {% if order.Order_status == "Pending" %}selected{% endif %}>Pending</option>
+    <option value="Created" {% if order.Order_status == "Created" %}selected{% endif %}>Created</option>
+    <option value="Rejected" {% if order.Order_status == "Rejected" %}selected{% endif %}>Rejected</option>
+</select>
+
+<!-- Save Order Status Button -->
+<button onclick="updateOrderStatus()">Save Order Status</button>
+
+    </div>
+
+    <script>
+        let selectedMedicines = [];
+
+        function addMedicine() {
+            let medicineDropdown = document.getElementById("medicine");
+            let selectedOption = medicineDropdown.options[medicineDropdown.selectedIndex];
+            let medicineName = selectedOption.value;
+            let medicineCode = selectedOption.getAttribute("data-code");
+            let medicinePrice = parseFloat(selectedOption.getAttribute("data-price"));
+            let quantity = parseInt(document.getElementById("quantity").value);
+
+            if (medicineName && quantity > 0) {
+                let totalPrice = (medicinePrice * quantity).toFixed(2);
+                selectedMedicines.push([medicineName, quantity.toString(), totalPrice]);
+
+                // Update UI
+                let medicineList = document.getElementById("selected-medicines");
+                let listItem = document.createElement("li");
+                listItem.textContent = `${medicineName} (Code: ${medicineCode}) - Qty: ${quantity} - Total: $${totalPrice}`;
+                medicineList.appendChild(listItem);
+            } else {
+                alert("Please select a valid medicine and quantity.");
+            }
+        }
+
+        function createOrder() {
+            let orderData = {
+                products: selectedMedicines,
+                phone_number: "{{ order.phonenumber }}",  
+                delivery_address: "{{ order.del_adress }}", 
+                payment_method: "{{ order.payment_options }}", 
+                TxID: "{{ order.TxID }}", 
+                payment_mobile: "{{ order.paymentMobile }}", 
+                prescriptions: "{{ order.prescription_img }}", 
+                total_amount: calculateTotalAmount(selectedMedicines),
+            };
+
+            // Send data to the server via AJAX
+            $.ajax({
+                type: "POST",
+                url: "{% url 'create_order' %}",  // Replace with the URL pattern for the view
+                data: JSON.stringify(orderData),
+                contentType: "application/json",
+                beforeSend: function(xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");  // Attach CSRF token
+                },
+                success: function(response) {
+                    alert("Order Created Successfully");
+                    // Optionally, redirect or reset the page after order creation
+                },
+                error: function(error) {
+                    alert("Error creating order. Please try again.");
+                }
+            });
+        }
+
+        // Helper function to calculate the total order amount
+        function calculateTotalAmount(orderProducts) {
+            return orderProducts.reduce((total, product) => total + parseFloat(product[2]), 0).toFixed(2);
+        }
+    </script>
+    <script>
+        function updateOrderStatus() {
+            let newStatus = document.getElementById("order-status").value; // Get selected order status
+            
+            let statusData = {
+                order_id: "{{ order.id }}",  // Assuming `order.id` exists
+                order_status: newStatus
+            };
+    
+            $.ajax({
+                type: "POST",
+                url: "{% url 'update_order_status' %}",  // Django URL for updating order status
+                data: JSON.stringify(statusData),
+                contentType: "application/json",
+                beforeSend: function(xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                },
+                success: function(response) {
+                    alert("Order status updated successfully!");
+                },
+                error: function(error) {
+                    alert("Error updating order status. Please try again.");
+                }
+            });
+        }
+    </script>
+    
+</body>
+</html>

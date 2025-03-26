@@ -170,7 +170,7 @@ class Orders(models.Model):
     total = models.TextField(default="null")
     del_adress = models.TextField(default="null")
     timestamp = models.DateTimeField(default=timezone.now)
-    status=models.CharField(max_length=20, choices=status, default='pending', blank=True)
+    status=models.CharField(max_length=20, choices=status, default='Pending', blank=True)
     Delivery_status=models.CharField(max_length=20, choices=delivery_stat, default='Pending', blank=True)
     paymentMobile = models.CharField(max_length=15, blank=True, null=True)
     TxID = models.CharField(max_length=50, blank=True, null=True)
@@ -187,26 +187,14 @@ class Profile_MedList(models.Model):
     
 
 class presciption_order(models.Model):
-    Approved = 'Approved'
+   
+    Pending = 'Pending'
+    Created = 'Created'
     Rejected = 'Rejected'
-    Pending = 'Pending'
-    status = [
-        (Approved, 'Approved'),
-        (Rejected, 'Rejected'),
+    order_stat = [
         (Pending, 'Pending'),
-    ]
-
-    Pending = 'Pending'
-    Confirmed = 'Confirmed'
-    Shipping = 'Shipping'
-    Completed = 'Completed'
-    Failed = 'Failed'
-    delivery_stat = [
-        (Pending, 'Pending'),
-        (Confirmed, 'Confirmed'),
-        (Shipping , 'Shipping'),
-        (Completed , 'Completed'),
-        (Failed , 'Failed'),
+        (Created, 'Created'),
+        (Rejected , 'Rejected'),
     ]
 
     phonenumber = models.CharField(max_length=15)
@@ -214,7 +202,7 @@ class presciption_order(models.Model):
     days = models.TextField(default="null")
     del_adress = models.TextField(default="null")
     timestamp = models.DateTimeField(default=timezone.now)
-    status=models.CharField(max_length=20, choices=status, default='Pending', blank=True)
-    Delivery_status=models.CharField(max_length=20, choices=delivery_stat, default='Pending', blank=True)
+    Order_status=models.CharField(max_length=20, choices=order_stat, default='Pending', blank=True)
     paymentMobile = models.CharField(max_length=15, blank=True, null=True)
     TxID = models.CharField(max_length=50, blank=True, null=True)
+    payment_options=models.CharField(max_length=20, default='cod', blank=True)

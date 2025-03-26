@@ -42,6 +42,10 @@ urlpatterns = [
     path('admin/orders/', custom_admin.order_list, name='order_list'),
     path('admin/order_details/<int:order_id>/', custom_admin.order_details, name='order_details'),
     path('admin/admin_list/', custom_admin.admin_list, name='admin_list'),
+    path('prescriptions/', custom_admin.prescription, name='prescription'),
+    path('admin/pres_details/<int:order_id>/', custom_admin.pres_details, name='pres_details'),
+    path('create_order/', custom_admin.create_order, name='create_order'),
+    path('update_order_status/', custom_admin.update_order_status, name='update_order_status'),
 
     path('',firstactivity.home, name='home'),
     path("Category<str:p_category>/",secondactivity.category,name='category'),
