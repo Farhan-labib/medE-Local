@@ -364,3 +364,48 @@ def update_order_status(request):
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+def inventory(request):
+    search_query = request.GET.get('search', '')  # Get search query from the URL
+    products = main_product.objects.all()  # Get all products by default
+
+    if search_query:
+        products = products.filter(
+            p_name__icontains=search_query) | products.filter(
+            product_code__icontains=search_query) | products.filter(
+            p_category__icontains=search_query)
+
+    context = {
+        'products': products,
+        'search_query': search_query,
+    }
+    return render(request, 'admin/inventory.html', context)
+
+def add_to_inventory(request):
+    # Parse the JSON request body
+    try:
+        data = json.loads(request.body)
+        product_id = data.get('product_id')
+        print(f"Received product_id: {product_id}")  # Debugging log
+
+        # Try to find the product using the p_id field (AutoField)
+        product = main_product.objects.get(p_id=product_id)
+        
+        # Assuming you want to increase the inventory by 1
+        product.inventory = 1  # Or set it to a specific number
+        product.save()
+
+        return JsonResponse({'success': True, 'message': 'Product added to inventory'})
+    except main_product.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Product not found'})
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Invalid JSON data'})
+    
+
+def inventory_dashboard(request):
+    # Query all products where inventory equals 1
+    products = main_product.objects.filter(inventory=1)
+    
+    # Pass the products to the template
+    return render(request, 'admin/inventory_dashboard.html', {'products': products})

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            width: 200px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-card img {
+    width: 100%; /* Ensure image takes up full width of the card */
+    max-width: 100%; /* Ensure image doesn't exceed card width */
+    max-height: 150px; /* Limit image height */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: cover; /* Ensures image fits well */
+}
+
+        .product-card h3 {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .add-link {
+        display: block;
+        text-align: center;
+        margin: 20px 0;
+        font-size: 18px;
+        color: #2980b9;
+        text-decoration: none;
+      }
+    </style>
+</head>
+<body>
+    <a href="{% url 'inventory' %}" class="add-link">+Add New Items</a>
+    <h1>Products In Inventory</h1>
+
+    <div class="product-list">
+        {% for product in products %}
+            <div class="product-card">
+                <img src="{{ product.p_image.url }}" alt="{{ product.p_name }}">
+                <h3>{{ product.p_name }}</h3>
+                <p>Product Code: {{ product.product_code }}</p>
+            </div>
+        {% empty %}
+            <p>No products with inventory of 1 found.</p>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

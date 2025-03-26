@@ -70,6 +70,7 @@ class main_product(models.Model):
     m_or_g = models.CharField(max_length=255, choices=m_or_g, default='Medicines')
     FAQ=models.TextField(blank=True)
     Suggestions=models.TextField(blank=True)
+    inventory=models.IntegerField(default=0)
     def __str__(self):
         return self.p_name
 

@@ -46,6 +46,9 @@ urlpatterns = [
     path('admin/pres_details/<int:order_id>/', custom_admin.pres_details, name='pres_details'),
     path('create_order/', custom_admin.create_order, name='create_order'),
     path('update_order_status/', custom_admin.update_order_status, name='update_order_status'),
+    path('inventory/', custom_admin.inventory, name='inventory'),
+    path('add_to_inventory/', custom_admin.add_to_inventory, name='add_to_inventory'),
+    path('inventory_dashboard/', custom_admin.inventory_dashboard, name='inventory_dashboard'),
 
     path('',firstactivity.home, name='home'),
     path("Category<str:p_category>/",secondactivity.category,name='category'),
