@@ -43,6 +43,11 @@
         font-size: 50px;
       }
 
+      /* Specific style for the Delivery Details card */
+      .card.delivery-details {
+        width: 200px; /* Regular card size */
+      }
+
       /* Additional styling for hr and br */
       .card-container hr {
         width: 100%;
@@ -87,55 +92,61 @@
     <h1 style="text-align: center;">Welcome To Admin Panel</h1>
     
     <a href="{% url 'user_list' %}">
-    <div class="card-container">
-      <div class="card">
-        <div class="card-icon">👥</div>
-        <div class="card-title">Customer</div>
-      </div>
+      <div class="card-container">
+        <div class="card">
+          <div class="card-icon">👥</div>
+          <div class="card-title">Customer</div>
+        </div>
     </a>
 
+    <a href="{% url 'admin_product' %}">
+      <div class="card">
+        <div class="card-icon">📦</div>
+        <div class="card-title">Products</div>
+      </div>
+    </a>
     
-      <a href="{%url 'admin_product'%}">
-        <div class="card">
-          <div class="card-icon">📦</div>
-          <div class="card-title">Products</div>
-        </div>
-      </a>
-      
-      <a href="{%url 'order_list'%}">
-        <div class="card">
-          <div class="card-icon">📋</div>
-          <div class="card-title">Orders</div>
-        </div>
-      </a>
-      
-      <a href="{%url 'prescription'%}">
+    <a href="{% url 'order_list' %}">
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <div class="card-title">Orders</div>
+      </div>
+    </a>
+    
+    <a href="{% url 'prescription' %}">
       <div class="card">
         <div class="card-icon">📝</div>
         <div class="card-title">POS+Rx</div>
       </div>
-       </a>
+    </a>
 
-      <div class="spacer"></div>
+    <div class="spacer"></div>
 
-      <hr>
+    <hr>
 
-      <a href="{% url 'admin_list' %}">
-        <div class="card-container">
-          <div class="card">
-            <div class="card-icon">💼</div>
-            <div class="card-title">Admin</div>
-          </div>
-        </a>
+    <a href="{% url 'admin_list' %}">
+      <div class="card-container">
+        <div class="card">
+          <div class="card-icon">💼</div>
+          <div class="card-title">Admin</div>
+        </div>
+    </a>
 
-      <!-- Inventory Management card -->
-       <a href="{% url 'inventory_dashboard' %}">
+    <!-- Inventory Management card -->
+    <a href="{% url 'inventory_dashboard' %}">
       <div class="card inventory-management">
-        <div class="card-icon">⚙️</div> <!-- Example Icon -->
+        <div class="card-icon">⚙️</div>
         <div class="card-title">Inventory Management</div>
       </div>
-      </a>
-    </div>
+    </a>
+
+    <!-- Delivery Details card -->
+    <a href="{% url 'location_manage' %}">
+      <div class="card delivery-details">
+        <div class="card-icon">🚚</div>
+        <div class="card-title">Delivery Details</div>
+      </div>
+    </a>
 
   </body>
 </html>

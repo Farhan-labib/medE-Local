@@ -10,6 +10,7 @@ from django.conf import settings
 from .models import Orders
 from django.utils import timezone
 from django.core.files.storage import FileSystemStorage
+from custom_admin.models import Location
 
 
 def prod(request, p_link):
@@ -168,14 +169,60 @@ def order_confirm(request):
     output = request.session.get('checkout_output')
     total = request.session.get('checkout_total')
     prescription_required = request.session.get('prescription_required')
-    print(prescription_required)
     User = UserProfile()
+
     # Split the product data and create a list of tuples (product_name, quantity, price)
     product_data_list = [(product_name, *product_data.split(';')) for product_name, product_data in output.items()]
     user_address = request.user.address
-    context = {'product_data_list': product_data_list, 'prescription_required': prescription_required, 'total': total,'user_address': user_address}
-    print(context)
+
+    # Get locations from the model
+    locations = Location.objects.all()
+
+    # Prepare the location data structure
+    zilla_data = {}
+    upazila_data = {}
+    union_data = {}
+    division_data = {}  # New dictionary for additional division data
+
+    for location in locations:
+        if location.level == 'division':
+            division_data[location.name] = []  # New divisions added here
+        elif location.level == 'zilla':
+            if location.parent:  # If a parent exists (division)
+                parent_name = location.parent.name
+                if parent_name not in zilla_data:
+                    zilla_data[parent_name] = []
+                zilla_data[parent_name].append(location.name)
+        elif location.level == 'upazila':
+            if location.parent:  # If a parent exists (zilla)
+                parent_name = location.parent.name
+                if parent_name not in upazila_data:
+                    upazila_data[parent_name] = []
+                upazila_data[parent_name].append(location.name)
+        elif location.level == 'union':
+            if location.parent:  # If a parent exists (upazila)
+                parent_name = location.parent.name
+                if parent_name not in union_data:
+                    union_data[parent_name] = []
+                union_data[parent_name].append(location.name)
+
+   
+
+    # Prepare context
+    context = {
+        'product_data_list': product_data_list,
+        'prescription_required': prescription_required,
+        'total': total,
+        'user_address': user_address,
+        'zilla_data': zilla_data,
+        'upazila_data': upazila_data,
+        'union_data': union_data,
+        'division_data': division_data,  # Add the additional division data to context
+    }
+   
+
     return render(request, 'order_confirm.html', context)
+
 
 
 

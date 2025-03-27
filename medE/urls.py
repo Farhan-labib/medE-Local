@@ -49,6 +49,7 @@ urlpatterns = [
     path('inventory/', custom_admin.inventory, name='inventory'),
     path('inventory_dashboard/', custom_admin.inventory_dashboard, name='inventory_dashboard'),
     path('edit-inventory/<int:product_id>/', custom_admin.inventory_edit, name='inventory_edit'),
+    path('admin/locations/', custom_admin.location_manage, name='location_manage'),
 
     path('',firstactivity.home, name='home'),
     path("Category<str:p_category>/",secondactivity.category,name='category'),

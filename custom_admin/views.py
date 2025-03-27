@@ -10,8 +10,26 @@ from django.utils import timezone
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from .models import Location
 
-# Form for main_product
+class LocationForm(forms.ModelForm):
+    class Meta:
+        model = Location
+        fields = ['name', 'level', 'parent']
+
+# View to show the list and handle form submission for adding new locations
+def location_manage(request):
+    if request.method == 'POST':
+        form = LocationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('location_manage')  # Redirect to the same page to show updated list
+    else:
+        form = LocationForm()
+
+    locations = Location.objects.all()
+    return render(request, 'admin/location_manage.html', {'locations': locations, 'form': form})
+
 class MainMedicineForm(ModelForm):
     class Meta:
         model = main_product
