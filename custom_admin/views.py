@@ -147,8 +147,14 @@ class UserForm(ModelForm):
         model = UserProfile
         fields = [
             'phone_number', 'first_name', 'last_name', 'dob', 'gender',
-            'email', 'address', 'is_super_admin', 'is_admin' ,'is_staff', 'user_type'
+            'email', 'address', 'is_super_admin', 'is_admin', 'is_staff', 'user_type'
         ]
+
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        if self.instance and (self.instance.is_super_admin or self.instance.is_admin or self.instance.is_staff):
+            self.fields.pop('user_type', None)
+
 
 
 
@@ -158,6 +164,8 @@ def edit_user(request, user_id):
     form = UserForm(request.POST or None, instance=user)
     if request.method == 'POST' and form.is_valid():
         form.save()
+        if user.is_super_admin or user.is_admin or user.is_staff:
+            return redirect('admin_list')
         return redirect('user_list')
     return render(request, 'admin/edit_user.html', {'form': form})
 
@@ -166,6 +174,8 @@ def edit_user(request, user_id):
 def delete_user(request, user_id):
     user = get_object_or_404(UserProfile, id=user_id)
     user.delete()
+    if user.is_super_admin or user.is_admin or user.is_staff:
+            return redirect('admin_list')
     return redirect('user_list')
 
 
@@ -183,7 +193,15 @@ def admin_list(request):
         else:
             users = UserProfile.objects.all()
     else:
-        users = UserProfile.objects.all()
+        users = UserProfile.objects.filter(
+                    is_staff=True
+                ) | UserProfile.objects.filter(
+                    is_super_admin=True
+                ) | UserProfile.objects.filter(
+                    is_admin=True
+                )
+
+
 
     return render(request, 'admin/admin_list.html', {'users': users})
 
