@@ -115,7 +115,6 @@ def checkout_view(request):
             total = 0
             prescription_required = False
             product_index = 1  # Initialize the product index
-
             for key, value in data.items():
                 product = main_product.objects.get(p_id=key)
 
@@ -139,8 +138,7 @@ def checkout_view(request):
                 # Store product info in output with the numbered key
                 output[unique_key] = f"{str(value)};{format(product_total, '.2f')}"
 
-            print(output)
-            print(prescription_required)
+            
 
             # Add shipping cost (fixed at 60) if total is greater than 0
             if total > 0:
@@ -150,6 +148,7 @@ def checkout_view(request):
             request.session['prescription_required'] = prescription_required
             request.session['checkout_output'] = output
             request.session['checkout_total'] = format(total, '.2f')
+            request.session['for_stock']  = data
 
             # Return a successful response
             return JsonResponse({'message': 'Checkout successful'})
@@ -169,6 +168,8 @@ def order_confirm(request):
     output = request.session.get('checkout_output', {})
     total = request.session.get('checkout_total', 0)
     prescription_required = request.session.get('prescription_required', False)
+    for_stock = request.session.get('for_stock', {})
+    print(for_stock)
     
     # Split product data into tuples
     product_data_list = [
@@ -222,8 +223,8 @@ def order_confirm(request):
         'zilla_data': json.dumps(zilla_data),
         'upazila_data': json.dumps(upazila_data),
         'union_data': json.dumps(union_data),
+        'for_stock': for_stock
     }
-    
     return render(request, 'order_confirm.html', context)
 
 
@@ -245,7 +246,8 @@ def order_complete(request):
         payment_mobile = request.POST.get('paymentMobile')
         tx_id = request.POST.get('TxID')
         payment_options=request.POST.get('payment-options')
-        print(tx_id, payment_options)
+        for_stock = request.POST.get('for_stock')
+        print(for_stock)
         
 
         if prescription_file:
@@ -270,7 +272,8 @@ def order_complete(request):
             status='pending',  # Set the initial status to 'pending'
             paymentMobile=payment_mobile,
             TxID=tx_id,
-            payment_options = payment_options
+            payment_options = payment_options,
+            for_stock = for_stock
         )
         order.save()
 
@@ -287,7 +290,6 @@ def save_med_list(request):
         intakes = data.get('intakes')
         num_Days = data.get('numDays')
 
-        print(data)
         # Retrieve or create the user object based on phone number
         user, created = Profile_MedList.objects.get_or_create(phone_number=user_phone_number)
 

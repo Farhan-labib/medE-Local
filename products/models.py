@@ -183,6 +183,7 @@ class Orders(models.Model):
     paymentMobile = models.CharField(max_length=15, blank=True, null=True)
     TxID = models.CharField(max_length=50, blank=True, null=True)
     payment_options=models.CharField(max_length=20, default='cod', blank=True)
+    for_stock= models.TextField(default="null")
 
 
 class Profile_MedList(models.Model):
