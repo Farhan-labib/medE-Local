@@ -125,6 +125,7 @@
                         <th>Name</th>
                         <th>Level</th>
                         <th>Parent</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -133,13 +134,18 @@
                             <td>{{ location.name }}</td>
                             <td>{{ location.get_level_display }}</td>
                             <td>{{ location.parent.name|default:"None" }}</td>
+                            <td>
+                                <form method="post" action="{% url 'location_delete' location.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" style="background-color: red; color: white; border: none; padding: 6px 12px; font-size: 14px; cursor: pointer; border-radius: 4px;">Delete</button>
+                                </form>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-
 
 </body>
 </html>

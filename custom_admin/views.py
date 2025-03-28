@@ -30,6 +30,15 @@ def location_manage(request):
     locations = Location.objects.all()
     return render(request, 'admin/location_manage.html', {'locations': locations, 'form': form})
 
+def location_delete(request, location_id):
+    location = get_object_or_404(Location, id=location_id)
+    
+    if request.method == 'POST':
+        location.delete()
+        return redirect('location_manage')  # Redirect back to the location management page
+    
+    return redirect('location_manage')
+
 class MainMedicineForm(ModelForm):
     class Meta:
         model = main_product
