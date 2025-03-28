@@ -166,61 +166,64 @@ def checkout_view(request):
 
 
 def order_confirm(request):
-    output = request.session.get('checkout_output')
-    total = request.session.get('checkout_total')
-    prescription_required = request.session.get('prescription_required')
-    User = UserProfile()
+    output = request.session.get('checkout_output', {})
+    total = request.session.get('checkout_total', 0)
+    prescription_required = request.session.get('prescription_required', False)
+    
+    # Split product data into tuples
+    product_data_list = [
+        (product_name, *product_data.split(';')) 
+        for product_name, product_data in output.items()
+    ]
 
-    # Split the product data and create a list of tuples (product_name, quantity, price)
-    product_data_list = [(product_name, *product_data.split(';')) for product_name, product_data in output.items()]
-    user_address = request.user.address
-
-    # Get locations from the model
+    # Get locations from the database
     locations = Location.objects.all()
 
-    # Prepare the location data structure
-    zilla_data = {}
-    upazila_data = {}
-    union_data = {}
-    division_data = {}  # New dictionary for additional division data
+    # Initialize data structures
+    division_data = {}  # Stores all divisions
+    zilla_data = {}     # Key: division, Value: list of zillas
+    upazila_data = {}   # Key: zilla, Value: list of upazilas
+    union_data = {}     # Key: upazila, Value: list of unions
 
+    # First pass: Populate divisions
     for location in locations:
         if location.level == 'division':
-            division_data[location.name] = []  # New divisions added here
-        elif location.level == 'zilla':
-            if location.parent:  # If a parent exists (division)
-                parent_name = location.parent.name
-                if parent_name not in zilla_data:
-                    zilla_data[parent_name] = []
-                zilla_data[parent_name].append(location.name)
-        elif location.level == 'upazila':
-            if location.parent:  # If a parent exists (zilla)
-                parent_name = location.parent.name
-                if parent_name not in upazila_data:
-                    upazila_data[parent_name] = []
-                upazila_data[parent_name].append(location.name)
-        elif location.level == 'union':
-            if location.parent:  # If a parent exists (upazila)
-                parent_name = location.parent.name
-                if parent_name not in union_data:
-                    union_data[parent_name] = []
-                union_data[parent_name].append(location.name)
+            division_data[location.name] = location.name  # Store division name
 
-   
+    # Second pass: Populate zillas under divisions
+    for location in locations:
+        if location.level == 'zilla' and location.parent:
+            parent_division = location.parent.name
+            if parent_division not in zilla_data:
+                zilla_data[parent_division] = []
+            zilla_data[parent_division].append(location.name)
 
-    # Prepare context
+    # Third pass: Populate upazilas under zillas
+    for location in locations:
+        if location.level == 'upazila' and location.parent:
+            parent_zilla = location.parent.name
+            if parent_zilla not in upazila_data:
+                upazila_data[parent_zilla] = []
+            upazila_data[parent_zilla].append(location.name)
+
+    # Fourth pass: Populate unions under upazilas
+    for location in locations:
+        if location.level == 'union' and location.parent:
+            parent_upazila = location.parent.name
+            if parent_upazila not in union_data:
+                union_data[parent_upazila] = []
+            union_data[parent_upazila].append(location.name)
+
     context = {
         'product_data_list': product_data_list,
         'prescription_required': prescription_required,
         'total': total,
-        'user_address': user_address,
-        'zilla_data': zilla_data,
-        'upazila_data': upazila_data,
-        'union_data': union_data,
-        'division_data': division_data,  # Add the additional division data to context
+        'division_data': json.dumps(list(division_data.keys())),  # Convert to list for JS
+        'zilla_data': json.dumps(zilla_data),
+        'upazila_data': json.dumps(upazila_data),
+        'union_data': json.dumps(union_data),
     }
-   
-
+    
     return render(request, 'order_confirm.html', context)
 
 
