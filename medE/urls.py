@@ -50,7 +50,7 @@ urlpatterns = [
     path('inventory_dashboard/', custom_admin.inventory_dashboard, name='inventory_dashboard'),
     path('edit-inventory/<int:product_id>/', custom_admin.inventory_edit, name='inventory_edit'),
     path('admin/locations/', custom_admin.location_manage, name='location_manage'),
-     path('admin/locations/delete/<int:location_id>/', custom_admin.location_delete, name='location_delete'),
+    path('admin/locations/delete/<int:location_id>/', custom_admin.location_delete, name='location_delete'),
 
     path('',firstactivity.home, name='home'),
     path("Category<str:p_category>/",secondactivity.category,name='category'),

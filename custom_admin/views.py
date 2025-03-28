@@ -194,7 +194,7 @@ def edit_user(request, user_id):
         if user.is_super_admin or user.is_admin or user.is_staff:
             return redirect('admin_list')
         return redirect('user_list')
-    return render(request, 'admin/edit_user.html', {'form': form})
+    return render(request, 'admin/edit_user.html', {'form': form, 'user': user})
 
 
 @admin_required
@@ -280,20 +280,57 @@ class OrderUpdateForm(ModelForm):
 def order_details(request, order_id):
     order = get_object_or_404(Orders, pk=order_id)
 
-
-    # Parse ordered_products safely to a list of tuples
+    # Parse ordered_products safely
     try:
         ordered_products = ast.literal_eval(order.ordered_products)
         if not isinstance(ordered_products, list):
-            ordered_products = []  # Handle cases where it's not a list
+            ordered_products = []  
     except:
-        ordered_products = []  # If parsing fails, use an empty list
+        ordered_products = []  
+
+    # Handle "Returned" button press
+    if request.method == 'POST' and 'return_order' in request.POST:
+        if order.status == 'Confirmed':  # Ensure only confirmed orders can be returned
+            try:
+                for_stock_data = ast.literal_eval(order.for_stock)  # Convert to dict
+                if isinstance(for_stock_data, dict):
+                    for product_id, quantity in for_stock_data.items():
+                        try:
+                            product = main_product.objects.get(p_id=product_id)
+                            product.Stock += int(quantity)  # Replenish stock
+                            product.save()
+                        except main_product.DoesNotExist:
+                            pass  # Skip if product doesn't exist
+            except Exception as e:
+                print(f"Stock return failed: {e}")  
+
+            order.status = 'Failed'  # Change status to Failed
+            order.save()
+        
+        return redirect('order_details', order_id=order.id)
 
     # Handle form submission to update the order
-    if request.method == 'POST':
+    if request.method == 'POST' and 'status' in request.POST:
         form = OrderUpdateForm(request.POST, instance=order)
         if form.is_valid():
-            form.save()
+            updated_order = form.save(commit=False)
+
+            # If status is changed to 'Confirmed', update stock
+            if updated_order.status == 'Confirmed':
+                try:
+                    for_stock_data = ast.literal_eval(order.for_stock)  # Convert to dict
+                    if isinstance(for_stock_data, dict):
+                        for product_id, quantity in for_stock_data.items():
+                            try:
+                                product = main_product.objects.get(p_id=product_id)
+                                product.Stock -= int(quantity)  # Deduct stock
+                                product.save()
+                            except main_product.DoesNotExist:
+                                pass  # Skip if product doesn't exist
+                except Exception as e:
+                    print(f"Stock update failed: {e}")  
+
+            updated_order.save()
             return redirect('order_details', order_id=order.id)
     else:
         form = OrderUpdateForm(instance=order)
@@ -301,9 +338,10 @@ def order_details(request, order_id):
     context = {
         'form': form,
         'order': order,
-        'ordered_products': ordered_products,  # Add the parsed ordered_products to the context
+        'ordered_products': ordered_products,
     }
     return render(request, 'admin/order_details.html', context)
+
 
 
 @admin_required

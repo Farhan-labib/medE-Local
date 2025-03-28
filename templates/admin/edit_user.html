@@ -88,6 +88,8 @@
     </style>
   </head>
   <body>
+    
+
     <!-- Header with Logo -->
     <header>
       <a href="{% url 'admin' %}">
@@ -95,7 +97,38 @@
       </a>
     </header>
 
-    <!-- Page Title -->
+  {% if user.is_super_admin or user.is_admin or user.is_staff %}
+    <div style="width: 100%; display: flex; align-items: start;"><a href="{% url 'admin_list' %}" style="
+    display: inline-block; 
+    padding: 12px 20px; 
+    background-color: #6c757d; 
+    color: white; 
+    text-decoration: none; 
+    font-size: 1em; 
+    font-weight: bold; 
+    border-radius: 5px; 
+    border: none; 
+    align-items: left !important;
+    cursor: pointer;">
+    ⬅ Back
+    </a></div>
+    {% else %}
+    <div style="width: 100%; display: flex; align-items: start;"><a href="{% url 'user_list' %}" style="
+      display: inline-block; 
+      padding: 12px 20px; 
+      background-color: #6c757d; 
+      color: white; 
+      text-decoration: none; 
+      font-size: 1em; 
+      font-weight: bold; 
+      border-radius: 5px; 
+      border: none; 
+      align-items: left !important;
+      cursor: pointer;">
+      ⬅ Back
+      </a></div>
+    {% endif %}
+
     <h1>Update Details</h1>
 
     <!-- Form to Update Product -->

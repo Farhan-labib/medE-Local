@@ -170,6 +170,19 @@
 </head>
 <body>
     <div class="container">
+        <a href="{% url 'order_list' %}" style="
+        display: inline-block; 
+        padding: 12px 20px; 
+        background-color: #6c757d; 
+        color: white; 
+        text-decoration: none; 
+        font-size: 1em; 
+        font-weight: bold; 
+        border-radius: 5px; 
+        border: none; 
+        cursor: pointer;">
+        ⬅ Back
+        </a>
         <h1>Order Details</h1>
 
         <!-- Displaying Ordered Products in a Table -->
@@ -236,6 +249,12 @@
             </select>
             <button type="submit" class="btn-update">Update Order</button>
         </form>
+        {% if order.status == 'Confirmed' %}
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" name="return_order" class="btn-return">Returned</button>
+    </form>
+{% endif %}
 
         <!-- Success Message -->
         {% if messages %}
