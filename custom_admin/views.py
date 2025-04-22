@@ -17,27 +17,66 @@ class LocationForm(forms.ModelForm):
         model = Location
         fields = ['name', 'level', 'parent']
 
-# View to show the list and handle form submission for adding new locations
+    def __init__(self, *args, **kwargs):
+        super(LocationForm, self).__init__(*args, **kwargs)
+        self.fields['parent'].queryset = Location.objects.none()
+
+        if 'level' in self.data:
+            level = self.data.get('level').lower()
+            if level == 'zilla':
+                self.fields['parent'].queryset = Location.objects.filter(level='division')
+            elif level == 'upazila':
+                self.fields['parent'].queryset = Location.objects.filter(level='zilla')
+            elif level == 'union':
+                self.fields['parent'].queryset = Location.objects.filter(level='upazila')
+        elif self.instance.pk:
+            if self.instance.parent:
+                self.fields['parent'].queryset = Location.objects.filter(level=self.instance.parent.level)
+            else:
+                self.fields['parent'].queryset = Location.objects.none()
+
+
+# View for managing locations
 def location_manage(request):
     if request.method == 'POST':
         form = LocationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('location_manage')  # Redirect to the same page to show updated list
+            return redirect('location_manage')
     else:
         form = LocationForm()
 
     locations = Location.objects.all()
-    return render(request, 'admin/location_manage.html', {'locations': locations, 'form': form})
+    return render(request, 'admin/location_manage.html', {
+        'form': form,
+        'locations': locations,
+    })
 
+
+# View for deleting a location
 def location_delete(request, location_id):
     location = get_object_or_404(Location, id=location_id)
-    
+
     if request.method == 'POST':
         location.delete()
-        return redirect('location_manage')  # Redirect back to the location management page
-    
+        return redirect('location_manage')
+
     return redirect('location_manage')
+
+
+# AJAX view to return parent options by level
+def get_parents_by_level(request):
+    level = request.GET.get('level', '').lower()
+    data = []
+
+    if level == 'zilla':
+        data = Location.objects.filter(level='division').values('id', 'name')
+    elif level == 'upazila':
+        data = Location.objects.filter(level='zilla').values('id', 'name')
+    elif level == 'union':
+        data = Location.objects.filter(level='upazila').values('id', 'name')
+
+    return JsonResponse(list(data), safe=False)
 
 class MainMedicineForm(ModelForm):
     class Meta:
