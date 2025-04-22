@@ -11,6 +11,7 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from .models import Location
+from django.db.models import Case, When, Value, IntegerField
 
 class LocationForm(forms.ModelForm):
     class Meta:
@@ -46,11 +47,31 @@ def location_manage(request):
     else:
         form = LocationForm()
 
-    locations = Location.objects.all()
+    # Custom sorting for levels: Division, Zilla, Upazila, Union
+    level_order = {
+        'division': 1,
+        'zilla': 2,
+        'upazila': 3,
+        'union': 4
+    }
+
+    # Ordering locations with custom level ordering
+    locations = Location.objects.all().annotate(
+        level_sort=Case(
+            When(level='division', then=Value(level_order['division'])),
+            When(level='zilla', then=Value(level_order['zilla'])),
+            When(level='upazila', then=Value(level_order['upazila'])),
+            When(level='union', then=Value(level_order['union'])),
+            default=Value(99),  # In case there are any unknown levels
+            output_field=IntegerField()
+        )
+    ).order_by('level_sort', 'parent__level', 'name')
+
     return render(request, 'admin/location_manage.html', {
         'form': form,
         'locations': locations,
     })
+
 
 
 # View for deleting a location
