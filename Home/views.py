@@ -6,10 +6,12 @@ from authentication.models import UserProfile
 from products.models import Profile_MedList
 from products.models import presciption_order
 import ast
+from custom_admin.models import Location
 from django.http import JsonResponse
 from products.models import main_product 
 from django.core.files.storage import FileSystemStorage
 import os
+from django.core.serializers.json import DjangoJSONEncoder
 # Create your views here.
 def home(request):
     products = Product.objects.all()
@@ -72,10 +74,70 @@ def quick_order(request):
         total+=round(price*quantity,2)
 
     
+    prescription_required = request.session.get('prescription_required', False)
+    for_stock = request.session.get('for_stock', {})
+    locations = Location.objects.all()
+
+    # Initialize data structures
+    division_data = {}  # Stores all divisions
+    zilla_data = {}     # Key: division, Value: list of zillas
+    upazila_data = {}   # Key: zilla, Value: list of upazilas
+    union_data = {}     # Key: upazila, Value: list of unions
+
+    # First pass: Populate divisions
+    print(locations)
+    for location in locations:
+        if location.level == 'division':
+            division_data[location.name] = location.name  # Store division name
+
+    # Second pass: Populate zillas under divisions
+    for location in locations:
+        if location.level == 'zilla' and location.parent:
+            parent_division = location.parent.name
+            if parent_division not in zilla_data:
+                zilla_data[parent_division] = []
+            zilla_data[parent_division].append(location.name)
+
+    # Third pass: Populate upazilas under zillas
+    for location in locations:
+        if location.level == 'upazila' and location.parent:
+            parent_zilla = location.parent.name
+            if parent_zilla not in upazila_data:
+                upazila_data[parent_zilla] = []
+            upazila_data[parent_zilla].append(location.name)
+
+    # Fourth pass: Populate unions under upazilas
+    for location in locations:
+        if location.level == 'union' and location.parent:
+            parent_upazila = location.parent.name
+            if parent_upazila not in union_data:
+                union_data[parent_upazila] = []
+            union_data[parent_upazila].append(location.name)
+
+    union_qs = Location.objects.filter(level='union')
+    union_data = {}
+
+    for union in union_qs:
+        parent_upazila = union.parent.name if union.parent else ""
+        if parent_upazila not in union_data:
+            union_data[parent_upazila] = []
+        union_data[parent_upazila].append({
+            'name': union.name,
+            'id': union.id,
+            'delivery_fee': float(union.delivery_fee) if union.delivery_fee else 60.0
+        })
 
     context={'product_data_list': t,
              'total': total, 
-             'user_address': user_address}
+             'user_address': user_address,
+             
+             'prescription_required': prescription_required,
+             'division_data': json.dumps(list(division_data.keys())),  # Convert to list for JS
+             'zilla_data': json.dumps(zilla_data),
+             'upazila_data': json.dumps(upazila_data),
+             'union_data': json.dumps(union_data),
+             'for_stock': for_stock,
+             'union_data': json.dumps(union_data, cls=DjangoJSONEncoder),}
     print(context)
     return render(request, 'order_confirm.html', context)
 
