@@ -250,48 +250,57 @@ def order_complete(request):
         phonenumber = request.POST.get('phonenumber')
         ordered_products = request.POST.get('ordered_products')
         prescription_file = request.FILES.get('prescription')
-        total = request.POST.get('total')
+        base_total = float(request.POST.get('total', 0))  # Total from product price only
+
         division = request.POST.get('division')
         zilla = request.POST.get('zilla')
         upazila = request.POST.get('upazila')
         union = request.POST.get('union')
-        address=request.POST.get('address')
-        del_address = division + ', ' + zilla + ', ' + upazila + ', ' + union + ', ' + address
+        address = request.POST.get('address')
+        del_address = f"{division}, {zilla}, {upazila}, {union}, {address}"
+
         payment_mobile = request.POST.get('paymentMobile')
         tx_id = request.POST.get('TxID')
-        payment_options=request.POST.get('payment-options')
+        payment_options = request.POST.get('payment-options')
         for_stock = request.POST.get('for_stock')
-        print(for_stock)
-        
 
+      
+        delivery_fee = 60 
+        try:
+            union_obj = Location.objects.get(name=union, level='union')
+            if union_obj.delivery_fee:
+                delivery_fee = float(union_obj.delivery_fee)
+        except Location.DoesNotExist:
+            pass  
+
+        grand_total = base_total + delivery_fee
+
+     
+        image = []
         if prescription_file:
-            # Create the user's prescription folder if it doesn't exist.
             user_prescription_folder = os.path.join('media', 'otc_prescription', str(phonenumber))
             if not os.path.exists(user_prescription_folder):
                 os.makedirs(user_prescription_folder)
-            # Save the prescription image to the user's folder.
             fs = FileSystemStorage(location=user_prescription_folder)
             saved_image = fs.save(prescription_file.name, prescription_file)
-            image = ["otc_prescription/"+phonenumber+"/"+saved_image]
-        else:
-            image = []
+            image = [f"otc_prescription/{phonenumber}/{saved_image}"]
 
-        # Create a new Orders instance and save it to the database
+     
         order = Orders(
             phonenumber=phonenumber,
             ordered_products=ordered_products,
             prescriptions=image,
-            total=total,
+            total=grand_total,
             del_adress=del_address,
-            status='pending',  # Set the initial status to 'pending'
+            status='pending',
             paymentMobile=payment_mobile,
             TxID=tx_id,
-            payment_options = payment_options,
-            for_stock = for_stock
+            payment_options=payment_options,
+            for_stock=for_stock
         )
         order.save()
 
-    return render(request, 'confirm.html')
+        return render(request, 'confirm.html')
 
 
 from django.http import JsonResponse

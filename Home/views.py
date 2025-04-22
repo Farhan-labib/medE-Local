@@ -71,9 +71,11 @@ def quick_order(request):
         t.append((products_data[counter]['p_name'], str(int(quantity)), '{:.2f}'.format(float(price * quantity))))         
         total+=round(price*quantity,2)
 
-    if(total>0):
-        total+=60
-    context={'product_data_list': t, 'total': total, 'user_address': user_address}
+    
+
+    context={'product_data_list': t,
+             'total': total, 
+             'user_address': user_address}
     print(context)
     return render(request, 'order_confirm.html', context)
 
