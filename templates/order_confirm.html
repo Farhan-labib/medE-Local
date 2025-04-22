@@ -24,6 +24,7 @@
             </div>
         </div>
     </header>
+
     <main>
         <div class="container">
             <div class="purchase-history">
@@ -47,16 +48,16 @@
                         {% endfor %}
                         <tr style="background-color: rgb(195, 255, 139);">
                             <td colspan="2" rowspan="1">Delivery Charge</td>
-                            <td>60 Taka</td>
+                            <td id="delivery-fee">-- Taka</td>
                         </tr>
                         <tr style="background-color: rgb(195, 255, 139);">
                             <td colspan="2" rowspan="2">Subtotal</td>
-                            <td>{{ total }}</td>
+                            <td id="total-amount">{{ total }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="">
+            <div>
                 <form class="row" method="post" action="{% url 'confirm' %}" enctype="multipart/form-data">
                     <div class="details col-sm-6">
                         {% csrf_token %}
@@ -66,7 +67,6 @@
                         <input type="hidden" name="for_stock" value="{{for_stock}}">
 
                         <div class="container">
-
                             <label style="background-color: #de0000; color: white; border-radius: 3px;" for="division">Division</label>
                             <select name="division" id="division" required>
                                 <option value="" disabled selected>Select Division</option>
@@ -86,7 +86,7 @@
                             <br/>
 
                             <label style="background-color: #de0000; color: white; border-radius: 3px;" for="union">Union</label>
-                            <select name="union" id="union" required>
+                            <select name="union" id="union" required onchange="updateDeliveryFee()">
                                 <option value="" disabled selected>Select Union</option>
                             </select>
                             <br/>
@@ -100,6 +100,7 @@
                             <textarea type="text" id="addressInput" name="address" required></textarea>
                         </div>
                     </div>
+
                     <div class="payment col-sm-6">
                         <select name="payment-options" id="payment-options">
                             <option id="codOpt" value="cod">COD (Cash on Delivery)</option>
@@ -115,6 +116,7 @@
                             <input required type="text" name="TxID" placeholder="Transaction ID (TxID)">
                         </div>
                     </div>
+
                     <input type="hidden" id="hidden-division-data" value="{{ division_data }}">
                     <input type="hidden" id="hidden-zilla-data" value="{{ zilla_data }}">
                     <input type="hidden" id="hidden-upazila-data" value="{{ upazila_data }}">
@@ -124,70 +126,70 @@
             </div>
         </div>
     </main>
+
     <script>
+        const divisionData = JSON.parse(document.getElementById('hidden-division-data').value);
+        const zillaData = JSON.parse(document.getElementById('hidden-zilla-data').value);
+        const upazilaData = JSON.parse(document.getElementById('hidden-upazila-data').value);
+        const unionData = JSON.parse(document.getElementById('hidden-union-data').value);
     
-         // Parse JSON data from hidden inputs
-    const divisionData = JSON.parse(document.getElementById('hidden-division-data').value);
-    const zillaData = JSON.parse(document.getElementById('hidden-zilla-data').value);
-    const upazilaData = JSON.parse(document.getElementById('hidden-upazila-data').value);
-    const unionData = JSON.parse(document.getElementById('hidden-union-data').value);
-
-    // Initialize division dropdown
-    const divisionSelect = document.getElementById('division');
-    divisionData.forEach(division => {
-        divisionSelect.innerHTML += `<option value="${division}">${division}</option>`;
-    });
-
-    // Division change handler
-    divisionSelect.addEventListener('change', function() {
-        const selectedDivision = this.value;
-        const zillaSelect = document.getElementById('zilla');
-        
-        // Clear and repopulate zillas
-        zillaSelect.innerHTML = '<option value="" disabled selected>Select Zilla</option>';
-        if (zillaData[selectedDivision]) {
-            zillaData[selectedDivision].forEach(zilla => {
-                zillaSelect.innerHTML += `<option value="${zilla}">${zilla}</option>`;
-            });
+        const divisionSelect = document.getElementById('division');
+        divisionData.forEach(division => {
+            divisionSelect.innerHTML += `<option value="${division}">${division}</option>`;
+        });
+    
+        divisionSelect.addEventListener('change', function () {
+            const selectedDivision = this.value;
+            const zillaSelect = document.getElementById('zilla');
+    
+            zillaSelect.innerHTML = '<option value="" disabled selected>Select Zilla</option>';
+            if (zillaData[selectedDivision]) {
+                zillaData[selectedDivision].forEach(zilla => {
+                    zillaSelect.innerHTML += `<option value="${zilla}">${zilla}</option>`;
+                });
+            }
+    
+            document.getElementById('upazila').innerHTML = '<option value="" disabled selected>Select Upazila</option>';
+            document.getElementById('union').innerHTML = '<option value="" disabled selected>Select Union</option>';
+        });
+    
+        document.getElementById('zilla').addEventListener('change', function () {
+            const selectedZilla = this.value;
+            const upazilaSelect = document.getElementById('upazila');
+    
+            upazilaSelect.innerHTML = '<option value="" disabled selected>Select Upazila</option>';
+            if (upazilaData[selectedZilla]) {
+                upazilaData[selectedZilla].forEach(upazila => {
+                    upazilaSelect.innerHTML += `<option value="${upazila}">${upazila}</option>`;
+                });
+            }
+    
+            document.getElementById('union').innerHTML = '<option value="" disabled selected>Select Union</option>';
+        });
+    
+        document.getElementById('upazila').addEventListener('change', function () {
+            const selectedUpazila = this.value;
+            const unionSelect = document.getElementById('union');
+    
+            unionSelect.innerHTML = '<option value="" disabled selected>Select Union</option>';
+            if (unionData[selectedUpazila]) {
+                unionData[selectedUpazila].forEach(union => {
+                    unionSelect.innerHTML += `<option value="${union.name}" data-fee="${union.delivery_fee}">${union.name}</option>`;
+                });
+            }
+        });
+    
+        function updateDeliveryFee() {
+            const unionSelect = document.getElementById('union');
+            const selectedOption = unionSelect.options[unionSelect.selectedIndex];
+            const deliveryFee = parseFloat(selectedOption.getAttribute('data-fee')) || 60;
+    
+            const totalAmount = parseFloat('{{ total }}') + deliveryFee;
+    
+            document.getElementById('delivery-fee').textContent = `${deliveryFee} Taka`;
+            document.getElementById('total-amount').textContent = `${totalAmount.toFixed(2)} Taka`;
         }
-        
-        // Reset dependent dropdowns
-        document.getElementById('upazila').innerHTML = '<option value="" disabled selected>Select Upazila</option>';
-        document.getElementById('union').innerHTML = '<option value="" disabled selected>Select Union</option>';
-    });
 
-    // Zilla change handler
-    document.getElementById('zilla').addEventListener('change', function() {
-        const selectedZilla = this.value;
-        const upazilaSelect = document.getElementById('upazila');
-        
-        upazilaSelect.innerHTML = '<option value="" disabled selected>Select Upazila</option>';
-        if (upazilaData[selectedZilla]) {
-            upazilaData[selectedZilla].forEach(upazila => {
-                upazilaSelect.innerHTML += `<option value="${upazila}">${upazila}</option>`;
-            });
-        }
-        
-        // Reset union dropdown
-        document.getElementById('union').innerHTML = '<option value="" disabled selected>Select Union</option>';
-    });
-
-    // Upazila change handler
-    document.getElementById('upazila').addEventListener('change', function() {
-        const selectedUpazila = this.value;
-        const unionSelect = document.getElementById('union');
-        
-        unionSelect.innerHTML = '<option value="" disabled selected>Select Union</option>';
-        if (unionData[selectedUpazila]) {
-            unionData[selectedUpazila].forEach(union => {
-                unionSelect.innerHTML += `<option value="${union}">${union}</option>`;
-            });
-        }
-    });
-
-
-
-        // Handle payment option change
         document.getElementById("payment-options").addEventListener('change', function (event){
             if (event.target.value == 'bKash') {
                 document.querySelector('.bkash-info-taker').classList.add('active');
@@ -203,6 +205,7 @@
             document.querySelector(".presc-label").innerHTML = `<i class="fa-solid fa-check"></i>Prescription uploaded! Click to upload again`;
         });
     </script>
+    
 </body>
 
 </html>

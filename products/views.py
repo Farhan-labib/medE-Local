@@ -11,7 +11,7 @@ from .models import Orders
 from django.utils import timezone
 from django.core.files.storage import FileSystemStorage
 from custom_admin.models import Location
-
+from django.core.serializers.json import DjangoJSONEncoder
 
 def prod(request, p_link):
     
@@ -141,8 +141,7 @@ def checkout_view(request):
             
 
             # Add shipping cost (fixed at 60) if total is greater than 0
-            if total > 0:
-                total = round(total + 60, 2)
+            
 
             # Save information to the session
             request.session['prescription_required'] = prescription_required
@@ -187,6 +186,7 @@ def order_confirm(request):
     union_data = {}     # Key: upazila, Value: list of unions
 
     # First pass: Populate divisions
+    print(locations)
     for location in locations:
         if location.level == 'division':
             division_data[location.name] = location.name  # Store division name
@@ -215,6 +215,19 @@ def order_confirm(request):
                 union_data[parent_upazila] = []
             union_data[parent_upazila].append(location.name)
 
+    union_qs = Location.objects.filter(level='union')
+    union_data = {}
+
+    for union in union_qs:
+        parent_upazila = union.parent.name if union.parent else ""
+        if parent_upazila not in union_data:
+            union_data[parent_upazila] = []
+        union_data[parent_upazila].append({
+            'name': union.name,
+            'id': union.id,
+            'delivery_fee': float(union.delivery_fee) if union.delivery_fee else 60.0
+        })
+
     context = {
         'product_data_list': product_data_list,
         'prescription_required': prescription_required,
@@ -223,7 +236,8 @@ def order_confirm(request):
         'zilla_data': json.dumps(zilla_data),
         'upazila_data': json.dumps(upazila_data),
         'union_data': json.dumps(union_data),
-        'for_stock': for_stock
+        'for_stock': for_stock,
+        'union_data': json.dumps(union_data, cls=DjangoJSONEncoder),
     }
     return render(request, 'order_confirm.html', context)
 
