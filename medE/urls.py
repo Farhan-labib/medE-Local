@@ -52,6 +52,7 @@ urlpatterns = [
     path('admin/locations/', custom_admin.location_manage, name='location_manage'),
     path('admin/locations/delete/<int:location_id>/', custom_admin.location_delete, name='location_delete'),
     path('get-parents/', custom_admin.get_parents_by_level, name='get_parents_by_level'),
+    path('update-fee/', custom_admin.update_fee, name='update_fee'),
 
     path('',firstactivity.home, name='home'),
     path("Category<str:p_category>/",secondactivity.category,name='category'),

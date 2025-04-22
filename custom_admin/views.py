@@ -16,12 +16,11 @@ from django.db.models import Case, When, Value, IntegerField
 class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
-        fields = ['name', 'level', 'parent']
-
+        fields = ['name', 'level', 'parent', 'delivery_fee']
+    
     def __init__(self, *args, **kwargs):
         super(LocationForm, self).__init__(*args, **kwargs)
         self.fields['parent'].queryset = Location.objects.none()
-
         if 'level' in self.data:
             level = self.data.get('level').lower()
             if level == 'zilla':
@@ -30,49 +29,100 @@ class LocationForm(forms.ModelForm):
                 self.fields['parent'].queryset = Location.objects.filter(level='zilla')
             elif level == 'union':
                 self.fields['parent'].queryset = Location.objects.filter(level='upazila')
-        elif self.instance.pk:
-            if self.instance.parent:
-                self.fields['parent'].queryset = Location.objects.filter(level=self.instance.parent.level)
-            else:
-                self.fields['parent'].queryset = Location.objects.none()
+        elif self.instance.pk and self.instance.parent:
+            self.fields['parent'].queryset = Location.objects.filter(level=self.instance.parent.level)
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        level = cleaned_data.get('level')
+        delivery_fee = cleaned_data.get('delivery_fee')
+        
+        if level == 'union' and not delivery_fee:
+            self.add_error('delivery_fee', 'Delivery fee is required for Union level')
+        
+        return cleaned_data
+    
 
 
-# View for managing locations
+def location_edit(request, location_id):
+    location = get_object_or_404(Location, id=location_id)
+    
+    if request.method == 'POST':
+        form = LocationForm(request.POST, instance=location)
+        if form.is_valid():
+            form.save()
+            return redirect('location_manage')
+    else:
+        form = LocationForm(instance=location)
+    
+    return render(request, 'admin/location_edit.html', {
+        'form': form,
+        'location': location
+    })
+
+
 def location_manage(request):
     if request.method == 'POST':
-        form = LocationForm(request.POST)
+        if 'edit_form' in request.POST:
+            # This is an edit form submission
+            location_id = request.POST.get('location_id')
+            location = get_object_or_404(Location, id=location_id)
+            form = LocationForm(request.POST, instance=location)
+        else:
+            # This is a new location form submission
+            form = LocationForm(request.POST)
+            
         if form.is_valid():
             form.save()
             return redirect('location_manage')
     else:
         form = LocationForm()
-
-    # Custom sorting for levels: Division, Zilla, Upazila, Union
+    
+    # Rest of the view stays the same
     level_order = {
         'division': 1,
         'zilla': 2,
         'upazila': 3,
         'union': 4
     }
-
-    # Ordering locations with custom level ordering
+    
     locations = Location.objects.all().annotate(
         level_sort=Case(
             When(level='division', then=Value(level_order['division'])),
             When(level='zilla', then=Value(level_order['zilla'])),
             When(level='upazila', then=Value(level_order['upazila'])),
             When(level='union', then=Value(level_order['union'])),
-            default=Value(99),  # In case there are any unknown levels
+            default=Value(99),
             output_field=IntegerField()
         )
     ).order_by('level_sort', 'parent__level', 'name')
-
+    
     return render(request, 'admin/location_manage.html', {
         'form': form,
         'locations': locations,
     })
 
-
+@csrf_exempt  # Only for demonstration - in production, use proper CSRF protection
+def update_fee(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        location_id = data.get('location_id')
+        delivery_fee = data.get('delivery_fee')
+        
+        try:
+            location = Location.objects.get(id=location_id)
+            if location.level != 'union':
+                return JsonResponse({'success': False, 'message': 'Only union level locations can have delivery fees'})
+            
+            location.delivery_fee = delivery_fee
+            location.save()
+            return JsonResponse({'success': True})
+        except Location.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Location not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+    
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 # View for deleting a location
 def location_delete(request, location_id):
