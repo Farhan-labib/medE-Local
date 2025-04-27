@@ -27,9 +27,8 @@
         <main>
             <div class="container">
                 <div class="purchase-history">
-                  {% for item in medList %}
+                  {% for item in data_list %}
                     {% for p in item.prescriptions %}
-
                         {% if forloop.last %}
                         <img class="presc-image col-sm-6" src="../../media/{{p.0}}" alt="{{p.0}}" >
                             <form class="row col-sm-6" method="post" action="{% url 'presciptions_order' %}">
@@ -57,22 +56,21 @@
                             <label style="background-color: #de0000; color: white; border-radius: 3px;" for="division">Division</label>
                             <select name="division" id="division" required>
                                 <option value="" disabled selected>Select Division</option>
-                                <option value="Dhaka">Dhaka</option>
                             </select>
                             <br/>
-    
+
                             <label style="background-color: #de0000; color: white; border-radius: 3px;" for="zilla">Zilla</label>
                             <select name="zilla" id="zilla" required>
                                 <option value="" disabled selected>Select Zilla</option>
                             </select>
                             <br/>
-    
+
                             <label style="background-color: #de0000; color: white; border-radius: 3px;" for="upazila">Upazila</label>
                             <select name="upazila" id="upazila" required>
                                 <option value="" disabled selected>Select Upazila</option>
                             </select>
                             <br/>
-    
+
                             <label style="background-color: #de0000; color: white; border-radius: 3px;" for="union">Union</label>
                             <select name="union" id="union" required>
                                 <option value="" disabled selected>Select Union</option>
@@ -104,6 +102,10 @@
                                 <input required type="text" name="TxID" placeholder="Transaction ID (TxID)">
                             </div>
                         </div>
+                        <input type="hidden" id="hidden-division-data" value="{{ division_data }}">
+                        <input type="hidden" id="hidden-zilla-data" value="{{ zilla_data }}">
+                        <input type="hidden" id="hidden-upazila-data" value="{{ upazila_data }}">
+                        <input type="hidden" id="hidden-union-data" value="{{ union_data}}">
     
                         <button class="confirm-order" type="submit">Confirm Order</button>
                     </form>
@@ -111,111 +113,56 @@
             </div>
         </main>
         <script>
-            const zillaData = {
-                Dhaka: ['Narayanganj'],
-            };
+            const divisionData = JSON.parse(document.getElementById('hidden-division-data').value);
+        const zillaData = JSON.parse(document.getElementById('hidden-zilla-data').value);
+        const upazilaData = JSON.parse(document.getElementById('hidden-upazila-data').value);
+        const unionData = JSON.parse(document.getElementById('hidden-union-data').value);
     
-            const upazilaData = {
-                Narayanganj: [
-                    'Araihazar',
-                    'Bandar',
-                    'Narayanganj Sadar', // Ensure this key matches correctly
-                    'Rupganj',
-                    'Sonargaon',
-                ],
-            };
+        const divisionSelect = document.getElementById('division');
+        divisionData.forEach(division => {
+            divisionSelect.innerHTML += `<option value="${division}">${division}</option>`;
+        });
     
-            const unionData = {
-                Araihazar: [
-                    'Satgram',
-                    'Duptara',
-                    'Bramondi',
-                    'Fotehpur',
-                    'Bishnondi',
-                    'Mahmudpur',
-                    'Haijadi',
-                    'Uchitpura',
-                    'Kalapaharia',
-                    'Khadkanda',
-                ],
-                Bandar: [
-                    'Musapur',
-                    'Modonpur',
-                    'Bandar Union',
-                    'Dhamgar',
-                    'Kalagachia',
-                ],
-                'Narayanganj Sadar': [
-                    'City Corporation',
-                    'Fatullah',
-                    'Alirtek',
-                    'Kashipur',
-                    'Kutubpur',
-                    'Gonagar',
-                    'Boktaboli',
-                    'Enayetnagar',
-                ],
-                Rupganj: [
-                    'Murapara',
-                    'Vulta',
-                    'Goalkandail',
-                    'Daudpur',
-                    'Kayetpara',
-                    'Rupganj Union',
-                    'Kayetpara',
-                    'Bholabo',
-                ],
-                Sonargaon: [
-                    'Pirojpur',
-                    'Shomvupura',
-                    'Mograpara',
-                    'Baiddarbazar',
-                    'Barodi',
-                    'Noagao',
-                    'Jampur',
-                    'Sadipur',
-                    'Sonmandi',
-                    'Kachpur',
-                ],
-            };
+        divisionSelect.addEventListener('change', function () {
+            const selectedDivision = this.value;
+            const zillaSelect = document.getElementById('zilla');
     
-            // Event listener for division selection
-            document.getElementById('division').addEventListener('change', function () {
-                const selectedDivision = this.value;
-                const zillaSelect = document.getElementById('zilla');
-                zillaSelect.innerHTML = '<option value="" disabled selected>Select Zilla</option>';
-                if (zillaData[selectedDivision]) {
-                    zillaData[selectedDivision].forEach(zilla => {
-                        zillaSelect.innerHTML += `<option value="${zilla}">${zilla}</option>`;
-                    });
-                }
-                resetDependentFields(); // Reset dependent fields
-            });
+            zillaSelect.innerHTML = '<option value="" disabled selected>Select Zilla</option>';
+            if (zillaData[selectedDivision]) {
+                zillaData[selectedDivision].forEach(zilla => {
+                    zillaSelect.innerHTML += `<option value="${zilla}">${zilla}</option>`;
+                });
+            }
     
-            // Event listener for zilla selection
-            document.getElementById('zilla').addEventListener('change', function () {
-                const selectedZilla = this.value;
-                const upazilaSelect = document.getElementById('upazila');
-                upazilaSelect.innerHTML = '<option value="" disabled selected>Select Upazila</option>';
-                if (upazilaData[selectedZilla]) {
-                    upazilaData[selectedZilla].forEach(upazila => {
-                        upazilaSelect.innerHTML += `<option value="${upazila}">${upazila}</option>`;
-                    });
-                }
-                
-            });
+            document.getElementById('upazila').innerHTML = '<option value="" disabled selected>Select Upazila</option>';
+            document.getElementById('union').innerHTML = '<option value="" disabled selected>Select Union</option>';
+        });
     
-            // Event listener for upazila selection
-            document.getElementById('upazila').addEventListener('change', function () {
-                const selectedUpazila = this.value;
-                const unionSelect = document.getElementById('union');
-                unionSelect.innerHTML = '<option value="" disabled selected>Select Union</option>';
-                if (unionData[selectedUpazila]) {
-                    unionData[selectedUpazila].forEach(union => {
-                        unionSelect.innerHTML += `<option value="${union}">${union}</option>`;
-                    });
-                }
-            });
+        document.getElementById('zilla').addEventListener('change', function () {
+            const selectedZilla = this.value;
+            const upazilaSelect = document.getElementById('upazila');
+    
+            upazilaSelect.innerHTML = '<option value="" disabled selected>Select Upazila</option>';
+            if (upazilaData[selectedZilla]) {
+                upazilaData[selectedZilla].forEach(upazila => {
+                    upazilaSelect.innerHTML += `<option value="${upazila}">${upazila}</option>`;
+                });
+            }
+    
+            document.getElementById('union').innerHTML = '<option value="" disabled selected>Select Union</option>';
+        });
+    
+        document.getElementById('upazila').addEventListener('change', function () {
+            const selectedUpazila = this.value;
+            const unionSelect = document.getElementById('union');
+    
+            unionSelect.innerHTML = '<option value="" disabled selected>Select Union</option>';
+            if (unionData[selectedUpazila]) {
+                unionData[selectedUpazila].forEach(union => {
+                    unionSelect.innerHTML += `<option value="${union}">${union}</option>`;
+                });
+            }
+        });
     
         
         </script>

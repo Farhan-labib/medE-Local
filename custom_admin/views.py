@@ -502,12 +502,29 @@ def create_order(request):
             products = data['products']
             ordered_products = []
             total_amount = 0.0
+            
+            
 
             # Format ordered products as [('Medicine Name', 'Quantity', 'Total Price')]
             for product in products:
                 ordered_products.append((product[0], product[1], product[2]))
                 total_amount += float(product[2])
+         
+          
+            temp=[]
+            if data.get("delivery_address") and data["delivery_address"] != "null":
+                temp.append(data['delivery_address'])
+            union=temp[0].split(", ")
+            delivery_fee = 60 
+            try:
+                union_obj = Location.objects.get(name=union[3], level='union')
+                if union_obj.delivery_fee:
+                    delivery_fee = float(union_obj.delivery_fee)
+            except Location.DoesNotExist:
+                pass 
+            total_amount += delivery_fee
 
+            
 
             prescriptions_list = []
             if data.get("prescriptions") and data["prescriptions"] != "null":

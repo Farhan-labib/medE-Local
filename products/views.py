@@ -354,10 +354,55 @@ def remove_productList(request, product_id):
 def pres_confirm(request):
     phonenumber = request.user.phone_number
     saved_data = Profile_MedList.objects.filter(phone_number=phonenumber).values()
+    locations = Location.objects.all()
+
+    # Initialize data structures
+    division_data = {}  # Stores all divisions
+    zilla_data = {}     # Key: division, Value: list of zillas
+    upazila_data = {}   # Key: zilla, Value: list of upazilas
+    union_data = {}     # Key: upazila, Value: list of unions
+
+    # First pass: Populate divisions
+    print(locations)
+    for location in locations:
+        if location.level == 'division':
+            division_data[location.name] = location.name  # Store division name
+
+    # Second pass: Populate zillas under divisions
+    for location in locations:
+        if location.level == 'zilla' and location.parent:
+            parent_division = location.parent.name
+            if parent_division not in zilla_data:
+                zilla_data[parent_division] = []
+            zilla_data[parent_division].append(location.name)
+
+    # Third pass: Populate upazilas under zillas
+    for location in locations:
+        if location.level == 'upazila' and location.parent:
+            parent_zilla = location.parent.name
+            if parent_zilla not in upazila_data:
+                upazila_data[parent_zilla] = []
+            upazila_data[parent_zilla].append(location.name)
+
+    # Fourth pass: Populate unions under upazilas
+    for location in locations:
+        if location.level == 'union' and location.parent:
+            parent_upazila = location.parent.name
+            if parent_upazila not in union_data:
+                union_data[parent_upazila] = []
+            union_data[parent_upazila].append(location.name)
+
+    context={
+        'division_data': json.dumps(list(division_data.keys())),  # Convert to list for JS
+        'zilla_data': json.dumps(zilla_data),
+        'upazila_data': json.dumps(upazila_data), 
+        'union_data': json.dumps(union_data),
+        'data_list' : list(saved_data)
+    }
 
     # Convert the QuerySet to a list of dictionaries
     data_list = list(saved_data)
-    return render(request,'pres_confirm.html',{'medList': data_list})
+    return render(request,'pres_confirm.html',context )
 
 
 def presciptions_order(request):
