@@ -10,8 +10,14 @@ from django.conf import settings
 from .models import Orders
 from django.utils import timezone
 from django.core.files.storage import FileSystemStorage
-from custom_admin.models import Location
+from custom_admin.models import Location, TemporaryOrders
 from django.core.serializers.json import DjangoJSONEncoder
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseForbidden
+import ast
+
+
+
 
 def prod(request, p_link):
     
@@ -451,3 +457,40 @@ def update_medlist(request):
         return JsonResponse({'status': 'success'})
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+
+
+def view_temp_order(request, order_id):
+    # Get the temporary order
+    temp_order = get_object_or_404(TemporaryOrders, id=order_id)
+    
+    # Check if the user is authorized to view this order
+    if request.user.phone_number != temp_order.phonenumber:
+        return HttpResponseForbidden("You are not authorized to view this order.")
+    
+    # Process ordered products
+    ordered_products = []
+    if temp_order.ordered_products:
+        products_list = ast.literal_eval(temp_order.ordered_products)
+        for product in products_list:
+            name, quantity, price = product
+            ordered_products.append({
+                'name': name,
+                'quantity': quantity,
+                'price': price,
+                'subtotal': float(quantity) * float(price)
+            })
+    
+    # Calculate product subtotal
+    products_subtotal = sum(item['subtotal'] for item in ordered_products)
+    
+    # Calculate delivery fee
+    delivery_fee = float(temp_order.total) - products_subtotal
+    
+    context = {
+        'order': temp_order,
+        'ordered_products': ordered_products,
+        'products_subtotal': products_subtotal,
+        'delivery_fee': delivery_fee,
+    }
+    
+    return render(request, 'temp_order_invoice.html', context)

@@ -10,7 +10,7 @@ from django.utils import timezone
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from .models import Location
+from .models import Location, TemporaryOrders
 from django.db.models import Case, When, Value, IntegerField
 
 class LocationForm(forms.ModelForm):
@@ -495,26 +495,20 @@ def pres_details(request, order_id):
 def create_order(request):
     if request.method == "POST":
         try:
-            # Get data from request body
             data = json.loads(request.body)
 
-            # Extract product details
             products = data['products']
             ordered_products = []
             total_amount = 0.0
-            
-            
 
-            # Format ordered products as [('Medicine Name', 'Quantity', 'Total Price')]
             for product in products:
                 ordered_products.append((product[0], product[1], product[2]))
                 total_amount += float(product[2])
-         
-          
-            temp=[]
+
+            temp = []
             if data.get("delivery_address") and data["delivery_address"] != "null":
                 temp.append(data['delivery_address'])
-            union=temp[0].split(", ")
+            union = temp[0].split(", ")
             delivery_fee = 60 
             try:
                 union_obj = Location.objects.get(name=union[3], level='union')
@@ -524,16 +518,14 @@ def create_order(request):
                 pass 
             total_amount += delivery_fee
 
-            
-
             prescriptions_list = []
             if data.get("prescriptions") and data["prescriptions"] != "null":
-                    prescriptions_list.append(data['prescriptions'])
-        
-            # Create the order in the database
-            order = Orders.objects.create(
+                prescriptions_list.append(data['prescriptions'])
+
+            # Save to TemporaryOrders instead of Orders
+            temp_order = TemporaryOrders.objects.create(
                 phonenumber=data['phone_number'],
-                ordered_products=str(ordered_products),  # Save as a string of the tuple
+                ordered_products=str(ordered_products),
                 total=total_amount,
                 del_adress=data['delivery_address'],
                 payment_options=data['payment_method'],
@@ -545,8 +537,7 @@ def create_order(request):
                 timestamp=timezone.now(),
             )
 
-            # Send success response
-            return JsonResponse({"message": "Order Created Successfully", "order_id": order.id}, status=201)
+            return JsonResponse({"message": "Temporary Order Created", "temp_order_id": temp_order.id}, status=201)
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)

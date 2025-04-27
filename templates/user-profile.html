@@ -405,6 +405,7 @@
 	
 
 		<div class="purchase-history container">
+			<h3>Need Confirmation</h3>
 			<table>
 				<thead>
 					<th>Invoice No.</th>
@@ -414,7 +415,45 @@
 					<th>Status</th>
 				</thead>
 				<tbody>
-					{% for key, value in temp.items %}
+					{% for key, value in temp_orders.items %}
+					<tr style="cursor: pointer;" onclick="window.location.href='/temp-order/{{ key }}/'">
+						<td data-title="Invoice No">{{ key }}</td>
+						<td data-title="Orders">
+							<ul>
+								{% for item in value.0 %}
+									<li>{{ item }}</li>
+								{% endfor %}
+							</ul>
+						</td>
+						<td data-title="Amount">{{ value.1 }}</td>
+						<td data-title="Date">{{ value.2|date:"d F Y" }}</td>
+						{% if value.3 == "Pending" %}
+						<td data-title="Status"><p style="background-color: lightyellow; color: black;">{{ value.3 }} </p></td>
+						{% elif value.3 == "Completed" %}
+						<td data-title="Status"><p style="background-color: green;">{{ value.3 }} </p></td>
+						{% elif value.3 == "Confirmed" %}
+						<td data-title="Status"><p style="background-color: lightgreen;color: black;">{{ value.3 }}</p></td>
+						{% elif value.3 == "Shipping" %}
+						<td data-title="Status"><p style="background-color: yellow; color: black;">{{ value.3 }} </p></td>
+						{% elif value.3 == "Failed" %}
+						<td data-title="Status"><p style="background-color: red;">{{ value.3 }} </p></td>
+						{% endif %}
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<hr/>
+			<h3>Confirmed Orders</h3>
+			<table>
+				<thead>
+					<th>Invoice No.</th>
+					<th>Orders</th>
+					<th>Amount</th>
+					<th>Date</th>
+					<th>Status</th>
+				</thead>
+				<tbody>
+					{% for key, value in orders.items %}
 					<tr>
 						<td data-title="Invoice No">{{ key }}</td>
 						<td data-title="Orders">
@@ -427,21 +466,21 @@
 						<td data-title="Amount">{{ value.1 }}</td>
 						<td data-title="Date">{{ value.2|date:"d F Y" }}</td>
 						{% if value.3 == "Pending" %}
-						<td data-title="Status" ><p style="background-color: lightyellow; color: black;">{{ value.3 }}</p></td>
-						{%elif value.3 == "Completed" %}
-						<td data-title="Status" ><p style="background-color: green;">{{ value.3 }}</p></td>
-						{%elif value.3 == "Confirmed" %}
-						<td data-title="Status" ><p style="background-color: lightgreen;color: black;">{{ value.3 }}</p></td>
-						{%elif value.3 == "Shipping" %}
-						<td data-title="Status" ><p style="background-color: yellow; color: black;">{{ value.3 }}</p></td>
-						{%elif value.3 == "Failed" %}
-						<td data-title="Status" ><p style="background-color: red;">{{ value.3 }}</p></td>
+						<td data-title="Status"><p style="background-color: lightyellow; color: black;">{{ value.3 }}</p></td>
+						{% elif value.3 == "Completed" %}
+						<td data-title="Status"><p style="background-color: green;">{{ value.3 }}</p></td>
+						{% elif value.3 == "Confirmed" %}
+						<td data-title="Status"><p style="background-color: lightgreen;color: black;">{{ value.3 }}</p></td>
+						{% elif value.3 == "Shipping" %}
+						<td data-title="Status"><p style="background-color: yellow; color: black;">{{ value.3 }}</p></td>
+						{% elif value.3 == "Failed" %}
+						<td data-title="Status"><p style="background-color: red;">{{ value.3 }}</p></td>
 						{% endif %}
 					</tr>
 					{% endfor %}
 				</tbody>
-				
 			</table>
+			
 		</div>
 		<div class="list container">
 			<table>

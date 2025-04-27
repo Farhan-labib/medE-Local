@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from decimal import Decimal
+from django.utils import timezone
 
 class Location(models.Model):
     LEVEL_CHOICES = [
@@ -26,3 +27,20 @@ class Location(models.Model):
 
     class Meta:
         unique_together = ('name', 'level', 'parent')
+
+
+class TemporaryOrders(models.Model):
+    phonenumber = models.CharField(max_length=20)
+    ordered_products = models.TextField()
+    total = models.FloatField()
+    del_adress = models.TextField(null=True, blank=True)
+    payment_options = models.CharField(max_length=50)
+    status = models.CharField(max_length=20, default="Pending")
+    TxID = models.CharField(max_length=100, null=True, blank=True)
+    paymentMobile = models.CharField(max_length=20, null=True, blank=True)
+    prescriptions = models.JSONField(null=True, blank=True)
+    Delivery_status = models.CharField(max_length=20, default="Pending")
+    timestamp = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Temporary Order by {self.phonenumber}"

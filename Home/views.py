@@ -6,7 +6,7 @@ from authentication.models import UserProfile
 from products.models import Profile_MedList
 from products.models import presciption_order
 import ast
-from custom_admin.models import Location
+from custom_admin.models import Location, TemporaryOrders
 from django.http import JsonResponse
 from products.models import main_product 
 from django.core.files.storage import FileSystemStorage
@@ -26,32 +26,45 @@ def home(request):
 def profile(request):
     User = UserProfile()
     phonenumber = request.user.phone_number
-    orders = Orders.objects.filter(phonenumber=phonenumber) 
-    p_order=presciption_order.objects.filter(phonenumber=phonenumber) 
-    temp={}
+    
+    # Get data from both tables
+    orders = Orders.objects.filter(phonenumber=phonenumber)
+    temp_orders = TemporaryOrders.objects.filter(phonenumber=phonenumber)
+    p_order = presciption_order.objects.filter(phonenumber=phonenumber)
+    
+    # Process Orders data
+    orders_data = {}
     for i in orders:
-        d=[]
-        data=ast.literal_eval(i.ordered_products)
+        d = []
+        data = ast.literal_eval(i.ordered_products)
         for item in data:
             name, number, _ = item
-            d.append(str(name+"X"+number))
-
-
-        temp[i.id]=[d,i.total,i.timestamp,i.status]
-
-    # Medlist  From here
-
+            d.append(str(name + "X" + number))
+        
+        orders_data[i.id] = [d, i.total, i.timestamp, i.status]
     
-    # print('User Phone Number:', phonenumber)  # Check the user phone number in Django console
-
-    # Assuming 'phone_number' is the field name in your Profile_MedList model
+    # Process TemporaryOrders data
+    temp_orders_data = {}
+    for i in temp_orders:
+        d = []
+        data = ast.literal_eval(i.ordered_products)
+        for item in data:
+            name, number, _ = item
+            d.append(str(name + "X" + number))
+        
+        temp_orders_data[i.id] = [d, i.total, i.timestamp, i.status, True]  # Last True indicates temporary order
+    
+    # Fetch MedList data
     saved_data = Profile_MedList.objects.filter(phone_number=phonenumber).values()
-
-    # Convert the QuerySet to a list of dictionaries
     data_list = list(saved_data)
-    # print(data_list)
-    print(p_order)
-    return render(request, 'user-profile.html', {'temp': temp,'medList': data_list, 'p_order':p_order,  'user_phone_number': phonenumber})
+    
+    return render(request, 'user-profile.html', {
+        'orders': orders_data,
+        'temp_orders': temp_orders_data,
+        'medList': data_list, 
+        'p_order': p_order,
+        'user_phone_number': phonenumber
+    })
 
 
 def quick_order(request):

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Invoice #{{ order.id }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        h2 {
+            color: #3498db;
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        .total-row td {
+            font-weight: bold;
+            background-color: #f8f9fa;
+        }
+        .delivery-fee td {
+            background-color: #f8f9fa;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .status-pending {
+            background-color: lightyellow;
+            color: black;
+        }
+        .status-completed {
+            background-color: green;
+            color: white;
+        }
+        .status-confirmed {
+            background-color: lightgreen;
+            color: black;
+        }
+        .status-shipping {
+            background-color: yellow;
+            color: black;
+        }
+        .status-failed {
+            background-color: red;
+            color: white;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .btn-secondary {
+            background-color: #95a5a6;
+        }
+        .actions {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .status-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            position: relative;
+        }
+        .status-timeline:before {
+            content: '';
+            position: absolute;
+            height: 3px;
+            background: #ddd;
+            width: 100%;
+            top: 15px;
+        }
+        .status-point {
+            width: 20px;
+            height: 20px;
+            background: #ddd;
+            border-radius: 50%;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 5px;
+        }
+        .status-label {
+            font-size: 12px;
+        }
+        .status-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        .active .status-point {
+            background: #2ecc71;
+        }
+        
+        @media print {
+            .btn, .actions {
+                display: none;
+            }
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Order Invoice</h1>
+            <p>Temporary Order #{{ order.id }}</p>
+        </div>
+        
+        <div class="section">
+            <h2>Order Information</h2>
+            <p><strong>Date:</strong> {{ order.timestamp|date:"F d, Y, g:i A" }}</p>
+            <p>
+                <strong>Status:</strong> 
+                <span class="status {% if order.status == 'Pending' %}status-pending{% elif order.status == 'Completed' %}status-completed{% elif order.status == 'Confirmed' %}status-confirmed{% elif order.status == 'Shipping' %}status-shipping{% elif order.status == 'Failed' %}status-failed{% endif %}">
+                    {{ order.status }}
+                </span>
+            </p>
+        </div>
+        
+        <div class="section">
+            <h2>Customer Information</h2>
+            <p><strong>Phone Number:</strong> {{ order.phonenumber }}</p>
+            <p><strong>Delivery Address:</strong> {{ order.del_adress }}</p>
+            <p><strong>Payment Method:</strong> {{ order.payment_options }}</p>
+            {% if order.payment_options == "bKash" or order.payment_options == "Nagad" or order.payment_options == "Rocket" %}
+                <p><strong>Payment Mobile:</strong> {{ order.paymentMobile }}</p>
+                <p><strong>Transaction ID:</strong> {{ order.TxID }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="section">
+            <h2>Ordered Products</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in ordered_products %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>৳{{ item.price }}</td>
+                        <td>৳{{ item.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="delivery-fee">
+                        <td colspan="3">Delivery Fee</td>
+                        <td>৳{{ delivery_fee }}</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="3">Total</td>
+                        <td>৳{{ order.total }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    
+    
+        
+        <div class="actions">
+            <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
+            <button onclick="window.print()" class="btn">Print Invoice</button>
+        </div>
+    </div>
+</body>
+</html>

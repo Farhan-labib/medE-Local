@@ -82,6 +82,7 @@ urlpatterns = [
     path('forgot_pass2/', authenticationViews.forgot_pass2, name='forgot_pass2'),
     path('send_forgot_otp/', authenticationViews.send_forgot_otp, name='send_forgot_otp'),
     path('update_medlist/', secondactivity.update_medlist, name='update_medlist'),
+    path('temp-order/<int:order_id>/', secondactivity.view_temp_order, name='view_temp_order'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
