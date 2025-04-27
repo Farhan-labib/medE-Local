@@ -15,6 +15,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseForbidden
 import ast
+from django.contrib.auth.decorators import login_required
+
 
 
 
@@ -458,7 +460,7 @@ def update_medlist(request):
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
-
+@login_required(login_url='/login/')
 def view_temp_order(request, order_id):
     # Get the temporary order
     temp_order = get_object_or_404(TemporaryOrders, id=order_id)

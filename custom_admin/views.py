@@ -12,6 +12,9 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from .models import Location, TemporaryOrders
 from django.db.models import Case, When, Value, IntegerField
+from twilio.rest import Client
+from django.conf import settings
+
 
 class LocationForm(forms.ModelForm):
     class Meta:
@@ -509,13 +512,13 @@ def create_order(request):
             if data.get("delivery_address") and data["delivery_address"] != "null":
                 temp.append(data['delivery_address'])
             union = temp[0].split(", ")
-            delivery_fee = 60 
+            delivery_fee = 60  # Default fee
             try:
                 union_obj = Location.objects.get(name=union[3], level='union')
                 if union_obj.delivery_fee:
                     delivery_fee = float(union_obj.delivery_fee)
             except Location.DoesNotExist:
-                pass 
+                pass  # If location not found, use default delivery fee
             total_amount += delivery_fee
 
             prescriptions_list = []
@@ -537,10 +540,34 @@ def create_order(request):
                 timestamp=timezone.now(),
             )
 
+            # Send SMS via Twilio
+            client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+
+            message_body = (
+                            f"Dear Customer,\n"
+                            f"Your order has been generated.\n"
+                            f"Please click the link to go to your order page and confirm the order:\n"
+                            f"http://127.0.0.1:8000/temp-order/{temp_order.id}/\n\n"
+                            f"Thank you"
+                           )
+
+
+            try:
+                message = client.messages.create(
+                    body=message_body,
+                    from_=settings.TWILIO_PHONE_NUMBER,
+                    to=data['phone_number']  # Make sure it's in international format like +123456789
+                )
+            except Exception as e:
+                print(f"Twilio error: {e}")  # You might want to log this instead of print in production
+
             return JsonResponse({"message": "Temporary Order Created", "temp_order_id": temp_order.id}, status=201)
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
+            
+
+  
         
 
 
