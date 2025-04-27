@@ -204,7 +204,8 @@
                     {% endfor %}
                     <tr class="delivery-fee">
                         <td colspan="3">Delivery Fee</td>
-                        <td>৳{{ delivery_fee }}</td>
+                        <td>৳{{ delivery_fee|floatformat:0 }}</td>
+
                     </tr>
                     <tr class="total-row">
                         <td colspan="3">Total</td>
@@ -214,12 +215,13 @@
             </table>
         </div>
         
-    
-    
-        
+        <!-- Confirm Button -->
         <div class="actions">
-            <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
-            <button onclick="window.print()" class="btn">Print Invoice</button>
+            <form action="{% url 'user_confirm' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="order_id" value="{{ order.id }}">
+                <button type="submit" class="btn">Confirm Order</button>
+            </form>
         </div>
     </div>
 </body>

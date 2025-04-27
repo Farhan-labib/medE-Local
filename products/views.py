@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.db import connection
 from .models import main_product, Profile_MedList, presciption_order
@@ -494,3 +494,30 @@ def view_temp_order(request, order_id):
     }
     
     return render(request, 'temp_order_invoice.html', context)
+
+
+
+def user_confirm(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        temporary_order = TemporaryOrders.objects.get(id=order_id)
+
+        # Create a confirmed order from the temporary one
+        confirmed_order = Orders.objects.create(
+            ordered_products=temporary_order.ordered_products,
+            prescriptions=temporary_order.prescriptions,
+            timestamp=temporary_order.timestamp,
+            phonenumber=temporary_order.phonenumber,
+            del_adress=temporary_order.del_adress,
+            payment_options=temporary_order.payment_options,
+            paymentMobile=temporary_order.paymentMobile,
+            TxID=temporary_order.TxID,
+            total=temporary_order.total,
+            # Copy all necessary fields from temporary_order
+        )
+
+        # Optionally delete the temporary order after confirmation
+        temporary_order.delete()
+
+        return redirect('profile')  # Redirect to the confirmed order details page
+    return redirect('profile')  # Redirect if method is not POST

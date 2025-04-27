@@ -14,6 +14,7 @@ from products.models import Orders
 import ast
 from products.models import Profile_MedList
 from products.models import presciption_order
+from custom_admin.models import TemporaryOrders, Location
 
 def mylogin(request):
     if request.method == 'POST':
@@ -260,35 +261,43 @@ def update_profile(request):
         # print("After save:", user_profile.first_name)  # Check user profile data after saving
 
         User = UserProfile()
-        phonenumber = request.user.phone_number
-        orders = Orders.objects.filter(phonenumber=phonenumber) 
-        temp={}
-        for i in orders:
-            d=[]
-            data=ast.literal_eval(i.ordered_products)
-            for item in data:
-                name, number, _ = item
-                d.append(str(name+"X"+number))
-
-
-            temp[i.id]=[d,i.total,i.timestamp,i.status]
-
-        # Medlist  From here
-
+    phonenumber = request.user.phone_number
+    
+    # Get data from both tables
+    orders = Orders.objects.filter(phonenumber=phonenumber)
+    temp_orders = TemporaryOrders.objects.filter(phonenumber=phonenumber)
+    p_order = presciption_order.objects.filter(phonenumber=phonenumber)
+    
+    # Process Orders data
+    orders_data = {}
+    for i in orders:
+        d = []
+        data = ast.literal_eval(i.ordered_products)
+        for item in data:
+            name, number, _ = item
+            d.append(str(name + "X" + number))
         
-        # print('User Phone Number:', phonenumber)  # Check the user phone number in Django console
-
-        # Assuming 'phone_number' is the field name in your Profile_MedList model
-        saved_data = Profile_MedList.objects.filter(phone_number=phonenumber).values()
-
-        # Convert the QuerySet to a list of dictionaries
-        data_list = list(saved_data)
-        # print(data_list)
-        p_order=presciption_order.objects.filter(phonenumber=phonenumber) 
-
-
-        # Redirect to a success page or any other desired behavior after successful form submission
-        return render(request, 'user-profile.html', {'temp': temp,'medList': data_list, 'p_order':p_order})  # Redirect to a success template
-
-    # Handle GET request or display the form
-    return render(request, 'user-profile.html')
+        orders_data[i.id] = [d, i.total, i.timestamp, i.status]
+    
+    # Process TemporaryOrders data
+    temp_orders_data = {}
+    for i in temp_orders:
+        d = []
+        data = ast.literal_eval(i.ordered_products)
+        for item in data:
+            name, number, _ = item
+            d.append(str(name + "X" + number))
+        
+        temp_orders_data[i.id] = [d, i.total, i.timestamp, i.status, True]  # Last True indicates temporary order
+    
+    # Fetch MedList data
+    saved_data = Profile_MedList.objects.filter(phone_number=phonenumber).values()
+    data_list = list(saved_data)
+    
+    return render(request, 'user-profile.html', {
+        'orders': orders_data,
+        'temp_orders': temp_orders_data,
+        'medList': data_list, 
+        'p_order': p_order,
+        'user_phone_number': phonenumber
+    })
