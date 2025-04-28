@@ -273,10 +273,20 @@ def update_profile(request):
     for i in orders:
         d = []
         data = ast.literal_eval(i.ordered_products)
+        print("hello world", data)
         for item in data:
-            name, number, _ = item
-            d.append(str(name + "X" + number))
-        
+            try:
+                # Check if item has 3 elements
+                if len(item) == 3:
+                    name, number, _ = item
+                    d.append(str(name + "X" + number))
+                else:
+                    # Handle the case where the length is not 3
+                    name, number, unit, price = item  # Adjust based on the correct number of elements
+                    d.append(f"{name}X{number} ({unit} - {price})")  # Customize as per your needs
+            except ValueError:
+                print(f"Skipping invalid item: {item}")
+
         orders_data[i.id] = [d, i.total, i.timestamp, i.status]
     
     # Process TemporaryOrders data

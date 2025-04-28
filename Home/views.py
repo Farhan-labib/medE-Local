@@ -37,10 +37,20 @@ def profile(request):
     for i in orders:
         d = []
         data = ast.literal_eval(i.ordered_products)
+        print("hello world", data)
         for item in data:
-            name, number, _ = item
-            d.append(str(name + "X" + number))
-        
+            try:
+                # Check if item has 3 elements
+                if len(item) == 3:
+                    name, number, _ = item
+                    d.append(str(name + "X" + number))
+                else:
+                    # Handle the case where the length is not 3
+                    name, number, unit, price = item  # Adjust based on the correct number of elements
+                    d.append(f"{name}X{number} ({unit} - {price})")  # Customize as per your needs
+            except ValueError:
+                print(f"Skipping invalid item: {item}")
+
         orders_data[i.id] = [d, i.total, i.timestamp, i.status]
     
     # Process TemporaryOrders data
@@ -81,9 +91,9 @@ def quick_order(request):
         dayy = med_list[key][1]  # The value 5
         products_data = main_product.objects.filter(p_id=int(key)).values('p_name', 'medPerStrip', 'p_price','p_discount')
         medPerStrip = products_data[counter]['medPerStrip']
-        price=(products_data[counter]['p_price'] - (products_data[counter]['p_price']*(products_data[counter]['p_discount']/100)))/medPerStrip
+        price=(products_data[counter]['p_price'] - (products_data[counter]['p_price']*(products_data[counter]['p_discount']/100)))
         quantity=(products_data[counter]['medPerStrip']*morning_day_len*dayy)/medPerStrip
-        t.append((products_data[counter]['p_name'], str(int(quantity)), '{:.2f}'.format(float(price * quantity))))         
+        t.append((products_data[counter]['p_name'], str(int(quantity)),"Piece", '{:.2f}'.format(float(price * quantity))))         
         total+=round(price*quantity,2)
 
     
