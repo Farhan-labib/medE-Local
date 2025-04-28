@@ -37,15 +37,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for product_name, quantity, price in product_data_list %}
-                        <tr>
-                            <td>{{ product_name }}</td>
-                            <td>
-                                <span class="quantity">{{ quantity }}</span>
-                            </td>
-                            <td>{{ price }} Taka</td>
-                        </tr>
-                        {% endfor %}
+                        {% for product_name, quantity, packaging, price in product_data_list %}
+<tr>
+    <td>{{ product_name }}</td>
+    <td><span class="quantity">{{ quantity }} {{ packaging }}</span></td>
+    <td>{{ price }} Taka</td>
+</tr>
+{% endfor %}
+
                         <tr style="background-color: rgb(195, 255, 139);">
                             <td colspan="2" rowspan="1">Delivery Charge</td>
                             <td id="delivery-fee">-- Taka</td>

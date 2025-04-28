@@ -30,6 +30,12 @@ class main_product(models.Model):
     ('Pain Relief', 'Pain Relief'),
     )
 
+    BUNDLING_CHOICES = (
+        ('Box', 'Box'),
+        ('Pack', 'Pack'),
+        ('Piece', 'Piece'),
+    )
+
     feature_CHOICES = (('yes', 'yes'), ('no', 'no'))
     OTC_CHOICES = (('yes', 'Yes'),('no', 'No'))
     add_list= (('yes', 'Yes'),('no', 'No'))
@@ -48,7 +54,9 @@ class main_product(models.Model):
     p_category = models.CharField(max_length=255, choices=CATEGORY_CHOICES)
     p_Administration = models.TextField(blank=True)
     Features_Specifications = models.TextField(blank=True)
+    bundling = models.CharField(max_length=1024, blank=True, null=True) 
     medPerStrip = models.DecimalField(max_digits=10, decimal_places=2, default=1)
+    stripPerBox = models.DecimalField(max_digits=10, decimal_places=2, default=1)
     p_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     p_discount = models.DecimalField(max_digits=5, decimal_places=2, default=0)

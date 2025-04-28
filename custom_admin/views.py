@@ -633,7 +633,19 @@ class ProductEditForm(forms.Form):
     Purchase_Price = forms.DecimalField(max_digits=10, decimal_places=2)
     p_price = forms.DecimalField(max_digits=10, decimal_places=2)
     p_discount = forms.DecimalField(max_digits=5, decimal_places=2)
-    medPerStrip = forms.DecimalField(max_digits=10, decimal_places=2)
+    BUNDLING_CHOICES = [
+        ('Box', 'Box'),
+        ('Pack', 'Pack'),
+        ('Piece', 'Piece')
+    ]
+    bundling = forms.MultipleChoiceField(
+        choices=BUNDLING_CHOICES,
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+
+    medPerStrip = forms.DecimalField(max_digits=10, decimal_places=2, required=False)
+    stripPerBox = forms.DecimalField(max_digits=10, decimal_places=2, required=False)
     
     # Hidden field for inventory
     inventory = forms.IntegerField(widget=forms.HiddenInput(), required=False)
@@ -660,6 +672,12 @@ def inventory_edit(request, product_id):
             product.p_price = form.cleaned_data['p_price']
             product.p_discount = form.cleaned_data['p_discount']
             product.medPerStrip = form.cleaned_data['medPerStrip']
+            product.stripPerBox = form.cleaned_data['stripPerBox']
+
+            # Save the selected bundling values (if any)
+            bundling_values = form.cleaned_data['bundling']
+            product.bundling = ', '.join(bundling_values)  # Save as a comma-separated string (or adjust as needed)
+
             product.inventory = 1
             
             # Save the updated product to the database
@@ -682,6 +700,8 @@ def inventory_edit(request, product_id):
             'p_price': product.p_price,
             'p_discount': product.p_discount,
             'medPerStrip': product.medPerStrip,
+            'stripPerBox': product.stripPerBox,
+            'bundling': product.bundling.split(', ') if product.bundling else [],  # Pre-fill the bundling checkboxes if set
         }
 
         form = ProductEditForm(initial=initial_data)

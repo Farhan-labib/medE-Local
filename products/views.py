@@ -102,6 +102,7 @@ def get_product_info(request, p_id):
             'p_discount': str(product.p_discount),
             'discounted_price':product.p_price - (product.p_price * (product.p_discount / 100)),
             'medPerStrip':product.medPerStrip,
+            'stripPerBox':product.stripPerBox,
             'p_image':str(product.p_image),
             'add_to_list':product.add_to_list,
             # Add other fields as needed
@@ -138,7 +139,16 @@ def checkout_view(request):
                 product_price_after_discount = round(product.p_price - (product.p_price * (product.p_discount / 100)), 2)
                 
                 # Calculate the total for the product (quantity * price) and round to 2 decimal places
-                product_total = round(value * product_price_after_discount, 2)
+            
+                if(value['packaging']=='Pack'):
+                    product_total = round(value['quantity'] * product_price_after_discount * product.medPerStrip, 2)
+                
+                elif(value['packaging']=='Box'):
+                    product_total = round(value['quantity'] * product_price_after_discount * product.medPerStrip * product.stripPerBox, 2)
+                
+                else:
+                    product_total = round(value['quantity'] * product_price_after_discount, 2)
+
 
                 # Update the overall total and round it
                 total += product_total
@@ -179,10 +189,24 @@ def order_confirm(request):
     print(for_stock)
     
     # Split product data into tuples
-    product_data_list = [
-        (product_name, *product_data.split(';')) 
-        for product_name, product_data in output.items()
-    ]
+    print("Checkout Output:", output)
+
+    product_data_list = []
+    for product_name, product_data in output.items():
+        parts = product_data.split(';')
+        if len(parts) >= 2:
+            info_str = parts[0]  # This is the "{'packaging': 'Box', 'quantity': 2, ...}"
+            try:
+                info_dict = ast.literal_eval(info_str)
+                quantity = info_dict.get('quantity', 0)
+                packaging = info_dict.get('packaging', '')
+                price = parts[1]  # subtotal price
+                product_data_list.append((product_name, quantity, packaging, price))
+            except Exception as e:
+                print(f"Error parsing product data for {product_name}: {e}")
+        else:
+            print(f"Invalid product_data for {product_name}: {product_data}")
+
 
     # Get locations from the database
     locations = Location.objects.all()

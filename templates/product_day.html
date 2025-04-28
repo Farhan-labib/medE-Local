@@ -81,20 +81,7 @@
 						<div id= "cart-container">
 
 							
-							<!-- <div class="cartbox" id="cartbox-${p_id}">
-							  <button class="cart-trash">
-								<ion-icon name="trash"></ion-icon>
-							  </button>
-							  <img src="" alt="">
-							  <div class="cart-content">
-								<h3 id="productName-${p_id}"></h3>
-								<div style="display: grid; grid-template-columns: 0.5fr 1fr; gap: 1px;">
-								  <span class="cart-content-price" id="productPrice-${p_id}"></span>
-								  <span class="quantity"></span><br>
-								  <span class="quantity">Days: 7</span>
-								</div>
-							  </div>
-							</div> -->
+	
 						  </div>
 						  
 						<div class="total"></div>
@@ -344,6 +331,29 @@
 							<p class="prescription-message">You need to provide a prescription for this medicine</p>
 						{% endif %}
 					</div>
+
+					<div class="packaging-select">
+						<label for="packaging">Select Packaging Type:</label>
+						<select id="packaging">
+							<!-- Only show Piece option -->
+							<option value="Piece">Piece</option>
+							
+							<!-- Show Pack option only if medPerStrip > 1 -->
+							{% if product_details.medPerStrip > 1 %}
+								<option value="Pack">
+									<strong>Pack</strong> (1 Pack = {{ product_details.medPerStrip|floatformat:"0" }} pieces)
+								</option>
+							{% endif %}
+							
+							<!-- Show Box option only if stripPerBox > 1 -->
+							{% if product_details.stripPerBox > 1 %}
+								<option value="Box">
+									<strong>Box</strong> (1 Box = {{ product_details.stripPerBox|floatformat:"0" }} Packs)
+								</option>
+							{% endif %}
+						</select>
+					</div>
+					
 
                     <div class="quantity">
 						<button class="decrease-btn">-</button>

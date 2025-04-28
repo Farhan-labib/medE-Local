@@ -198,8 +198,8 @@
                 {% for product in ordered_products %}
                     <tr>
                         <td>{{ product.0 }}</td>  <!-- Product Name (index 0) -->
-                        <td>{{ product.1 }}</td>  <!-- Quantity (index 1) -->
-                        <td>{{ product.2 }}</td>  <!-- Price (index 2) -->
+                        <td>{{ product.1 }} {{product.2}}</td>  <!-- Quantity (index 1) -->
+                        <td>{{ product.3 }}</td>  <!-- Price (index 2) -->
                     </tr>
                 {% empty %}
                     <tr>
