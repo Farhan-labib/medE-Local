@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
-
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,28 +8,21 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 	<link rel="icon" type="image/x-icon" href="{% static 'favicon.png' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 	<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 	<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
-
 <body>
 	<header>
 		<div class="header-main" data-header>
 			<div class="container">
 				<a class="header-logo" href="{%url 'home'%}">
-					<img src="{% static 'Logo.jpg' %}" alt=" medX logo" height="50px" width="80px">
+					<img src="{% static 'Logo.jpg' %}" alt="medX logo" height="50" width="80">
 				</a>
 				<div class="header-search-container">
-
-					<input type="search" name="search" id="search-input" class="search-field"
-						placeholder="Type to search products...">
-					<div id="search-results">
-
-
-					</div>
+					<input type="search" name="search" id="search-input" class="search-field" placeholder="Type to search products...">
+					<div id="search-results"></div>
 					<button class="search-btn" onclick="searchresults()">
 						<ion-icon name="search"></ion-icon>
 					</button>
@@ -44,60 +36,36 @@
 						<button class="mobile-srch-btn action-btn" onclick="searchresults2()">
 							<ion-icon name="search-outline"></ion-icon>
 						</button>
-						<div id="search-results2">
-
-
-						</div>
+						<div id="search-results2"></div>
 					</div>
 					{% if user.is_authenticated %}
 					<button id="select-image" class="action-btn">
 						<img src="{%static 'prescription.png'%}" alt="prescription-upload-icon" width="30">
 					</button>
-						{% else %}
-						<a href="{% url 'mylogin' %}"><button >
-							<img src="{%static 'prescription.png'%}" alt="prescription-upload-icon" width="30">
-						</button></a>
-						{% endif %}
+					{% else %}
+					<a href="{% url 'mylogin' %}"><button>
+						<img src="{%static 'prescription.png'%}" alt="prescription-upload-icon" width="30">
+					</button></a>
+					{% endif %}
 					
 					<button id="user-login-btn" class="action-btn">
 						<ion-icon name="person-outline"></ion-icon>
 					</button>
-
-
 					<button id="cart-btn" class="action-btn">
 						<ion-icon name="bag-outline"></ion-icon>
 						<span class="btn-badge"></span>
 					</button>
 					<div class="shopping-cart">
-						<!-- HTML template for a product cartbox -->
-						<div id="cart-container">
-							<!-- <div class="cartbox" id="cartbox-${p_id}">
-									  <button class="cart-trash">
-										<ion-icon name="trash"></ion-icon>
-									  </button>
-									  <img src="" alt="">
-									  <div class="cart-content">
-										<h3 id="productName-${p_id}"></h3>
-										<div style="display: grid; grid-template-columns: 0.5fr 1fr; gap: 1px;">
-										  <span class="cart-content-price" id="productPrice-${p_id}"></span>
-										  <span class="quantity"></span><br>
-										  <span class="quantity">Days: 7</span>
-										</div>
-									  </div>
-									</div> -->
-						</div>
-
+						<div id="cart-container"></div>
 						<div class="total"></div>
 						{% if user.is_authenticated %}
 						<a class="cart-checkout-btn" id="checkout-button">Checkout</a>
 						{% else %}
-						<a href="{% url 'mylogin' %}" class="cart-checkout-btn" id="">Checkout</a>
+						<a href="{% url 'mylogin' %}" class="cart-checkout-btn">Checkout</a>
 						{% endif %}
 					</div>
-
 					<div style="text-align:center;" class="user-login">
 						{% if user.is_authenticated %}
-						
 						<a href="{% url 'profile' %}" class="form-btn">Profile<i class="fa-regular fa-user"></i></a>
 						<a href="{% url 'mylogout' %}" class="form-btn">Logout<i class="fa-solid fa-arrow-right-from-bracket"></i></a>
 						{% else %}
@@ -155,51 +123,28 @@
 								<li class="panel-list-item"><a href="{% url 'category' p_category='Pain Relief' %}">Pain Relief</a></li>
 							</ul>
 						</div>
-						
 					</li>
 					<li class="menu-category">
 						<a href="{%url 'category' p_category='General Health'%}"class="menu-title">General Health</a>
-			
-
 					</li>
 					<li class="menu-category">
 						<a href="{%url 'category' p_category='Medical Devices'%}" class="menu-title">Medical Devices</a>
-
 					</li>
 					<li class="menu-category">
 						<a href="{%url 'category' p_category='Women Health'%}" class="menu-title">Women Health</a>
-			
-	
 					</li>
 					<li class="menu-category">
 						<a href="{%url 'category' p_category='Supplements & Nutrition'%}" class="menu-title">Supplements & Nutrition</a>
-			
-
 					</li>
 					<li class="menu-category">
 						<a href="{%url 'category' p_category='Personal Health' %}"class="menu-title">Personal Health</a>
-
 					</li>
 				</ul>
 			</div>
 		</nav>
-		<!-- __________________________ -->
-		<!-- <div class="mobile-bottom-navigation">
-			<button class="action-btn" data-mobile-menu-open-btn>
-				<ion-icon name="menu"></ion-icon>
-			</button>
-			<button class="action-btn">
-				<ion-icon name="bag"></ion-icon>
-			</button>                                               
-			<button class="action-btn">
-				<ion-icon class="person"></ion-icon>
-			</button>
-		</div> -->
-		<!-- ________________________ -->
 		<nav class="mobile-navigation-menu has-scrollbar" data-mobile-menu>
 			<div class="menu-top">
 				<h2 class="menu-title">Menu</h2>
-				
 				<button class="menu-close-btn" data-mobile-menu-close-btn>
 					<ion-icon name="close-outline"></ion-icon>
 				</button>
@@ -216,7 +161,6 @@
 							<ion-icon name="remove-outline" class="remove-icon"></ion-icon>
 						</div>
 					</button>
-
 					<ul class="submenu-category-list" data-accordion>
 						<li class="submenu-category">
 							<a href="{% url 'category' p_category='General Health' %}" class="submenu-title">General Health</a>
@@ -288,52 +232,34 @@
 							<a href="{% url 'category' p_category='Pain Relief' %}" class="submenu-title">Pain Relief</a>
 						</li>
 					</ul>
-					
 				</li>
 			</ul>
 		</nav> 
 	</header>
 	<main>
-		<!-- --------------
-			BANNER
-		-------------- -->
 		<div class="banner">
 			<div class="container">
 				<div class="slider-container">
-					<!-- ------------------------- -->
-
-					<!-- <div class="slide first"><img src="assets/images/banner-1.jpg" alt="banner1"></div>
-						<div class="slide"><img src="assets/images/banner-2.jpg" alt="banner2"></div>
-						<div class="slide"><img src="assets/images/banner-3.jpg" alt="banner3"></div> -->
-
-					<!-- ------------------------- -->
 					<input type="radio" name="radio-btn" id="radio1">
 					<input type="radio" name="radio-btn" id="radio2">
 					<input type="radio" name="radio-btn" id="radio3">
 					<input type="radio" name="radio-btn" id="radio4">
 					<input type="radio" name="radio-btn" id="radio5">
-
 					<div class="slider-item first">
 						<img class="banner-img" src="{%static 'images/banner-1.png' %}" alt="banner-1">
-						
 					</div>
 					<div class="slider-item">
 						<img class="banner-img" src="{%static 'images/banner-2.png' %}" alt="banner-1">
-						
 					</div>
 					<div class="slider-item">
 						<img class="banner-img" src="{%static 'images/banner-3.png' %}" alt="banner-1">
-						
 					</div>
 					<div class="slider-item">
 						<img class="banner-img" src="{%static 'images/banner-4.png' %}" alt="banner-1">
-						
 					</div>
 					<div class="slider-item">
 						<img class="banner-img" src="{%static 'images/banner-5.png' %}" alt="banner-1">
-						
 					</div>
-
 					<div class="navigation-auto">
 						<div class="auto-btn1"></div>
 						<div class="auto-btn2"></div>
@@ -341,7 +267,6 @@
 						<div class="auto-btn4"></div>
 						<div class="auto-btn5"></div>
 					</div>
-
 					<div class="navigation-manual">
 						<label for="radio1" class="manual-btn"></label>
 						<label for="radio2" class="manual-btn"></label>
@@ -350,21 +275,16 @@
 						<label for="radio5" class="manual-btn"></label>
 					</div>
 				</div>
-
 			</div>
 		</div>
-		<!-- --------------
-			UPLOAD PRESCRIPTION
-		-------------- -->
 		<div class="prescription" id="select-image2">
 			<div class="container">
 				<input type="file" id="file-upload" accept="image/*">
 				{% if user.is_authenticated %}
 				<label id="select-image" for="file-upload">Upload Prescription</label>
-						{% else %}
-						<a href="{% url 'mylogin' %}"><label id="select-image" >Upload Prescription</label></a>
-						{% endif %}
-				
+				{% else %}
+				<a href="{% url 'mylogin' %}"><label id="select-image">Upload Prescription</label></a>
+				{% endif %}
 			</div>
 		</div>
 		<div class="backdrop"></div>
@@ -382,9 +302,6 @@
 				<button class="prescription-upload-btn" type="button" onclick="handleUpload()">Upload</button>
 			</div>
 		</div>
-		<!-- --------------
-			CATEGORY
-		-------------- -->
 		<div class="category">
 			<div class="container">
 				<div class="category-item-container">
@@ -399,7 +316,6 @@
 							</div>
 						</div>
 					</div>
-
 					<div class="category-item">
 						<div class="category-img-box">
 							<img src="{% static 'cat-icons/syringe.png' %}" alt="syringe-logo" width="30">
@@ -459,69 +375,41 @@
 			</div>
 		</div>
 		</div>
-		<!-- --------------
-			PRODUCTS
-		-------------- -->
-
 		<div class="container">
 			<div class="product-main">
 				<h2 class="title">Featured Products</h2>
 				<div class="product-grid">
-
 					{% for product in products %}
 					<div class="showcase">
 						<div class="showcase-banner">
 							<a href="{% url 'prod' p_link=product.p_link %}" class="showcase-category">
-								<img class="product-img default" src="media/{{ product.p_image }}"
-									alt="{{ product.p_name }}" width="300">
-								<img class="product-img hover" src="media/{{ product.p_image }}"
-									alt="{{ product.p_name }}" width="300">
+								<img class="product-img default" src="media/{{ product.p_image }}" alt="{{ product.p_name }}" width="300">
+								<img class="product-img hover" src="media/{{ product.p_image }}" alt="{{ product.p_name }}" width="300">
 							</a>
 							{% if product.p_discount > 0 %}
 							<p class="showcase-badge">{{ product.p_discount|floatformat:"2" }}%</p>
 							{% endif %}
-
-								 <!--Cart button and Favorites button-->
-							<!-- <div class="showcase-actions">
-								<button id="{{ product.p_id }}" class="btn-action" onclick="ClearCart()">
-									<ion-icon name="heart-outline"></ion-icon>
-								</button>
-								<button id="{{ product.p_id }} " class="btn-action"
-									onclick="AddtoCart('{{product.p_id}}')">
-
-								</button>
-							</div> -->
 						</div>
-
 						<div class="showcase-content">
 							<a href="{% url 'prod' p_link=product.p_link %}" class="showcase-category">
-
 								{{ product.p_name }} <span style="font-size: 0.9em; color: black; opacity: 0.6; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; text-transform: lowercase; margin-left: 2px;">{{ product.p_Dosage_Strength }}</span>
-							  </a>
-							  
-
-
-							  <a href="{% url 'prod' p_link=product.p_link %}" class="showcase-category">
+							</a>
+							<a href="{% url 'prod' p_link=product.p_link %}" class="showcase-category">
 								<h3 class="showcase-title">{{ product.p_category }}</h3>
 							</a>
-
 							<div class="price-box">
-
 								<p class="price">৳{{ product.discounted_price|floatformat:"2"}}</p>
 								{% if product.p_discount > 0 %}
-
 								<del>{{ product.p_price|floatformat:"2" }}</del>
 								{% endif %}
 							</div>
 						</div>
-
 					</div>
 					{%endfor%}
 				</div>
 			</div>
 		</div>
 	</main>
-
 	<footer class="footer">
 		<div class="footer-top section">
 			<div class="container">
@@ -533,9 +421,7 @@
 					<ul class="contact-list">
 						<li class="contact-item">
 							<ion-icon name="location-outline" aria-hidden="true"></ion-icon>
-							<a class="address">
-								Online Store, Narayanganj
-							</a>
+							<a class="address">Online Store, Narayanganj</a>
 						</li>
 						<li class="contact-item">
 							<ion-icon name="call-outline" aria-hidden="true"></ion-icon>
@@ -565,7 +451,6 @@
 						</li>
 					</ul>
 				</div>
-				
 				<ul class="footer-list">
 					<li>
 						<p class="footer-list-title">Corporate</p>
@@ -604,11 +489,9 @@
 				<p class="copyright">
 					&copy; 2023 Made by <a href="#">Team NJ<sup>2</sup>.</a>
 				</p>
-				{% comment %} <img src="{% static 'payment/payment.png' %}" width="380" height="90" loading="lazy" alt="payment method" class="img"> {% endcomment %}
 			</div>
 		</div>
 	</footer>
-
 	<a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
 		<ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
 	</a>
