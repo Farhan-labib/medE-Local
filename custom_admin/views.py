@@ -429,19 +429,44 @@ def order_details(request, order_id):
             updated_order = form.save(commit=False)
 
             # If status is changed to 'Confirmed', update stock
+            # If status is changed to 'Confirmed', update stock
             if updated_order.status == 'Confirmed':
                 try:
                     for_stock_data = ast.literal_eval(order.for_stock)  # Convert to dict
                     if isinstance(for_stock_data, dict):
-                        for product_id, quantity in for_stock_data.items():
+                        for product_id, product_info in for_stock_data.items():
                             try:
+                                # Extract the quantity, packaging, and other necessary fields
+                                quantity = int(product_info['quantity'])
+                                packaging = product_info['packaging']
+                                med_per_strip = product_info['medPerStrip']
+                                strip_per_box = product_info['stripPerBox']
+
+                                # Calculate quantity based on packaging type
+                                if packaging == 'Piece':
+                                    final_quantity = quantity
+                                elif packaging == 'Pack':
+                                    final_quantity = quantity * med_per_strip
+                                elif packaging == 'Box':
+                                    final_quantity = quantity * med_per_strip * strip_per_box
+                                else:
+                                    final_quantity = quantity  # Default to quantity if packaging is unknown
+
+                                # Update the product stock
                                 product = main_product.objects.get(p_id=product_id)
-                                product.Stock -= int(quantity)  # Deduct stock
+                                product.Stock -= final_quantity  # Deduct stock
                                 product.save()
+
                             except main_product.DoesNotExist:
                                 pass  # Skip if product doesn't exist
+                            except KeyError as e:
+                                print(f"Missing key {e} for product {product_id}")
+                            except Exception as e:
+                                print(f"Error updating stock for product {product_id}: {e}")
+
                 except Exception as e:
-                    print(f"Stock update failed: {e}")  
+                    print(f"Stock update failed: {e}")
+
 
             updated_order.save()
             return redirect('order_details', order_id=order.id)
