@@ -107,6 +107,8 @@ class main_product(models.Model):
                 product_instance.p_Dosage_Strength = self.p_Dosage_Strength
                 product_instance.size = self.size
                 product_instance.p_link = self.p_link
+                product_instance.inventory = self.inventory
+                product_instance.Stock = self.Stock
                 
                 product_instance.save()
             except Product.DoesNotExist:
@@ -127,10 +129,9 @@ class main_product(models.Model):
                 p_type=self.p_type,
                 p_Dosage_Strength=self.p_Dosage_Strength,
                 size=self.size,
-                p_link=self.p_link
-
-
-            )
+                p_link=self.p_link,
+                inventory=self.inventory,
+                Stock=self.Stock)
 
     def delete(self, *args, **kwargs):
         # Delete the associated Product when deleting main_product

@@ -52,7 +52,7 @@ def prod(request, p_link):
 
 
 def category(request, p_category):
-    products = main_product.objects.filter(p_category=p_category)
+    products = main_product.objects.filter(p_category=p_category, Stock__gt=0, inventory__gt=0)
 
     # Calculate the discounted price for each product
     for product in products:

@@ -14,12 +14,11 @@ import os
 from django.core.serializers.json import DjangoJSONEncoder
 # Create your views here.
 def home(request):
-    products = Product.objects.all()
+    products = Product.objects.filter(Stock__gt=0, inventory__gt=0)
     for product in products:
+        product.discounted_price = product.p_price - (product.p_price * (product.p_discount / 100))  # FOR DISCOUNT
+    return render(request, 'index.html', {'products': products})
 
-        product.discounted_price = product.p_price - (product.p_price*(product.p_discount/100))	#FOR DISCOUNT
-    print(products)
-    return render(request,'index.html',{'products': products})
 
 
 

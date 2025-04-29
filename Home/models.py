@@ -14,5 +14,8 @@ class Product(models.Model):
     p_Dosage_Strength = models.CharField(max_length=255, blank=True)
     size=models.CharField(max_length=255, blank=True)
     p_link = models.CharField(max_length=765, blank=True)
+    inventory=models.IntegerField(default=0)
+    Stock=models.IntegerField(default=0)
+
     def __str__(self):
       return self.p_name
