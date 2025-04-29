@@ -335,7 +335,27 @@
 
 
 
-					<!-- Product Page Decrease Increase Quantity -->
+					<div class="packaging-select">
+						<label for="packaging">Select Packaging Type:</label>
+						<select id="packaging">
+							<!-- Only show Piece option -->
+							<option value="Piece">Piece</option>
+							
+							<!-- Show Pack option only if medPerStrip > 1 -->
+							{% if product_details.medPerStrip > 1 %}
+								<option value="Pack">
+									<strong>Pack</strong> (1 Pack = {{ product_details.medPerStrip|floatformat:"0" }} pieces)
+								</option>
+							{% endif %}
+							
+							<!-- Show Box option only if stripPerBox > 1 -->
+							{% if product_details.stripPerBox > 1 %}
+								<option value="Box">
+									<strong>Box</strong> (1 Box = {{ product_details.stripPerBox|floatformat:"0" }} Packs)
+								</option>
+							{% endif %}
+						</select>
+					</div>
 
 					
 
@@ -351,22 +371,6 @@
 					<div class="buttons row">
 						<button class="addtocart col-sm-6" onclick="AddtoCart('{{product_details.p_id}}',parseInt(document.getElementById('num').innerText),'replace')">Add to Cart</button>
 						<!-- <button class="buynow col-sm-5" id="addToCartBtn">Add To List</button> -->
-
-							<div class="popup" id="myModal">
-							<div class="popup-content">
-								<span class="close">&times;</span>
-								<h2>Select Medication Details</h2>
-								<label for="time">Select Time:</label>
-								<select id="time">
-								<option value="morning">Morning</option>
-								<option value="day">Day</option>
-								<option value="night">Night</option>
-								</select>
-								<label for="duration">Number of Days:</label>
-								<input type="number" id="duration" placeholder="Enter number of days">
-								<button id="confirmBtn">Confirm</button>
-							</div>
-							</div>
 
 					</div>
                 </div>
