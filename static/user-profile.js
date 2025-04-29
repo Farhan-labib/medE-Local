@@ -1,212 +1,148 @@
 'use strict';
 
+// Hide dropdowns when clicking outside
 const main = document.querySelector('main');
 const userLogin = document.querySelector('.user-login');
-const shoppingcart = document.querySelector('.shopping-cart');
+const shoppingCart = document.querySelector('.shopping-cart');
 
-main.addEventListener('click', function(){
+main.addEventListener('click', () => {
     userLogin.classList.remove('active');
-    shoppingcart.classList.remove('active');
-})
+    shoppingCart.classList.remove('active');
+});
 
+// Mobile menu toggles
 const mobileMenuOpenBtn = document.querySelectorAll('[data-mobile-menu-open-btn]');
 const mobileMenu = document.querySelectorAll('[data-mobile-menu]');
 const mobileMenuCloseBtn = document.querySelectorAll('[data-mobile-menu-close-btn]');
 
-for (let i=0; i < mobileMenuOpenBtn.length; i++) {
-    const mobileMenuCloseFunc = function () {
-        mobileMenu[i].classList.remove('active');
-    }
-    mobileMenuOpenBtn[i].addEventListener('click', function () {
-        mobileMenu[i].classList.add('active');
-    });
+mobileMenuOpenBtn.forEach((btn, i) => {
+    btn.addEventListener('click', () => mobileMenu[i].classList.add('active'));
+    mobileMenuCloseBtn[i].addEventListener('click', () => mobileMenu[i].classList.remove('active'));
+});
 
-    mobileMenuCloseBtn[i].addEventListener('click', mobileMenuCloseFunc);
-}
-
-
-// ACCORDION MENU
-
+// Accordion
 const accordionBtn = document.querySelectorAll('[data-accordion-btn]');
 const accordion = document.querySelectorAll('[data-accordion]');
 
-for (let i = 0; i < accordionBtn.length; i++) {
+accordionBtn.forEach((btn, i) => {
+    btn.addEventListener('click', function () {
+        const isActive = this.nextElementSibling.classList.contains('active');
 
-    accordionBtn[i].addEventListener('click', function () {
-
-        const clickedBtn = this.nextElementSibling.classList.contains('active');
-
-        for (let i = 0; i < accordion.length; i++) {
-            if (clickedBtn) break;
-
-            if (accordion[i].classList.contains('active')) {
-                
-                accordion[i].classList.remove('active');
-                accordionBtn[i].classList.remove('active');
-            }
+        if (!isActive) {
+            accordion.forEach((acc, j) => {
+                acc.classList.remove('active');
+                accordionBtn[j].classList.remove('active');
+            });
         }
+
         this.nextElementSibling.classList.toggle('active');
         this.classList.toggle('active');
     });
-}
+});
 
-// BACK TO TOP BUTTON
-
+// Back to top button
 const mybutton = document.querySelector("[data-back-top-btn]");
-window.onscroll = function() {scrollFunction()};
+window.onscroll = () => {
+    if (window.scrollY > 100) {
+        mybutton.classList.add('active');
+    } else {
+        mybutton.classList.remove('active');
+    }
+};
 
-function scrollFunction() {
-  if (window.scrollY > 100) {
-    mybutton.classList.add('active');
-  } else {
-    mybutton.classList.remove('active');
-  }
-}
+// Cart and login form toggle
+const loginForm = document.querySelector('.user-login');
 
-let shoppingCart = document.querySelector('.shopping-cart');
-
-document.querySelector('#cart-btn').onclick = () =>{
+document.querySelector('#cart-btn').onclick = () => {
     shoppingCart.classList.toggle('active');
     loginForm.classList.remove('active');
-}
+};
 
-let loginForm = document.querySelector('.user-login');
-
-document.querySelector('#user-login-btn').onclick = () =>{
+document.querySelector('#user-login-btn').onclick = () => {
     loginForm.classList.toggle('active');
     shoppingCart.classList.remove('active');
-}
+};
 
+// Image upload and popup
 const selectImage = document.querySelector('#select-image');
 const inputFile = document.querySelector('#file-upload');
 const imgArea = document.getElementById('img-area');
 const backDrop = document.querySelector('.backdrop');
 const elemContainer = document.querySelector('.elem-container');
 
-selectImage.addEventListener('click', function () {
+selectImage.addEventListener('click', () => {
     inputFile.click();
     imgArea.classList.add('active');
     backDrop.classList.add('active');
-})
-backDrop.addEventListener('click', function () {
+});
+
+backDrop.addEventListener('click', () => {
     backDrop.classList.remove('active');
     imgArea.classList.remove('active');
     document.querySelector(".popup-image").classList.remove('active');
-})
+});
 
 inputFile.addEventListener('change', function () {
-    const image = this.files[0]
-    // console.log(image);
+    const image = this.files[0];
     const reader = new FileReader();
-    reader.onload = ()=> {
+
+    reader.onload = () => {
         const imgUrl = reader.result;
         const img = document.createElement('img');
         img.src = imgUrl;
         elemContainer.appendChild(img);
         elemContainer.classList.add('active');
         elemContainer.dataset.img = image.name;
-    }
+    };
+
     reader.readAsDataURL(image);
-})
+});
 
-// var sidebarSections = document.querySelectorAll('.sidebar-sections');
-// var contentBx = document.querySelectorAll('.contentBx');
-
-// for (var i = 0; i < sidebarSections.length; i++){
-//     sidebarSections[i].addEventListener('mouseover', function(){
-//         for (var i = 0; i < contentBx.length; i++){
-//             contentBx[i].className='contentBx';
-//         }
-//         document.getElementById(this.dataset.id).className = 'contentBx active';
-
-//         for (var i = 0; i < sidebarSections.length; i++){
-//             sidebarSections[i].className='sidebar-sections';
-//         }
-//         this.className = 'sidebar-sections active';
-//     });
-// };
-
-document.querySelector('.label1').addEventListener('click', function(){
+// Gender toggle via labels
+document.querySelector('.label1').addEventListener('click', () => {
     document.querySelector('.gendermale').checked = true;
-})
-document.querySelector('.label2').addEventListener('click', function(){
+});
+document.querySelector('.label2').addEventListener('click', () => {
     document.querySelector('.genderfemale').checked = true;
-})
+});
 
-/////////////////////
-// SIDEBAR
-/////////////////////
-
+// Sidebar navigation
 const regForm = document.querySelector('.registration-form');
 const prescriptions = document.querySelector('.prescriptions');
 const history = document.querySelector('.purchase-history');
 const list = document.querySelector('.list');
 
-document.getElementById('account').addEventListener('click', function(){
-    regForm.classList.add('active');
+function showSection(section) {
+    regForm.classList.remove('active');
     prescriptions.classList.remove('active');
     history.classList.remove('active');
     list.classList.remove('active');
-});
+    section.classList.add('active');
+}
 
-document.getElementById('account-mob').addEventListener('click', function(){
-    regForm.classList.add('active');
-    prescriptions.classList.remove('active');
-    history.classList.remove('active');
-    list.classList.remove('active');
-});
+document.getElementById('account').onclick =
+document.getElementById('account-mob').onclick = () => showSection(regForm);
 
-document.getElementById('prescription').addEventListener('click', function(){
-    prescriptions.classList.add('active');
-    regForm.classList.remove('active');
-    history.classList.remove('active');
-    list.classList.remove('active');
-});
+document.getElementById('prescription').onclick =
+document.getElementById('prescription-mob').onclick = () => showSection(prescriptions);
 
-document.getElementById('prescription-mob').addEventListener('click', function(){
-    prescriptions.classList.add('active');
-    regForm.classList.remove('active');
-    history.classList.remove('active');
-    list.classList.remove('active');
-});
+document.getElementById('history').onclick =
+document.getElementById('history-mob').onclick = () => showSection(history);
 
-document.getElementById('history').addEventListener('click', function(){
-    history.classList.add('active');
-    regForm.classList.remove('active');
-    prescriptions.classList.remove('active');
-    list.classList.remove('active');
-});
-document.getElementById('history-mob').addEventListener('click', function(){
-    history.classList.add('active');
-    regForm.classList.remove('active');
-    prescriptions.classList.remove('active');
-    list.classList.remove('active');
-});
-document.getElementById('list').addEventListener('click', function(){
-    list.classList.add('active');
-    history.classList.remove('active');
-    regForm.classList.remove('active');
-    prescriptions.classList.remove('active');
-});
-document.getElementById('list-mob').addEventListener('click', function(){
-    list.classList.add('active');
-    history.classList.remove('active');
-    regForm.classList.remove('active');
-    prescriptions.classList.remove('active');
-});
+document.getElementById('list').onclick =
+document.getElementById('list-mob').onclick = () => showSection(list);
 
-const prescBox = document.getElementsByClassName('.presc-box');
-
-document.querySelectorAll(".prescriptions img").forEach(image =>{
-    image.onclick = () =>{
+// Prescription image popup
+document.querySelectorAll(".prescriptions img").forEach(image => {
+    image.onclick = () => {
         document.querySelector(".popup-image img").src = image.getAttribute("src");
         document.querySelector(".popup-image").classList.add('active');
         backDrop.classList.add('active');
-    }
+    };
 });
 
-$(".days :nth-child(odd)").change(function(){
-    $(".days :nth-child(odd)").prop('checked',false);
-    $(this).prop('checked',true);
-    // console.log($(this).val());
+// Radio-like checkbox toggle using jQuery
+$(".days :nth-child(odd)").change(function () {
+    $(".days :nth-child(odd)").prop('checked', false);
+    $(this).prop('checked', true);
 });

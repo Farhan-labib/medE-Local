@@ -1,19 +1,14 @@
 "use strict";
 
-
 const selectImage = document.querySelector("#select-image");
 const inputFile = document.querySelector("#file-upload");
 const imgArea = document.getElementById("img-area");
 const backDrop = document.querySelector(".backdrop");
 const elemContainer = document.querySelector(".elem-container");
-
 const mybutton = document.querySelector("[data-back-top-btn]");
-
-//////////////////////
-// BACK TO TOP BUTTON
-//////////////////////
-
-
+const main = document.querySelector("main");
+const shoppingCart = document.querySelector(".shopping-cart");
+const userLogin = document.querySelector(".user-login");
 
 window.onscroll = function () {
     scrollFunction();
@@ -25,18 +20,12 @@ function scrollFunction() {
     } else {
         mybutton.classList.remove("active");
     }
-};
-
+}
 
 $(".days :nth-child(odd)").change(function(){
     $(".days :nth-child(odd)").prop('checked',false);
     $(this).prop('checked',true);
-    // console.log($(this).val());
 });
-
-const main = document.querySelector("main");
-// const userLogin = document.querySelector(".user-login");
-const shoppingCart = document.querySelector(".shopping-cart");
 
 main.addEventListener("click", function () {
     userLogin.classList.remove("active");
@@ -61,8 +50,6 @@ for (let i = 0; i < mobileMenuOpenBtn.length; i++) {
 
     mobileMenuCloseBtn[i].addEventListener("click", mobileMenuCloseFunc);
 }
-
-// ACCORDION MENU
 
 const accordionBtn = document.querySelectorAll("[data-accordion-btn]");
 const accordion = document.querySelectorAll("[data-accordion]");
@@ -89,16 +76,10 @@ document.querySelector("#cart-btn").onclick = () => {
     userLogin.classList.remove("active");
 };
 
-const userLogin = document.querySelector(".user-login");
-
 document.querySelector("#user-login-btn").onclick = () => {
     userLogin.classList.toggle("active");
     shoppingCart.classList.remove("active");
 };
-
-///////////////////////
-// PRESCRIPTION UPLOAD
-//////////////////////
 
 selectImage.addEventListener("click", function () {
     inputFile.click();
@@ -113,7 +94,6 @@ backDrop.addEventListener("click", function () {
 
 inputFile.addEventListener("change", function () {
     const image = this.files[0];
-    // console.log(image);
     const reader = new FileReader();
     reader.onload = () => {
         const imgUrl = reader.result;

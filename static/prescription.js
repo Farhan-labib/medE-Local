@@ -5,34 +5,30 @@ function handleUpload() {
     const formData = new FormData();
     formData.append("prescription_image", fileInput.files[0]);
 
-    // Append the "selected_days" data to the formData object
     for (const day of selectedDays) {
         formData.append("selected_days", day);
     }
 
-    // Get the CSRF token from a cookie (you may need to adjust the cookie name)
     const csrfToken = getCookie("csrftoken");
 
     $.ajax({
         type: "POST",
-        url: '/upload_prescription/', // Update this with your URL
+        url: '/upload_prescription/',
         data: formData,
         processData: false,
         contentType: false,
         headers: {
-            "X-CSRFToken": csrfToken // Set the CSRF token as a request header
+            "X-CSRFToken": csrfToken
         },
         success: function(response) {
             window.location.href = '/prescription_confirm/';
         },
         error: function(error) {
-            // Handle any errors
+            /* Handle errors */
         }
     });
 }
 
-
-// Function to get the CSRF token from a cookie
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -60,4 +56,3 @@ function getSelectedDays() {
 
     return selectedDays;
 }
-

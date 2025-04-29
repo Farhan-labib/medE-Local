@@ -1,4 +1,3 @@
-// Inject CSS for cart styling
 const cartStyles = `
 .cart-item {
   display: flex;
@@ -70,12 +69,12 @@ const cartStyles = `
   text-align: right;
 }
 `;
+
 const styleSheet = document.createElement("style");
 styleSheet.type = "text/css";
 styleSheet.innerText = cartStyles;
 document.head.appendChild(styleSheet);
 
-// Update cart badge count
 document.addEventListener('DOMContentLoaded', function() {
   updateCartBadge();
 });
@@ -89,12 +88,6 @@ function updateCartBadge() {
   }
 }
 
-// Debug function to log information
-function debugLog(message, data) {
-  console.log(`${message}:`, data);
-}
-
-// Main function to add/update items in cart
 async function AddtoCart(id, quantity = 1, doSomething = null, button = null) {
   const cart = JSON.parse(localStorage.getItem('cart')) || {};
   const packagingSelect = document.getElementById('packaging');
@@ -105,11 +98,9 @@ async function AddtoCart(id, quantity = 1, doSomething = null, button = null) {
     if (response.ok) {
       const productData = await response.json();
       
-      // Ensure valid values for calculations
       const medPerStrip = Math.max(1, productData.medPerStrip || 1);
       const stripPerBox = Math.max(1, productData.stripPerBox || 1);
       
-      // Adding new item or replacing existing item
       if (cart[id] === undefined || doSomething === "replace") {
         cart[id] = {
           packaging: packaging,
@@ -121,11 +112,10 @@ async function AddtoCart(id, quantity = 1, doSomething = null, button = null) {
           image: productData.p_image
         };
       } 
-      // Handle increment/decrement operations
       else if (doSomething === "increment" || doSomething === "decrement") {
         if (doSomething === "increment") {
           cart[id].quantity += 1;
-        } else { // decrement
+        } else {
           if (cart[id].quantity > 1) {
             cart[id].quantity -= 1;
           } else {
@@ -133,7 +123,6 @@ async function AddtoCart(id, quantity = 1, doSomething = null, button = null) {
           }
         }
       }
-      // For other operations (like just adding quantity without replace)
       else {
         cart[id].quantity += quantity;
       }
@@ -141,7 +130,6 @@ async function AddtoCart(id, quantity = 1, doSomething = null, button = null) {
       localStorage.setItem('cart', JSON.stringify(cart));
       await updateCartDisplay();
       
-      // Update product page quantity display if needed
       if (button && doSomething === null) {
         const quantityElement = button.parentElement.querySelector(".quantity-value");
         if (quantityElement) {
@@ -150,13 +138,12 @@ async function AddtoCart(id, quantity = 1, doSomething = null, button = null) {
       }
     }
   } catch (error) {
-    console.error('Error:', error);
+    /* Error handling */
   }
   
   updateCartBadge();
 }
 
-// Remove item from cart
 async function removeFromCart(productId) {
   const cart = JSON.parse(localStorage.getItem('cart')) || {};
   
@@ -165,7 +152,6 @@ async function removeFromCart(productId) {
     localStorage.setItem('cart', JSON.stringify(cart));
     await updateCartDisplay();
     
-    // Remove the item from UI
     const itemElement = document.getElementById(`cart-item-${productId}`);
     if (itemElement) {
       itemElement.remove();
@@ -175,7 +161,6 @@ async function removeFromCart(productId) {
   updateCartBadge();
 }
 
-// Update cart display
 async function updateCartDisplay() {
   const cart = JSON.parse(localStorage.getItem('cart')) || {};
   const resultsDiv = document.getElementById('cart-container');
@@ -185,7 +170,6 @@ async function updateCartDisplay() {
   
   let total = 0;
   for (const [p_id, item] of Object.entries(cart)) {
-    // Calculate total pieces for price calculation
     let totalPieces = item.quantity;
     if (item.packaging === 'Pack') {
       totalPieces = item.quantity * item.medPerStrip;
@@ -193,11 +177,9 @@ async function updateCartDisplay() {
       totalPieces = item.quantity * item.medPerStrip * item.stripPerBox;
     }
     
-    // Calculate total price
     const itemTotal = totalPieces * item.price;
     total += itemTotal;
     
-    // Create display text based on packaging type
     let displayText = '';
     if (item.packaging === 'Piece') {
       displayText = `${item.quantity} piece${item.quantity !== 1 ? 's' : ''}`;
@@ -255,7 +237,6 @@ function getCookie(name) {
   return cookieValue;
 }
 
-// Event listeners
 document.addEventListener('DOMContentLoaded', function() {
   const cartBtn = document.getElementById("cart-btn");
   if (cartBtn) {
@@ -271,7 +252,6 @@ document.addEventListener('DOMContentLoaded', function() {
         alert("Your cart is empty!");
         return;
       }
-
       try {
         const csrftoken = getCookie('csrftoken');
         const response = await fetch('/checkout/', {
@@ -282,15 +262,12 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           body: JSON.stringify(cart),
         });
-
         if (response.ok) {
           window.location.href = '/order_confirm/';
         } else {
-          console.error('Checkout failed:', response.statusText);
           alert('Checkout failed. Please try again.');
         }
       } catch (error) {
-        console.error('Error during checkout:', error);
         alert('An error occurred during checkout.');
       }
     });
