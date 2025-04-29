@@ -5,13 +5,12 @@ from django.forms import ModelForm
 from django import forms
 import ast
 from functools import wraps
-from django.db.models import Q
+from django.db.models import Q, Case, When, Value, IntegerField
 from django.utils import timezone
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from .models import Location, TemporaryOrders
-from django.db.models import Case, When, Value, IntegerField
 from twilio.rest import Client
 from django.conf import settings
 
@@ -44,7 +43,6 @@ class LocationForm(forms.ModelForm):
             self.add_error('delivery_fee', 'Delivery fee is required for Union level')
         
         return cleaned_data
-    
 
 
 def location_edit(request, location_id):
@@ -67,12 +65,10 @@ def location_edit(request, location_id):
 def location_manage(request):
     if request.method == 'POST':
         if 'edit_form' in request.POST:
-            # This is an edit form submission
             location_id = request.POST.get('location_id')
             location = get_object_or_404(Location, id=location_id)
             form = LocationForm(request.POST, instance=location)
         else:
-            # This is a new location form submission
             form = LocationForm(request.POST)
             
         if form.is_valid():
@@ -81,7 +77,6 @@ def location_manage(request):
     else:
         form = LocationForm()
     
-    # Rest of the view stays the same
     level_order = {
         'division': 1,
         'zilla': 2,
@@ -105,7 +100,8 @@ def location_manage(request):
         'locations': locations,
     })
 
-@csrf_exempt  # Only for demonstration - in production, use proper CSRF protection
+
+@csrf_exempt
 def update_fee(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -127,18 +123,14 @@ def update_fee(request):
     
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
-# View for deleting a location
+
 def location_delete(request, location_id):
     location = get_object_or_404(Location, id=location_id)
-
     if request.method == 'POST':
         location.delete()
-        return redirect('location_manage')
-
     return redirect('location_manage')
 
 
-# AJAX view to return parent options by level
 def get_parents_by_level(request):
     level = request.GET.get('level', '').lower()
     data = []
@@ -152,15 +144,15 @@ def get_parents_by_level(request):
 
     return JsonResponse(list(data), safe=False)
 
+
 class MainMedicineForm(ModelForm):
     class Meta:
         model = main_product
         fields = [
             'product_code', 'otc_status', 'add_to_list', 'p_name', 'Brand',
-            'feature', 'description',
-            'size', 'Manufacturer', 'p_generics', 'p_type', 'p_image',
-            'p_Dosage_Strength', 'Variant', 'p_category', 'p_Indications',
-            'p_Administration', 'p_Pharmacology', 'p_Side_Effects',
+            'feature', 'description', 'size', 'Manufacturer', 'p_generics', 
+            'p_type', 'p_image', 'p_Dosage_Strength', 'Variant', 'p_category', 
+            'p_Indications', 'p_Administration', 'p_Pharmacology', 'p_Side_Effects',
             'p_Interaction', 'p_Contradictions', 'p_Precautions', 'p_Pregnancy',
             'p_Therapeutic', 'p_Storage', 'FAQ', 'Suggestions',
         ]
@@ -175,15 +167,14 @@ class MainMedicineForm(ModelForm):
         return super().save(commit)
 
 
-
 class MainGeneralForm(ModelForm):
     class Meta:
         model = main_product
         fields = [
             'product_code', 'p_name', 'Brand', 'feature',
-             'description', 'size', 'Manufacturer',
-            'p_type', 'p_image', 'Variant', 'p_category', 'Features_Specifications',]
-
+            'description', 'size', 'Manufacturer',
+            'p_type', 'p_image', 'Variant', 'p_category', 'Features_Specifications',
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -193,7 +184,6 @@ class MainGeneralForm(ModelForm):
     def save(self, commit=True):
         self.instance.m_or_g = "Generals"  
         return super().save(commit)
-
 
 
 def admin_required(view_func):
@@ -296,8 +286,6 @@ class UserForm(ModelForm):
             self.fields.pop('user_type', None)
 
 
-
-
 @admin_required
 def edit_user(request, user_id):
     user = get_object_or_404(UserProfile, id=user_id)
@@ -315,7 +303,7 @@ def delete_user(request, user_id):
     user = get_object_or_404(UserProfile, id=user_id)
     user.delete()
     if user.is_super_admin or user.is_admin or user.is_staff:
-            return redirect('admin_list')
+        return redirect('admin_list')
     return redirect('user_list')
 
 
@@ -334,18 +322,10 @@ def admin_list(request):
             users = UserProfile.objects.all()
     else:
         users = UserProfile.objects.filter(
-                    is_staff=True
-                ) | UserProfile.objects.filter(
-                    is_super_admin=True
-                ) | UserProfile.objects.filter(
-                    is_admin=True
+                    Q(is_staff=True) | Q(is_super_admin=True) | Q(is_admin=True)
                 )
 
-
-
     return render(request, 'admin/admin_list.html', {'users': users})
-
-
 
 
 @admin_required
@@ -354,7 +334,7 @@ def order_list(request):
     payment_method = request.GET.get('payment_method', '')
     status = request.GET.get('status', '')
     
-    orders = Orders.objects.all()
+    orders = Orders.objects.all().order_by('-timestamp')
 
     if payment_method:
         orders = orders.filter(payment_options=payment_method)
@@ -362,26 +342,13 @@ def order_list(request):
     if status:
         orders = orders.filter(status=status)
     
-    if sort_by:
-        orders = orders.order_by('-timestamp')  
-  
-    orders = orders.order_by('-timestamp')  
-    
-    context = {
-        'orders': orders,
-    }
-
-    return render(request, 'admin/orders.html', context)
-
-
+    return render(request, 'admin/orders.html', {'orders': orders})
 
 
 class OrderUpdateForm(ModelForm):
     class Meta:
         model = Orders
-        fields = [
-            'status'
-        ]
+        fields = ['status']
         widgets = {
             'prescriptions': forms.Textarea(attrs={'rows': 3, 'cols': 50}),
             'ordered_products': forms.Textarea(attrs={'rows': 3, 'cols': 50}),
@@ -389,60 +356,54 @@ class OrderUpdateForm(ModelForm):
             'del_adress': forms.Textarea(attrs={'rows': 3, 'cols': 50}),
         }
 
+
 @admin_required
 def order_details(request, order_id):
     order = get_object_or_404(Orders, pk=order_id)
 
-    # Parse ordered_products safely
     try:
         ordered_products = ast.literal_eval(order.ordered_products)
         if not isinstance(ordered_products, list):
-            ordered_products = []  
+            ordered_products = []
     except:
-        ordered_products = []  
+        ordered_products = []
 
-    # Handle "Returned" button press
     if request.method == 'POST' and 'return_order' in request.POST:
-        if order.status == 'Confirmed':  # Ensure only confirmed orders can be returned
+        if order.status == 'Confirmed':
             try:
-                for_stock_data = ast.literal_eval(order.for_stock)  # Convert to dict
+                for_stock_data = ast.literal_eval(order.for_stock)
                 if isinstance(for_stock_data, dict):
                     for product_id, quantity in for_stock_data.items():
                         try:
                             product = main_product.objects.get(p_id=product_id)
-                            product.Stock += int(quantity)  # Replenish stock
+                            product.Stock += int(quantity)
                             product.save()
                         except main_product.DoesNotExist:
-                            pass  # Skip if product doesn't exist
-            except Exception as e:
-                print(f"Stock return failed: {e}")  
+                            pass
+            except Exception:
+                pass
 
-            order.status = 'Failed'  # Change status to Failed
+            order.status = 'Failed'
             order.save()
         
         return redirect('order_details', order_id=order.id)
 
-    # Handle form submission to update the order
     if request.method == 'POST' and 'status' in request.POST:
         form = OrderUpdateForm(request.POST, instance=order)
         if form.is_valid():
             updated_order = form.save(commit=False)
 
-            # If status is changed to 'Confirmed', update stock
-            # If status is changed to 'Confirmed', update stock
             if updated_order.status == 'Confirmed':
                 try:
-                    for_stock_data = ast.literal_eval(order.for_stock)  # Convert to dict
+                    for_stock_data = ast.literal_eval(order.for_stock)
                     if isinstance(for_stock_data, dict):
                         for product_id, product_info in for_stock_data.items():
                             try:
-                                # Extract the quantity, packaging, and other necessary fields
                                 quantity = int(product_info['quantity'])
                                 packaging = product_info['packaging']
                                 med_per_strip = product_info['medPerStrip']
                                 strip_per_box = product_info['stripPerBox']
 
-                                # Calculate quantity based on packaging type
                                 if packaging == 'Piece':
                                     final_quantity = quantity
                                 elif packaging == 'Pack':
@@ -450,36 +411,27 @@ def order_details(request, order_id):
                                 elif packaging == 'Box':
                                     final_quantity = quantity * med_per_strip * strip_per_box
                                 else:
-                                    final_quantity = quantity  # Default to quantity if packaging is unknown
+                                    final_quantity = quantity
 
-                                # Update the product stock
                                 product = main_product.objects.get(p_id=product_id)
-                                product.Stock -= final_quantity  # Deduct stock
+                                product.Stock -= final_quantity
                                 product.save()
 
-                            except main_product.DoesNotExist:
-                                pass  # Skip if product doesn't exist
-                            except KeyError as e:
-                                print(f"Missing key {e} for product {product_id}")
-                            except Exception as e:
-                                print(f"Error updating stock for product {product_id}: {e}")
-
-                except Exception as e:
-                    print(f"Stock update failed: {e}")
-
+                            except (main_product.DoesNotExist, KeyError, Exception):
+                                pass
+                except Exception:
+                    pass
 
             updated_order.save()
             return redirect('order_details', order_id=order.id)
     else:
         form = OrderUpdateForm(instance=order)
 
-    context = {
+    return render(request, 'admin/order_details.html', {
         'form': form,
         'order': order,
         'ordered_products': ordered_products,
-    }
-    return render(request, 'admin/order_details.html', context)
-
+    })
 
 
 @admin_required
@@ -488,7 +440,7 @@ def prescription(request):
     payment_method = request.GET.get('payment_method', '')
     status = request.GET.get('status', '')
     
-    orders = presciption_order.objects.all()
+    orders = presciption_order.objects.all().order_by('-timestamp')
 
     if payment_method:
         orders = orders.filter(payment_options=payment_method)
@@ -496,35 +448,24 @@ def prescription(request):
     if status:
         orders = orders.filter(Order_status=status)
     
-    if sort_by:
-        orders = orders.order_by('-timestamp')  
-  
-    orders = orders.order_by('-timestamp')  
-    
-    context = {
-        'orders': orders,
-    }
+    return render(request, 'admin/prescription.html', {'orders': orders})
 
-    return render(request, 'admin/prescription.html', context)
 
 def pres_details(request, order_id):
     order = get_object_or_404(presciption_order, pk=order_id)
     medicines = main_product.objects.filter(inventory=1)
 
-    # Calculate discounted price for each product
     for product in medicines:
-        discounted_price = product.p_price - (product.p_price * (product.p_discount / 100))
-        product.discounted_price = discounted_price
+        product.discounted_price = product.p_price - (product.p_price * (product.p_discount / 100))
 
     return render(request, 'admin/pres_details.html', {'order': order, 'medicines': medicines})
 
-    
+
 @csrf_protect
 def create_order(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-
             products = data['products']
             ordered_products = []
             total_amount = 0.0
@@ -536,21 +477,23 @@ def create_order(request):
             temp = []
             if data.get("delivery_address") and data["delivery_address"] != "null":
                 temp.append(data['delivery_address'])
-            union = temp[0].split(", ")
-            delivery_fee = 60  # Default fee
-            try:
-                union_obj = Location.objects.get(name=union[3], level='union')
-                if union_obj.delivery_fee:
-                    delivery_fee = float(union_obj.delivery_fee)
-            except Location.DoesNotExist:
-                pass  # If location not found, use default delivery fee
+            
+            delivery_fee = 60
+            if temp:
+                union = temp[0].split(", ")
+                try:
+                    union_obj = Location.objects.get(name=union[3], level='union')
+                    if union_obj.delivery_fee:
+                        delivery_fee = float(union_obj.delivery_fee)
+                except Location.DoesNotExist:
+                    pass
+            
             total_amount += delivery_fee
 
             prescriptions_list = []
             if data.get("prescriptions") and data["prescriptions"] != "null":
                 prescriptions_list.append(data['prescriptions'])
 
-            # Save to TemporaryOrders instead of Orders
             temp_order = TemporaryOrders.objects.create(
                 phonenumber=data['phone_number'],
                 ordered_products=str(ordered_products),
@@ -565,35 +508,28 @@ def create_order(request):
                 timestamp=timezone.now(),
             )
 
-            # Send SMS via Twilio
             client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-
             message_body = (
-                            f"Dear Customer,\n"
-                            f"Your order has been generated.\n"
-                            f"Please click the link to go to your order page and confirm the order:\n"
-                            f"http://127.0.0.1:8000/temp-order/{temp_order.id}/\n\n"
-                            f"Thank you"
-                           )
-
+                f"Dear Customer,\n"
+                f"Your order has been generated.\n"
+                f"Please click the link to go to your order page and confirm the order:\n"
+                f"http://127.0.0.1:8000/temp-order/{temp_order.id}/\n\n"
+                f"Thank you"
+            )
 
             try:
-                message = client.messages.create(
+                client.messages.create(
                     body=message_body,
                     from_=settings.TWILIO_PHONE_NUMBER,
-                    to=data['phone_number']  # Make sure it's in international format like +123456789
+                    to=data['phone_number']
                 )
-            except Exception as e:
-                print(f"Twilio error: {e}")  # You might want to log this instead of print in production
+            except Exception:
+                pass
 
             return JsonResponse({"message": "Temporary Order Created", "temp_order_id": temp_order.id}, status=201)
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
-            
-
-  
-        
 
 
 @csrf_exempt
@@ -604,7 +540,6 @@ def update_order_status(request):
             order_id = data.get("order_id")
             new_status = data.get("order_status")
 
-            # Fetch and update the order status
             order = presciption_order.objects.get(id=order_id)
             order.Order_status = new_status
             order.save()
@@ -620,29 +555,24 @@ def update_order_status(request):
 
 
 def inventory(request):
-    search_query = request.GET.get('search', '')  # Get search query from the URL
-    products = main_product.objects.all()  # Get all products by default
+    search_query = request.GET.get('search', '')
+    products = main_product.objects.all()
 
     if search_query:
         products = products.filter(
-            p_name__icontains=search_query) | products.filter(
-            product_code__icontains=search_query) | products.filter(
-            p_category__icontains=search_query)
+            Q(p_name__icontains=search_query) | 
+            Q(product_code__icontains=search_query) | 
+            Q(p_category__icontains=search_query)
+        )
 
-    context = {
+    return render(request, 'admin/inventory.html', {
         'products': products,
         'search_query': search_query,
-    }
-    return render(request, 'admin/inventory.html', context)
+    })
 
-
-    
 
 def inventory_dashboard(request):
-    # Query all products where inventory equals 1
     products = main_product.objects.filter(inventory=1)
-    
-    # Pass the products to the template
     return render(request, 'admin/inventory_dashboard.html', {'products': products})
 
 
@@ -668,23 +598,17 @@ class ProductEditForm(forms.Form):
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
-
     medPerStrip = forms.DecimalField(max_digits=10, decimal_places=2, required=False)
     stripPerBox = forms.DecimalField(max_digits=10, decimal_places=2, required=False)
-    
-    # Hidden field for inventory
     inventory = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
+
 def inventory_edit(request, product_id):
-    # Fetch the product instance
     product = get_object_or_404(main_product, p_id=product_id)
 
     if request.method == 'POST':
-        # If the form is submitted, bind the form with the posted data
         form = ProductEditForm(request.POST)
-
         if form.is_valid():
-            # Update the product's attributes from the form data
             product.p_type = form.cleaned_data['p_type']
             product.p_name = form.cleaned_data['p_name']
             product.product_code = form.cleaned_data['product_code']
@@ -698,20 +622,11 @@ def inventory_edit(request, product_id):
             product.p_discount = form.cleaned_data['p_discount']
             product.medPerStrip = form.cleaned_data['medPerStrip']
             product.stripPerBox = form.cleaned_data['stripPerBox']
-
-            # Save the selected bundling values (if any)
-            bundling_values = form.cleaned_data['bundling']
-            product.bundling = ', '.join(bundling_values)  # Save as a comma-separated string (or adjust as needed)
-
+            product.bundling = ', '.join(form.cleaned_data['bundling'])
             product.inventory = 1
-            
-            # Save the updated product to the database
             product.save()
-
-            # Redirect to the inventory dashboard (or another appropriate page)
             return redirect('inventory_dashboard')
     else:
-        # If it's a GET request, pre-fill the form with the product's existing data
         initial_data = {
             'p_type': product.p_type,
             'product_code': product.product_code,
@@ -726,9 +641,8 @@ def inventory_edit(request, product_id):
             'p_discount': product.p_discount,
             'medPerStrip': product.medPerStrip,
             'stripPerBox': product.stripPerBox,
-            'bundling': product.bundling.split(', ') if product.bundling else [],  # Pre-fill the bundling checkboxes if set
+            'bundling': product.bundling.split(', ') if product.bundling else [],
         }
-
         form = ProductEditForm(initial=initial_data)
 
     return render(request, 'admin/edit_inventory.html', {'form': form, 'product': product})
