@@ -162,9 +162,9 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-TWILIO_ACCOUNT_SID = 'ACa90ef24c23a0f78aa2bdc91b99ee7111'
-TWILIO_AUTH_TOKEN = 'a2934933bf875b8c33923482b877dd83'
-TWILIO_PHONE_NUMBER = '+13235242838'
+TWILIO_ACCOUNT_SID = ''
+TWILIO_AUTH_TOKEN = ''
+TWILIO_PHONE_NUMBER = ''
 
 if DEBUG:
     MIDDLEWARE.append('livereload.middleware.LiveReloadScript')
