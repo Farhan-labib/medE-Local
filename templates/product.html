@@ -320,12 +320,19 @@
                     <h2>{{ product_details.p_type }}</h2>
                     <h3>Generics: {{ product_details.p_generics }}</h3>
 					<a href=""><h3 style="color: red;">{{ product_details.Brand }}</h3></a>
-                    <div class="price-box">
-                        <p class="price">৳{{ product_details.discounted_price|floatformat:"2"}}</p>
-						{% if product_details.p_discount > 0 %}
-                        <del>৳{{ product_details.p_price|floatformat:"2" }}</del>
-						{% endif %}
-                    </div>
+                <div class="price-box">
+					<p class="price" id="dynamic-price"
+					data-piece-price="{{ product_details.discounted_price }}"
+					data-original-piece-price="{{ product_details.p_price }}"
+					data-pack-multiplier="{{ product_details.medPerStrip }}"
+					data-box-multiplier="{{ product_details.stripPerBox }}">
+						৳{{ product_details.discounted_price|floatformat:"2" }}
+					</p>
+					{% if product_details.p_discount > 0 %}
+						<del id="original-price">৳{{ product_details.p_price|floatformat:"2" }}</del>
+					{% endif %}
+				</div>
+					
 
 					<div class="otc-status">
 						{% if product_details.otc_status == 'no' %}
@@ -607,6 +614,37 @@
 
 
     </script>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const packagingSelect = document.getElementById("packaging");
+    const priceEl = document.getElementById("dynamic-price");
+    const originalEl = document.getElementById("original-price");
+
+    const basePrice = parseFloat(priceEl.dataset.piecePrice);
+    const originalBasePrice = parseFloat(priceEl.dataset.originalPiecePrice);
+    const packMultiplier = parseInt(priceEl.dataset.packMultiplier);
+    const boxMultiplier = parseInt(priceEl.dataset.boxMultiplier);
+
+    packagingSelect.addEventListener("change", function () {
+        let finalPrice = basePrice;
+        let finalOriginal = originalBasePrice;
+
+        if (this.value === "Pack" && packMultiplier > 1) {
+            finalPrice = basePrice * packMultiplier;
+            finalOriginal = originalBasePrice * packMultiplier;
+        } else if (this.value === "Box" && boxMultiplier > 1 && packMultiplier > 1) {
+            finalPrice = basePrice * packMultiplier * boxMultiplier;
+            finalOriginal = originalBasePrice * packMultiplier * boxMultiplier;
+        }
+
+        priceEl.textContent = "৳" + finalPrice.toFixed(2);
+        if (originalEl) {
+            originalEl.textContent = "৳" + finalOriginal.toFixed(2);
+        }
+    });
+});
+</script>
+
 	
 </body>
 </html> 
