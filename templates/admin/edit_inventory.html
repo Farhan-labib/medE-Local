@@ -90,7 +90,12 @@
     </style>
 </head>
 <body>
-    <a href="{% url 'inventory_dashboard' %}" class="back-button">⬅ Back</a>
+    {% if product.m_or_g == "Medicines"%}
+    <a href="{% url 'inventory_medicine' %}" class="back-button">⬅ Back</a>
+    {% else %}
+    <a href="{% url 'inventory_general' %}" class="back-button">⬅ Back</a>
+    {% endif %}
+
 
     <div class="form-container">
         <h1>{{ product.p_name }}</h1>

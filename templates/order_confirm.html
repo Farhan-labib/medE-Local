@@ -78,14 +78,10 @@
                             <select name="union" id="union" required onchange="updateDeliveryFee()">
                                 <option value="" disabled selected>Select Union</option>
                             </select>
-                            
-                            {% if prescription_required %}
-                            <input type="file" id="file-upload" name="prescription" accept="image/*" required>
-                            <label class="presc-label" for="file-upload"><i class="fa-regular fa-image"></i>Upload Your prescription here</label>
-                            {% endif %}
-                            
+                    
                             <label class="address-label" for="addressInput">Address:</label>
                             <textarea id="addressInput" name="address" required></textarea>
+
                         </div>
                     </div>
                     <div class="payment col-sm-6">
@@ -101,6 +97,15 @@
                             <label for="TxID">Transaction ID</label>
                             <input type="text" name="TxID" id="TxID" placeholder="Transaction ID (TxID)">
                         </div>
+                        <br>
+                        <div>
+                        <div class="details col-sm-6">
+                        <div class="container"> 
+                            {% if prescription_required %}
+                            <input type="file" id="file-upload" name="prescription" accept="image/*" required>
+                            <label class="presc-label" for="file-upload"><i class="fa-regular fa-image"></i>Upload Your prescription here</label>
+                            {% endif %}
+                        </div></div></div>
                     </div>
                     <input type="hidden" id="hidden-division-data" value="{{ division_data }}">
                     <input type="hidden" id="hidden-zilla-data" value="{{ zilla_data }}">

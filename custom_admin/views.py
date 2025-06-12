@@ -214,7 +214,7 @@ class MainGeneralForm(ModelForm):
         fields = [
             'product_code', 'p_name', 'Brand',
             'size', 'Manufacturer',
-            'p_type', 'p_image', 'Variant', 'p_category', 'Features_Specifications','Model', 'Description',
+            'p_type', 'p_image', 'Variant', 'p_category', 'Features_Specifications', 'Model', 'Description',
         ]
         labels = {
             'product_code': 'Code Name',
@@ -231,9 +231,24 @@ class MainGeneralForm(ModelForm):
             'Description': 'Description',
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Make product_code readonly and optional, like in MainMedicineForm
+        self.fields['product_code'] = forms.CharField(
+            label='Code Name',
+            required=False,
+            widget=forms.TextInput(attrs={'readonly': 'readonly'})
+        )
+
     def save(self, commit=True):
+        name = self.cleaned_data.get('p_name', '').replace(' ', '_')
+        p_type = self.cleaned_data.get('p_type', '').replace(' ', '_')
+        variant = self.cleaned_data.get('Variant', '').replace(' ', '_')
+
+        self.instance.product_code = f"{name}_{p_type}_{variant}"
         self.instance.m_or_g = "Generals"
-        return super().save(commit)
+        
+        return super().save(commit=commit)
 
 
 def admin_required(view_func):
@@ -652,7 +667,7 @@ def update_order_status(request):
 
 def inventory(request):
     search_query = request.GET.get('search', '')
-    products = main_product.objects.all()
+    products = main_product.objects.filter(m_or_g='Medicines')
 
     if search_query:
         products = products.filter(
@@ -666,10 +681,32 @@ def inventory(request):
         'search_query': search_query,
     })
 
+def inventory_g(request):
+    search_query = request.GET.get('search', '')
+    products = main_product.objects.filter(m_or_g='Generals')
+
+    if search_query:
+        products = products.filter(
+            Q(p_name__icontains=search_query) | 
+            Q(product_code__icontains=search_query) | 
+            Q(p_category__icontains=search_query)
+        )
+
+    return render(request, 'admin/inventory_g.html', {
+        'products': products,
+        'search_query': search_query,
+    })
 
 def inventory_dashboard(request):
-    products = main_product.objects.filter(inventory=1)
-    return render(request, 'admin/inventory_dashboard.html', {'products': products})
+    return render(request, 'admin/inventory_dashboard.html')
+
+def inventory_medicine(request):
+    products = main_product.objects.filter(m_or_g='Medicines', inventory=1)
+    return render(request, 'admin/inventory_medicine.html', {'products': products})
+
+def inventory_general(request):
+    products = main_product.objects.filter(m_or_g='Generals', inventory=1)
+    return render(request, 'admin/inventory_general.html', {'products': products})
 
 
 class ProductEditForm(forms.Form):
@@ -700,7 +737,7 @@ class ProductEditForm(forms.Form):
 
 
 def inventory_edit(request, product_id):
-    product = get_object_or_404(main_product, p_id=product_id)
+    product = get_object_or_404(main_product, p_id=product_id )
 
     if request.method == 'POST':
         form = ProductEditForm(request.POST)

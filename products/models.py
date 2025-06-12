@@ -92,7 +92,13 @@ class main_product(models.Model):
         return self.p_name
 
     def save(self, *args, **kwargs):
-        self.p_link = f"{self.p_name.replace(' ', '-')}-{self.p_type.replace(' ', '-')}-{self.size.replace(' ', '-')}"
+        size_or_variant = self.size if self.size.strip() else self.Variant
+        # Replace spaces with hyphens safely
+        name_part = self.p_name.replace(' ', '-') if self.p_name else ''
+        type_part = self.p_type.replace(' ', '-') if self.p_type else ''
+        size_variant_part = size_or_variant.replace(' ', '-') if size_or_variant else ''
+
+        self.p_link = f"{name_part}-{type_part}-{size_variant_part}"
         super(main_product, self).save(*args, **kwargs)
 
 

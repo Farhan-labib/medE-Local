@@ -181,28 +181,31 @@
     </div>
 
     <table>
-      <thead>
-        <tr>
-          <th>Phone Number</th>
-          <th>Total</th>
-          <th>Delivery Status</th>
-          <th>Payment Method</th>
-          <th>Time</th>
-          <th>Action</th> <!-- New column for the details button -->
-        </tr>
-      </thead>
-      <tbody>
-        {% for order in orders %}
-        <tr>
-          <td>{{ order.phonenumber }}</td>
-          <td>{{ order.total }}</td>
-          <td>{{ order.status }}</td>
-          <td>{{ order.payment_options }}</td>
-          <td>{{ order.timestamp }}</td>
-          <td><a href="{% url 'order_details' order.id %}" class="action-button">Details</a></td> <!-- Details button with link to order details page -->
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <thead>
+    <tr>
+      <th>#</th> <!-- Serial number column header -->
+      <th>Phone Number</th>
+      <th>Total</th>
+      <th>Delivery Status</th>
+      <th>Payment Method</th>
+      <th>Time</th>
+      <th>Action</th> <!-- Details button column -->
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td>{{ forloop.counter }}</td> <!-- Serial number here -->
+      <td>{{ order.phonenumber }}</td>
+      <td>{{ order.total }}</td>
+      <td>{{ order.status }}</td>
+      <td>{{ order.payment_options }}</td>
+      <td>{{ order.timestamp }}</td>
+      <td><a href="{% url 'order_details' order.id %}" class="action-button">Details</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
   </body>
 </html>
