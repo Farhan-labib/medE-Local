@@ -423,21 +423,41 @@ def order_details(request, order_id):
         if order.status == 'Confirmed':
             try:
                 for_stock_data = ast.literal_eval(order.for_stock)
+
                 if isinstance(for_stock_data, dict):
-                    for product_id, quantity in for_stock_data.items():
+                    for product_id, product_info in for_stock_data.items():
                         try:
+                            quantity = int(product_info['quantity'])
+                            packaging = product_info['packaging']
+                            med_per_strip = float(product_info['medPerStrip'])
+                            strip_per_box = float(product_info['stripPerBox'])
+
+                            if packaging == 'Piece':
+                                final_quantity = quantity
+                            elif packaging == 'Pack':
+                                final_quantity = quantity * med_per_strip
+                            elif packaging == 'Box':
+                                final_quantity = quantity * med_per_strip * strip_per_box
+                            else:
+                                final_quantity = quantity
+
                             product = main_product.objects.get(p_id=product_id)
-                            product.Stock += int(quantity)
+                            product.Stock += int(final_quantity)
                             product.save()
-                        except main_product.DoesNotExist:
-                            pass
+
+                        except Exception:
+                            pass  # Consider logging errors in real app
+
             except Exception:
                 pass
 
             order.status = 'Failed'
             order.save()
-        
+
         return redirect('order_details', order_id=order.id)
+
+
+
 
     if request.method == 'POST' and 'status' in request.POST:
         form = OrderUpdateForm(request.POST, instance=order)
