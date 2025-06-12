@@ -142,7 +142,7 @@
                     <tr>
                         <th>Product</th>
                         <th>Quantity</th>
-                        <th>Unit Price</th>
+                        <th>Price</th>
                         <th>Subtotal</th>
                     </tr>
                 </thead>
@@ -151,7 +151,7 @@
                     <tr>
                         <td>{{ item.name }}</td>
                         <td>{{ item.quantity }}</td>
-                        <td>৳{{ item.price }}</td>
+                        <td>৳{{ item.price  }}</td>
                         <td>৳{{ item.subtotal }}</td>
                     </tr>
                     {% endfor %}

@@ -397,7 +397,7 @@ def view_temp_order(request, order_id):
         products_list = ast.literal_eval(temp_order.ordered_products)
         for product in products_list:
             name, quantity, price = product
-            subtotal = float(quantity) * float(price)
+            subtotal = float(price)
             ordered_products.append({
                 'name': name,
                 'quantity': quantity,
@@ -408,7 +408,7 @@ def view_temp_order(request, order_id):
     # Calculate subtotals
     products_subtotal = sum(item['subtotal'] for item in ordered_products)
     delivery_fee = float(temp_order.total) - products_subtotal
-    
+
     context = {
         'order': temp_order,
         'ordered_products': ordered_products,

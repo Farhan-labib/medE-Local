@@ -196,16 +196,25 @@
             </thead>
             <tbody>
                 {% for product in ordered_products %}
-                    <tr>
-                        <td>{{ product.0 }}</td>  <!-- Product Name (index 0) -->
-                        <td>{{ product.1 }} {{product.2}}</td>  <!-- Quantity (index 1) -->
-                        <td>{{ product.3 }}</td>  <!-- Price (index 2) -->
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="3">No ordered products found.</td>
-                    </tr>
-                {% endfor %}
+    {% if product|length == 4 %}
+        <tr>
+            <td>{{ product.0 }}</td>  <!-- Product Name (index 0) -->
+            <td>{{ product.1 }} {{ product.2 }}</td>  <!-- Quantity and unit -->
+            <td>{{ product.3 }}</td>  <!-- Price -->
+        </tr>
+    {% else %}
+        <tr>
+            <td>{{ product.0 }}</td>  <!-- Product Name (index 0) -->
+            <td>{{ product.1 }} Piece</td>  <!-- Quantity with default unit -->
+            <td>{{ product.2 }}</td>  <!-- Price -->
+        </tr>
+    {% endif %}
+{% empty %}
+    <tr>
+        <td colspan="3">No ordered products found.</td>
+    </tr>
+{% endfor %}
+
             </tbody>
         </table>
 
