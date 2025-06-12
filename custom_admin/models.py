@@ -41,6 +41,7 @@ class TemporaryOrders(models.Model):
     prescriptions = models.JSONField(null=True, blank=True)
     Delivery_status = models.CharField(max_length=20, default="Pending")
     timestamp = models.DateTimeField(default=timezone.now)
+    for_stock= models.TextField(default="null")
 
     def __str__(self):
         return f"Temporary Order by {self.phonenumber}"

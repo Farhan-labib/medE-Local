@@ -375,40 +375,7 @@
 			</div>
 		</div>
 		</div>
-		<div class="container">
-			<div class="product-main">
-				<h2 class="title">Featured Products</h2>
-				<div class="product-grid">
-					{% for product in products %}
-					<div class="showcase">
-						<div class="showcase-banner">
-							<a href="{% url 'prod' p_link=product.p_link %}" class="showcase-category">
-								<img class="product-img default" src="media/{{ product.p_image }}" alt="{{ product.p_name }}" width="300">
-								<img class="product-img hover" src="media/{{ product.p_image }}" alt="{{ product.p_name }}" width="300">
-							</a>
-							{% if product.p_discount > 0 %}
-							<p class="showcase-badge">{{ product.p_discount|floatformat:"2" }}%</p>
-							{% endif %}
-						</div>
-						<div class="showcase-content">
-							<a href="{% url 'prod' p_link=product.p_link %}" class="showcase-category">
-								{{ product.p_name }} <span style="font-size: 0.9em; color: black; opacity: 0.6; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; text-transform: lowercase; margin-left: 2px;">{{ product.p_Dosage_Strength }}</span>
-							</a>
-							<a href="{% url 'prod' p_link=product.p_link %}" class="showcase-category">
-								<h3 class="showcase-title">{{ product.p_category }}</h3>
-							</a>
-							<div class="price-box">
-								<p class="price">৳{{ product.discounted_price|floatformat:"2"}}</p>
-								{% if product.p_discount > 0 %}
-								<del>{{ product.p_price|floatformat:"2" }}</del>
-								{% endif %}
-							</div>
-						</div>
-					</div>
-					{%endfor%}
-				</div>
-			</div>
-		</div>
+		
 	</main>
 	<footer class="footer">
 		<div class="footer-top section">

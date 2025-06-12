@@ -161,29 +161,32 @@
     <a href="{% url 'create_product' %}" class="add-product-link">+Add New Medicine</a>
 
     <table>
-      <thead>
-        <tr>
-          <th>Product Code</th>
-          <th>Medicine Name</th>
-          <th>Price</th>
-          <th>Discount</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for product in products %}
-        <tr>
-          <td>{{ product.product_code }}</td>
-          <td>{{ product.p_name }}</td>
-          <td>{{ product.p_price }}</td>
-          <td>{{ product.p_discount }}</td>
-          <td>
-            <a href="{% url 'update_product' product.p_id %}" class="action-button edit-button">Edit</a> |
-            <a href="{% url 'delete_product' product.p_id %}" class="action-button delete-button" onclick="return confirm('Are you sure?')">Delete</a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <thead>
+    <tr>
+      <th>SL</th> <!-- Serial Number Column -->
+      <th>Product Code</th>
+      <th>Medicine Name</th>
+      <th>Price</th>
+      <th>Discount</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in products %}
+    <tr>
+      <td>{{ forloop.counter }}</td> <!-- Auto Serial Number -->
+      <td>{{ product.product_code }}</td>
+      <td>{{ product.p_name }}</td>
+      <td>{{ product.p_price }}</td>
+      <td>{{ product.p_discount }}</td>
+      <td>
+        <a href="{% url 'update_product' product.p_id %}" class="action-button edit-button">Edit</a> |
+        <a href="{% url 'delete_product' product.p_id %}" class="action-button delete-button" onclick="return confirm('Are you sure?')">Delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
   </body>
 </html>

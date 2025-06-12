@@ -10,7 +10,41 @@
             font-family: Arial, sans-serif;
             padding: 20px;
         }
-        
+         table {
+    width: 90%;
+    margin: 30px auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  th, td {
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    text-align: center;
+  }
+
+  th {
+    background-color: #3498db;
+    color: white;
+  }
+
+  tr:hover {
+    background-color: #f2f2f2;
+  }
+
+  .action-button {
+    padding: 8px 14px;
+    border-radius: 5px;
+    background-color: #f39c12;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  .action-button:hover {
+    background-color: #e67e22;
+  }
         .search-form {
             margin-bottom: 20px;
         }
@@ -96,19 +130,35 @@
     <a href="{% url 'inventory' %}" class="add-link"><button class="add-to-inventory">+Add New Items</button></a>
     <h1 style="text-align: center;">STOCK</h1>
 
-    <div class="product-list">
-        {% for product in products %}
-            <div class="product-card">
-                <img src="{{ product.p_image.url }}" alt="{{ product.p_name }}">
-                <h3>{{ product.p_name }}</h3>
-                <p>Product Code: {{ product.product_code }}</p>
-                <p>Stock: {{product.Stock}}</p>
-                <a href="{% url 'inventory_edit' product_id=product.p_id %}" class="edit-button"><button class="add-to-inventory">Update</button></a>
-            </div>
-        {% empty %}
-            <p>No products with inventory of 1 found.</p>
-        {% endfor %}
-    </div>
+    <table>
+  <thead>
+    <tr>
+      <th>SL</th>
+      <th>Product Name</th>
+      <th>Product Code</th>
+      <th>Stock</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in products %}
+    <tr>
+      <td>{{ forloop.counter }}</td> <!-- Auto Serial Number -->
+      <td>{{ product.p_name }}</td>
+      <td>{{ product.product_code }}</td>
+      <td>{{ product.Stock }}</td>
+      <td>
+        <a href="{% url 'inventory_edit' product_id=product.p_id %}" class="action-button edit-button">Update</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="5" style="text-align: center;">No products with inventory of 1 found.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
 
 </body>
 </html>

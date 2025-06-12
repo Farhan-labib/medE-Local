@@ -149,40 +149,90 @@ class MainMedicineForm(ModelForm):
     class Meta:
         model = main_product
         fields = [
-            'product_code', 'otc_status', 'add_to_list', 'p_name', 'Brand',
-            'feature', 'description', 'size', 'Manufacturer', 'p_generics', 
+             'product_code', 'otc_status', 'add_to_list', 'p_name', 'Brand',
+            'Dosage_Feature', 'size', 'Manufacturer', 'p_generics', 
             'p_type', 'p_image', 'p_Dosage_Strength', 'Variant', 'p_category', 
             'p_Indications', 'p_Administration', 'p_Pharmacology', 'p_Side_Effects',
             'p_Interaction', 'p_Contradictions', 'p_Precautions', 'p_Pregnancy',
-            'p_Therapeutic', 'p_Storage', 'FAQ', 'Suggestions',
+            'p_Therapeutic', 'p_Storage', 'FAQ', 'Suggestions', 'Overdose_Effect',
         ]
+        labels = {
+            'product_code': 'Code Name',
+            'otc_status': 'OTC Status',
+            'add_to_list': 'ADD to List',
+            'p_name': 'Product Name',
+            'Brand': 'Brand',
+            'Manufacturer': 'Manufacturer',
+            'p_generics': 'Generic',
+            'p_type': 'Dosage Type',
+            'p_Dosage_Strength': 'Dosage Strength',
+            'Dosage_Feature': 'Dosage Feature',
+            'p_category': 'Drug Category',
+            'Variant': 'Variant',
+            'size': 'Size',
+            'p_Administration': 'Administration of Dosage',
+            'p_Indications': 'Indications',
+            'p_Pharmacology': 'Pharmacology',
+            'p_Side_Effects': 'Side Effect',
+            'Overdose_Effect': 'Overdose Effect',
+            'p_Interaction': 'Interaction',
+            'p_Contradictions': 'Contradiction',
+            'p_Precautions': 'Precaution',
+            'p_Pregnancy': 'Pregnancy',
+            'p_Therapeutic': 'Therapeutic',
+            'p_Storage': 'Storage Condition',
+            'FAQ': 'FAQ',
+            'Suggestions': 'Suggestions',
+            'p_image': 'Product Image',
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field_name in self.fields:
-            self.fields[field_name].label = field_name.replace('_', ' ').title()
+        self.fields['product_code'] = forms.CharField(
+            label='Code Name',
+            required=False,
+            widget=forms.TextInput(attrs={'readonly': 'readonly'})
+        )
 
     def save(self, commit=True):
+        # Auto-generate product_code using p_name, p_type, and size
+        name = self.cleaned_data.get('p_name', '').replace(' ', '_')
+        dosage_type = self.cleaned_data.get('p_type', '').replace(' ', '_')
+        size = self.cleaned_data.get('size', '').replace(' ', '_')
+
+        self.instance.product_code = f"{name}_{dosage_type}_{size}"
+
+        # Set fixed field
         self.instance.m_or_g = "Medicines"  
-        return super().save(commit)
+
+        return super().save(commit=commit)
 
 
 class MainGeneralForm(ModelForm):
     class Meta:
         model = main_product
         fields = [
-            'product_code', 'p_name', 'Brand', 'feature',
-            'description', 'size', 'Manufacturer',
-            'p_type', 'p_image', 'Variant', 'p_category', 'Features_Specifications',
+            'product_code', 'p_name', 'Brand',
+            'size', 'Manufacturer',
+            'p_type', 'p_image', 'Variant', 'p_category', 'Features_Specifications','Model', 'Description',
         ]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field_name in self.fields:
-            self.fields[field_name].label = field_name.replace('_', ' ').title()
+        labels = {
+            'product_code': 'Code Name',
+            'p_name': 'Product Name',
+            'Brand': 'Brand',
+            'size': 'Size',
+            'Model': 'Model',
+            'Manufacturer': 'Manufacturer',
+            'p_type': 'Sub-Category',
+            'p_image': 'Product Image',
+            'Variant': 'Variant',
+            'p_category': 'Drug Category',
+            'Features_Specifications': 'Features / Specifications',
+            'Description': 'Description',
+        }
 
     def save(self, commit=True):
-        self.instance.m_or_g = "Generals"  
+        self.instance.m_or_g = "Generals"
         return super().save(commit)
 
 
@@ -202,6 +252,7 @@ def create_product(request):
         form.save()
         return redirect('admin_product')
     return render(request, 'admin/create_product.html', {'form': form})
+
 
 
 @admin_required

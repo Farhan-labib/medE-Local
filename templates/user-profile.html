@@ -466,7 +466,7 @@
 						<td data-title="Amount">{{ value.1 }}</td>
 						<td data-title="Date">{{ value.2|date:"d F Y" }}</td>
 						{% if value.3 == "Pending" %}
-						<td data-title="Status"><p style="background-color: lightyellow; color: black;">{{ value.3 }}</p></td>
+						<td data-title="Status"><p style="background-color: lightyellow; color: black;">Pending</p></td>
 						{% elif value.3 == "Completed" %}
 						<td data-title="Status"><p style="background-color: green;">{{ value.3 }}</p></td>
 						{% elif value.3 == "Confirmed" %}

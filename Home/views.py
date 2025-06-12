@@ -6,18 +6,13 @@ from django.core.serializers.json import DjangoJSONEncoder
 import ast
 import json
 import os
-
-from .models import Product
 from products.models import Orders, Profile_MedList, presciption_order, main_product
 from authentication.models import UserProfile
 from custom_admin.models import Location, TemporaryOrders
 
 
 def home(request):
-    products = Product.objects.filter(Stock__gt=0, inventory__gt=0)
-    for product in products:
-        product.discounted_price = product.p_price - (product.p_price * (product.p_discount / 100))
-    return render(request, 'index.html', {'products': products})
+    return render(request, 'index.html')
 
 
 def profile(request):
@@ -73,61 +68,73 @@ def profile(request):
 def quick_order(request):
     phonenumber = request.user.phone_number
     user_address = request.user.address
-    
-    # Get saved medication list
+
+    # Fetch user's saved med list
     saved_data = Profile_MedList.objects.filter(phone_number=phonenumber).values()
     data_list = list(saved_data)
     med_list = data_list[0]['med_list']
-    
-    # Get all p_ids at once for batch query
+
+    # Query all product details needed
     p_ids = list(med_list.keys())
-    products_data_dict = {str(item['p_id']): item for item in main_product.objects.filter(p_id__in=[int(pid) for pid in p_ids]).values('p_id', 'p_name', 'medPerStrip', 'p_price', 'p_discount')}
-    
-    # Calculate order details
+    products_data_dict = {
+        str(item['p_id']): {
+            'p_id': item['p_id'],
+            'p_name': item['p_name'],
+            'medPerStrip': int(item['medPerStrip']),
+            'stripPerBox': int(item['stripPerBox']),
+            'p_price': float(item['p_price']),
+            'p_discount': float(item['p_discount']),
+            'p_image': str(item['p_image']),
+        }
+        for item in main_product.objects.filter(p_id__in=[int(pid) for pid in p_ids])
+        .values('p_id', 'p_name', 'medPerStrip', 'stripPerBox', 'p_price', 'p_discount', 'p_image')
+    }
+
     t = []
     total = 0
+    for_stock = {}
+
     for key, value in med_list.items():
-        morning_day_len = len(med_list[key][0])
-        dayy = med_list[key][1]
-        
+        morning_day_len = len(value[0])
+        dayy = value[1]
+
         product = products_data_dict[key]
-        medPerStrip = product['medPerStrip']
-        price = (product['p_price'] - (product['p_price'] * (product['p_discount'] / 100)))
-        quantity = (product['medPerStrip'] * morning_day_len * dayy) / medPerStrip
-        t.append((product['p_name'], str(int(quantity)), "Piece", '{:.2f}'.format(float(price * quantity))))
-        total += round(price * quantity, 2)
+        quantity = morning_day_len * dayy  # total pieces
 
-    prescription_required = request.session.get('prescription_required', False)
-    for_stock = request.session.get('for_stock', {})
-    
-    # Process locations - fetch data once and iterate over it
+        unit_price = product['p_price'] * (1 - product['p_discount'] / 100)
+        subtotal = unit_price * quantity
+
+        t.append((
+            product['p_name'],
+            str(quantity),
+            "Piece",
+            '{:.2f}'.format(subtotal)
+        ))
+        total += round(subtotal, 2)
+
+        for_stock[str(product['p_id'])] = {
+            'packaging': 'Piece',
+            'quantity': quantity,
+            'price': '{:.4f}'.format(unit_price),
+            'medPerStrip': product['medPerStrip'],
+            'stripPerBox': product['stripPerBox'],
+            'name': product['p_name'],
+            'image': product['p_image']
+        }
+
+    # Location processing
     locations = Location.objects.all()
-    
-    # Initialize data structures
-    division_data = {}
-    zilla_data = {}
-    upazila_data = {}
-    union_data = {}
+    division_data, zilla_data, upazila_data, union_data = {}, {}, {}, {}
 
-    # Process locations in a single loop
     for location in locations:
         if location.level == 'division':
             division_data[location.name] = location.name
         elif location.level == 'zilla' and location.parent:
-            parent_division = location.parent.name
-            if parent_division not in zilla_data:
-                zilla_data[parent_division] = []
-            zilla_data[parent_division].append(location.name)
+            zilla_data.setdefault(location.parent.name, []).append(location.name)
         elif location.level == 'upazila' and location.parent:
-            parent_zilla = location.parent.name
-            if parent_zilla not in upazila_data:
-                upazila_data[parent_zilla] = []
-            upazila_data[parent_zilla].append(location.name)
+            upazila_data.setdefault(location.parent.name, []).append(location.name)
         elif location.level == 'union' and location.parent:
-            parent_upazila = location.parent.name
-            if parent_upazila not in union_data:
-                union_data[parent_upazila] = []
-            union_data[parent_upazila].append({
+            union_data.setdefault(location.parent.name, []).append({
                 'name': location.name,
                 'id': location.id,
                 'delivery_fee': float(location.delivery_fee) if location.delivery_fee else 60.0
@@ -135,17 +142,18 @@ def quick_order(request):
 
     context = {
         'product_data_list': t,
-        'total': total, 
+        'total': total,
         'user_address': user_address,
-        'prescription_required': prescription_required,
+        'prescription_required': False,
         'division_data': json.dumps(list(division_data.keys())),
         'zilla_data': json.dumps(zilla_data),
         'upazila_data': json.dumps(upazila_data),
         'union_data': json.dumps(union_data, cls=DjangoJSONEncoder),
         'for_stock': for_stock
     }
-    
+
     return render(request, 'order_confirm.html', context)
+
 
 
 def upload_prescription(request):

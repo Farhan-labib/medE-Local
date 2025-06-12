@@ -92,7 +92,7 @@
                 <option value="{{ product.p_name }}" 
                         data-price="{{ product.discounted_price|floatformat:2 }}" 
                         data-code="{{ product.product_code }}">
-                    {{ product.p_name }} (Code: {{ product.product_code }}) - ${{ product.discounted_price|floatformat:2 }}
+                    {{ product.p_name }} (Code: {{ product.product_code }}) - ৳{{ product.discounted_price|floatformat:2 }}
                 </option>
             {% endfor %}
         </select>
@@ -145,7 +145,7 @@
                 // Update UI
                 let medicineList = document.getElementById("selected-medicines");
                 let listItem = document.createElement("li");
-                listItem.textContent = `${medicineName} (Code: ${medicineCode}) - Qty: ${quantity} - Total: $${totalPrice}`;
+                listItem.textContent = `${medicineName} (Code: ${medicineCode}) - Qty: ${quantity} - Total: ৳${totalPrice}`;
                 medicineList.appendChild(listItem);
             } else {
                 alert("Please select a valid medicine and quantity.");
@@ -190,29 +190,31 @@
     </script>
     <script>
         function updateOrderStatus() {
-            let newStatus = document.getElementById("order-status").value; // Get selected order status
-            
-            let statusData = {
-                order_id: "{{ order.id }}",  // Assuming `order.id` exists
-                order_status: newStatus
-            };
-    
-            $.ajax({
-                type: "POST",
-                url: "{% url 'update_order_status' %}",  // Django URL for updating order status
-                data: JSON.stringify(statusData),
-                contentType: "application/json",
-                beforeSend: function(xhr, settings) {
-                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
-                },
-                success: function(response) {
-                    alert("Order status updated successfully!");
-                },
-                error: function(error) {
-                    alert("Error updating order status. Please try again.");
-                }
-            });
+    let newStatus = document.getElementById("order-status").value;
+
+    let statusData = {
+        order_id: "{{ order.id }}",
+        order_status: newStatus
+    };
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'update_order_status' %}",
+        data: JSON.stringify(statusData),
+        contentType: "application/json",
+        beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        },
+        success: function(response) {
+            alert("Order status updated successfully!");
+            window.location.href = "{% url 'prescription' %}";  // Redirect to previous page
+        },
+        error: function(error) {
+            alert("Error updating order status. Please try again.");
         }
+    });
+}
+
     </script>
     
 </body>

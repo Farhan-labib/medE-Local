@@ -318,7 +318,9 @@
                     <p>Home / {{ product_details.p_name }}</p>
                     <h1>{{ product_details.p_name }}<span style="font-size: 0.5em; color: black; opacity: 0.6; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; text-transform: lowercase; margin-left: 8px;">{{ product_details.p_Dosage_Strength }}</span></h1>
                     <h2>{{ product_details.p_type }}</h2>
+					{% if product_details.p_generics != "" %}
                     <h3>Generics: {{ product_details.p_generics }}</h3>
+					{% endif %}
 					{% if product_details.size != "" %}
 					<h3>Size: {{ product_details.size }}</h3>
 					{% endif %}
@@ -392,6 +394,14 @@
                 
             </div>
             <section class="product-medications">
+				{% if product_details.Model != "" %}
+                <h2>Model</h2>
+                <p>{{ product_details.Model }}</p>
+				{% endif %}
+				{% if product_details.Description != "" %}
+                <h2>Description</h2>
+                <p>{{ product_details.Description }}</p>
+				{% endif %}
 				{% if product_details.p_Indications != "" %}
                 <h2>Indications</h2>
                 <p>{{ product_details.p_Indications }}</p>
@@ -437,9 +447,13 @@
 					<h2>Storage Conditions</h2>
 					<p>{{ product_details.p_Storage}}</p>
 				{% endif %}
-                {%if product_details.description != "" %}
-				<h2>Description</h2>
-				<p>{{product_details.description}}</p>
+                {%if product_details.Dosage_Feature != "" %}
+				<h2>Dosage Feature</h2>
+				<p>{{product_details.Dosage_Feature}}</p>
+				{%endif%}
+				{%if product_details.Overdose_Effect != "" %}
+				<h2>Overdose Effect</h2>
+				<p>{{product_details.Overdose_Effect}}</p>
 				{%endif%}
 				{% if product_details.FAQ != "" %}
 					<h2>FAQ</h2>

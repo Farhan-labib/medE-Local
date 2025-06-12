@@ -246,13 +246,12 @@ def order_complete(request):
             prescriptions=image,
             total=grand_total,
             del_adress=del_address,
-            status='pending',
+            status='Pending',
             paymentMobile=payment_mobile,
             TxID=tx_id,
             payment_options=payment_options,
             for_stock=for_stock
         )
-
         return render(request, 'confirm.html')
 
 
@@ -436,7 +435,7 @@ def user_confirm(request):
             paymentMobile=temporary_order.paymentMobile,
             TxID=temporary_order.TxID,
             total=temporary_order.total,
-            status='pending'
+            status='Pending'
         )
 
         # Delete the temporary order

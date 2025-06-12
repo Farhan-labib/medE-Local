@@ -179,27 +179,30 @@
       </form>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Phone Number</th>
-          <th>Order Status</th>
-          <th>Payment Method</th>
-          <th>Time</th>
-          <th>Action</th> <!-- New column for the details button -->
-        </tr>
-      </thead>
-      <tbody>
-        {% for order in orders %}
-        <tr>
-          <td>{{ order.phonenumber }}</td>
-          <td>{{ order.Order_status }}</td>
-          <td>{{ order.payment_options }}</td>
-          <td>{{ order.timestamp }}</td>
-          <td><a href="{% url 'pres_details' order.id %}" class="action-button">Details</a></td> <!-- Details button with link to order details page -->
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+   <table>
+  <thead>
+    <tr>
+      <th>SL</th> <!-- Serial Number Column -->
+      <th>Phone Number</th>
+      <th>Order Status</th>
+      <th>Payment Method</th>
+      <th>Time</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td>{{ forloop.counter }}</td> <!-- Serial number -->
+      <td>{{ order.phonenumber }}</td>
+      <td>{{ order.Order_status }}</td>
+      <td>{{ order.payment_options }}</td>
+      <td>{{ order.timestamp }}</td>
+      <td><a href="{% url 'pres_details' order.id %}" class="action-button">Details</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
   </body>
 </html>
