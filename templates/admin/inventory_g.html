@@ -84,7 +84,7 @@ body {
     <h1 style="text-align: center;">General List</h1>
 
     <!-- Search Form -->
-    <form method="GET" action="{% url 'inventory' %}" class="search-form">
+    <form method="GET" action="{% url 'inventory_g' %}" class="search-form">
         <input type="text" name="search" placeholder="Search for products" value="{{ search_query }}" style="padding: 5px; width: 200px;">
         <button type="submit" style="padding: 5px 10px; cursor: pointer;">Search</button>
     </form>

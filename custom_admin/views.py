@@ -665,16 +665,19 @@ def update_order_status(request):
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 
+from django.db.models import Q
+
 def inventory(request):
     search_query = request.GET.get('search', '')
-    products = main_product.objects.filter(m_or_g='Medicines')
-
-    if search_query:
-        products = products.filter(
-            Q(p_name__icontains=search_query) | 
-            Q(product_code__icontains=search_query) | 
+    
+    products = main_product.objects.filter(
+        Q(m_or_g='Medicines') &
+        (
+            Q(p_name__icontains=search_query) |
+            Q(product_code__icontains=search_query) |
             Q(p_category__icontains=search_query)
-        )
+        ) if search_query else Q(m_or_g='Medicines')  # when no search
+    )
 
     return render(request, 'admin/inventory.html', {
         'products': products,
@@ -683,14 +686,15 @@ def inventory(request):
 
 def inventory_g(request):
     search_query = request.GET.get('search', '')
-    products = main_product.objects.filter(m_or_g='Generals')
 
-    if search_query:
-        products = products.filter(
-            Q(p_name__icontains=search_query) | 
-            Q(product_code__icontains=search_query) | 
+    products = main_product.objects.filter(
+        Q(m_or_g='Generals') &
+        (
+            Q(p_name__icontains=search_query) |
+            Q(product_code__icontains=search_query) |
             Q(p_category__icontains=search_query)
-        )
+        ) if search_query else Q(m_or_g='Generals')
+    )
 
     return render(request, 'admin/inventory_g.html', {
         'products': products,
