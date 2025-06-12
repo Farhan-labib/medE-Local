@@ -6,183 +6,147 @@
     <title>Manage Locations</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
             color: #333;
         }
+
         .container {
-            width: 80%;
-            margin: 0 auto;
+            max-width: 1100px;
+            margin: 40px auto;
+            background-color: #fff;
             padding: 30px;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
         }
+
         h1, h2 {
-            color: #2c3e50;
-            font-size: 28px;
+            font-size: 24px;
+            margin-bottom: 20px;
             border-bottom: 2px solid #3498db;
             padding-bottom: 10px;
-            margin-bottom: 20px;
+            color: #2c3e50;
         }
-        .form-container {
-            margin-bottom: 40px;
+
+        a.button {
+            padding: 10px 15px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
         }
+
         form {
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
+
         label {
             font-weight: bold;
-            font-size: 16px;
         }
+
         input, select {
             padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             border-radius: 4px;
-            width: 100%;
         }
+
         button {
+            padding: 10px 15px;
+            border: none;
             background-color: #3498db;
             color: white;
-            border: none;
-            padding: 12px 20px;
-            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
             border-radius: 4px;
-            width: 100%;
         }
+
         button:hover {
             background-color: #2980b9;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 30px;
+            margin-top: 20px;
         }
+
         th, td {
-            padding: 12px;
+            border: 1px solid #ccc;
+            padding: 10px;
             text-align: left;
-            border: 1px solid #ddd;
         }
+
         th {
             background-color: #3498db;
             color: white;
         }
+
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-        .table-container {
-            overflow-x: auto;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            font-size: 14px;
-            color: #888;
-        }
-        #delivery_fee_container {
-            min-height: 10px;
-        }
-        .error {
-            color: red;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 60%;
-            border-radius: 5px;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close:hover {
-            color: black;
-        }
+
         .action-button {
-            margin: 0 5px;
             padding: 5px 10px;
-            border: none;
+            font-size: 13px;
+            margin-right: 5px;
             border-radius: 3px;
-            cursor: pointer;
-            font-size: 14px;
         }
+
         .edit-button {
             background-color: #3498db;
             color: white;
         }
+
         .delete-button {
             background-color: #e74c3c;
             color: white;
         }
+
+        .location-path {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <div style="width: 100%; display: flex; align-items: start;">
-        <a href="{% url 'admin' %}" style="display: inline-block; padding: 12px 20px; background-color: #6c757d; color: white; text-decoration: none; font-size: 1em; font-weight: bold; border-radius: 5px; border: none; align-items: left !important; cursor: pointer;">
-            ⬅ Back
-        </a>
-    </div>
+    <a href="{% url 'admin' %}" class="button">⬅ Back</a>
     <h1>Manage Locations</h1>
-    <!-- Add New Location Form -->
-    <div class="form-container">
-        <h2>Add New Location</h2>
-        <form method="post">
-            {% csrf_token %}
-            <label for="{{ form.name.id_for_label }}">Name:</label>
-            {{ form.name }}
-            {% if form.name.errors %}
-                <div class="error">{{ form.name.errors.0 }}</div>
-            {% endif %}
-            
-            <label for="{{ form.level.id_for_label }}">Level:</label>
-            {{ form.level }}
-            {% if form.level.errors %}
-                <div class="error">{{ form.level.errors.0 }}</div>
-            {% endif %}
-            
-            <label for="{{ form.parent.id_for_label }}">Parent:</label>
-            {{ form.parent }}
-            {% if form.parent.errors %}
-                <div class="error">{{ form.parent.errors.0 }}</div>
-            {% endif %}
-            
-            <div id="delivery_fee_container">
-                <label for="{{ form.delivery_fee.id_for_label }}">Delivery Fee (Union only):</label>
-                {{ form.delivery_fee }}
-                {% if form.delivery_fee.errors %}
-                    <div class="error">{{ form.delivery_fee.errors.0 }}</div>
-                {% endif %}
-            </div>
-            <button type="submit">Save Location</button>
-        </form>
-    </div>
-    <!-- List of Existing Locations -->
+
+    <!-- Add Form -->
+    <h2>Add New Location</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="{{ form.name.id_for_label }}">Name:</label>
+        {{ form.name }} {% if form.name.errors %}<div class="error">{{ form.name.errors.0 }}</div>{% endif %}
+
+        <label for="{{ form.level.id_for_label }}">Level:</label>
+        {{ form.level }} {% if form.level.errors %}<div class="error">{{ form.level.errors.0 }}</div>{% endif %}
+
+        <label for="{{ form.parent.id_for_label }}">Parent:</label>
+        {{ form.parent }} {% if form.parent.errors %}<div class="error">{{ form.parent.errors.0 }}</div>{% endif %}
+
+        <div id="delivery_fee_container">
+            <label for="{{ form.delivery_fee.id_for_label }}">Delivery Fee (Union only):</label>
+            {{ form.delivery_fee }} {% if form.delivery_fee.errors %}<div class="error">{{ form.delivery_fee.errors.0 }}</div>{% endif %}
+        </div>
+
+        <button type="submit">Save Location</button>
+    </form>
+
+    <!-- Table -->
     <h2>Existing Locations</h2>
     <div class="table-container">
         <table>
@@ -190,55 +154,95 @@
                 <tr>
                     <th>Name</th>
                     <th>Level</th>
-                    <th>Parent</th>
+                    <th>Parent Path</th>
                     <th>Delivery Fee</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for location in locations %}
-                    <tr>
-                        <td>{{ location.name }}</td>
-                        <td>{{ location.get_level_display }}</td>
-                        <td>{{ location.parent.name|default:"None" }}</td>
-                        <td>
-                            {% if location.level == "union" %}
-                                <span id="fee-{{ location.id }}">{{ location.delivery_fee }}</span>
-                                <input type="text" id="edit-fee-{{ location.id }}" value="{{ location.delivery_fee }}" style="display: none; width: 80px;">
-                                <button id="save-fee-{{ location.id }}" class="action-button" style="display: none; background-color: green;">Save</button>
+                <tr>
+                    <td>{{ location.name }}</td>
+                    <td>{{ location.get_level_display }}</td>
+                    <td>
+                        {% if location.level == "union" %}
+                            {% if location.parent and location.parent.parent and location.parent.parent.parent %}
+                                <span class="location-path">
+                                    {{ location.parent.parent.parent.name }} &gt;
+                                    {{ location.parent.parent.name }} &gt;
+                                    {{ location.parent.name }}
+                                </span>
+                            {% else %}
+                                <span style="color: #aaa;">Incomplete hierarchy</span>
+                            {% endif %}
+                        {% elif location.level == "upazila" %}
+                            {% if location.parent and location.parent.parent %}
+                                {{ location.parent.parent.name }} &gt;
+                                {{ location.parent.name }}
+                            {% elif location.parent %}
+                                {{ location.parent.name }}
                             {% else %}
                                 —
                             {% endif %}
-                        </td>
-                        <td>
-                            {% if location.level == "union" %}
-                                <button data-location-id="{{ location.id }}" class="action-button edit-button" onclick="toggleFeeEdit(this)">Edit Fee</button>
+                        {% elif location.level == "zilla" %}
+                            {% if location.parent %}
+                                {{ location.parent.name }}
+                            {% else %}
+                                —
                             {% endif %}
-                            <form method="post" action="{% url 'location_delete' location.id %}" style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="action-button delete-button">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if location.level == "union" %}
+                            <span id="fee-{{ location.id }}">{{ location.delivery_fee }}</span>
+                            <input type="text" id="edit-fee-{{ location.id }}" value="{{ location.delivery_fee }}" style="display:none; width: 70px;">
+                            <button id="save-fee-{{ location.id }}" class="action-button" style="display:none; background-color: green;">Save</button>
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if location.level == "union" %}
+                            <button data-location-id="{{ location.id }}" class="action-button edit-button" onclick="toggleFeeEdit(this)">Edit Fee</button>
+                        {% endif %}
+                        <form method="post" action="{% url 'location_delete' location.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="action-button delete-button">Delete</button>
+                        </form>
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
 
-<!-- Edit Fee Modal -->
-<div id="edit-modal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Edit Delivery Fee</h2>
-        <form id="edit-fee-form" method="post">
-            {% csrf_token %}
-            <input type="hidden" id="edit-location-id" name="location_id">
-            <label for="edit-fee">Delivery Fee:</label>
-            <input type="text" id="edit-fee" name="delivery_fee">
-            <button type="submit">Save Changes</button>
-        </form>
-    </div>
+    <!-- Bulk Update -->
+    <h2>Bulk Set Delivery Fee</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="bulk_level">Select Level:</label>
+        <select name="bulk_level" id="bulk_level" required>
+            <option value="">-- Select Level --</option>
+            <option value="division">Division</option>
+            <option value="zilla">Zilla</option>
+            <option value="upazila">Upazila</option>
+        </select>
+
+        <label for="bulk_level_id">Select Location:</label>
+        <select name="bulk_level_id" id="bulk_level_id" required>
+            <option value="">-- Select Location --</option>
+            {% for loc in all_locations %}
+                <option value="{{ loc.id }}" data-level="{{ loc.level }}">{{ loc.name }} ({{ loc.get_level_display }})</option>
+            {% endfor %}
+        </select>
+
+        <label for="bulk_fee">Set Delivery Fee:</label>
+        <input type="number" name="bulk_fee" step="0.01" required>
+
+        <button type="submit" name="bulk_update">Apply Bulk Fee</button>
+    </form>
 </div>
 
 <script>
@@ -247,7 +251,7 @@
         const parentSelect = document.querySelector("#id_parent");
         const deliveryFeeContainer = document.getElementById("delivery_fee_container");
         const deliveryFeeInput = document.querySelector("#id_delivery_fee");
-        
+
         function toggleDeliveryFeeField() {
             if (levelSelect.value === "union") {
                 deliveryFeeContainer.style.display = "block";
@@ -257,7 +261,7 @@
                 deliveryFeeInput.required = false;
             }
         }
-        
+
         levelSelect.addEventListener("change", function () {
             toggleDeliveryFeeField();
             parentSelect.innerHTML = '<option value="">---------</option>';
@@ -279,7 +283,7 @@
                     });
             }
         });
-        
+
         toggleDeliveryFeeField();
     });
 
@@ -289,14 +293,11 @@
         const feeInput = document.getElementById("edit-fee-" + locationId);
         const saveButton = document.getElementById("save-fee-" + locationId);
 
-        // Toggle visibility of fee and input field
         if (feeInput.style.display === "none") {
             feeSpan.style.display = "none";
             feeInput.style.display = "inline-block";
             saveButton.style.display = "inline-block";
-
-            // Bind the click event for save button
-            saveButton.onclick = function() {
+            saveButton.onclick = function () {
                 saveFee(locationId);
             };
         } else {
@@ -310,13 +311,11 @@
         const feeInput = document.getElementById("edit-fee-" + locationId);
         const newFee = feeInput.value;
 
-        // Validate the input
         if (!newFee || isNaN(newFee)) {
             alert("Please enter a valid number for the delivery fee.");
             return;
         }
 
-        // Send AJAX request to update the fee
         fetch('/update-fee/', {
             method: 'POST',
             headers: {
@@ -331,11 +330,8 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Update the fee in the table
                 const feeSpan = document.getElementById("fee-" + locationId);
                 feeSpan.textContent = newFee;
-
-                // Hide the input and show the updated fee
                 toggleFeeEdit(document.querySelector(`[data-location-id='${locationId}']`));
             } else {
                 alert("Failed to update delivery fee: " + data.message);
@@ -346,6 +342,20 @@
             alert("An error occurred while updating the delivery fee.");
         });
     }
+
+    const allLocations = Array.from(document.querySelectorAll('#bulk_level_id option'));
+    document.getElementById("bulk_level").addEventListener("change", function () {
+        const selectedLevel = this.value;
+        const selectBox = document.getElementById("bulk_level_id");
+        selectBox.innerHTML = '<option value="">-- Select Location --</option>';
+
+        allLocations.forEach(opt => {
+            if (opt.dataset.level === selectedLevel) {
+                selectBox.appendChild(opt.cloneNode(true));
+            }
+        });
+    });
 </script>
+
 </body>
 </html>

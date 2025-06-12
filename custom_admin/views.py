@@ -45,61 +45,63 @@ class LocationForm(forms.ModelForm):
         return cleaned_data
 
 
-def location_edit(request, location_id):
-    location = get_object_or_404(Location, id=location_id)
-    
-    if request.method == 'POST':
-        form = LocationForm(request.POST, instance=location)
-        if form.is_valid():
-            form.save()
-            return redirect('location_manage')
-    else:
-        form = LocationForm(instance=location)
-    
-    return render(request, 'admin/location_edit.html', {
-        'form': form,
-        'location': location
-    })
-
+def get_location_path(location):
+    path = []
+    while location:
+        path.insert(0, location)
+        location = location.parent
+    return path
 
 def location_manage(request):
+    form = LocationForm(request.POST or None)
+
     if request.method == 'POST':
-        if 'edit_form' in request.POST:
-            location_id = request.POST.get('location_id')
-            location = get_object_or_404(Location, id=location_id)
-            form = LocationForm(request.POST, instance=location)
-        else:
-            form = LocationForm(request.POST)
-            
+        if 'bulk_update' in request.POST:
+            level = request.POST.get('bulk_level')
+            level_id = request.POST.get('bulk_level_id')
+            fee = request.POST.get('bulk_fee')
+            try:
+                fee = float(fee)
+            except (ValueError, TypeError):
+                fee = None
+
+            if level in ['division', 'zilla', 'upazila'] and level_id and fee is not None:
+                try:
+                    parent_location = Location.objects.get(id=level_id, level=level)
+                    # All unions under this parent
+                    unions = Location.objects.filter(level='union')
+                    if level == 'upazila':
+                        unions = unions.filter(parent=parent_location)
+                    elif level == 'zilla':
+                        unions = unions.filter(parent__parent=parent_location)
+                    elif level == 'division':
+                        unions = unions.filter(parent__parent__parent=parent_location)
+
+                    unions.update(delivery_fee=fee)
+                except Location.DoesNotExist:
+                    pass
+            return redirect('location_manage')
+
         if form.is_valid():
             form.save()
             return redirect('location_manage')
-    else:
-        form = LocationForm()
-    
-    level_order = {
-        'division': 1,
-        'zilla': 2,
-        'upazila': 3,
-        'union': 4
-    }
-    
-    locations = Location.objects.all().annotate(
-        level_sort=Case(
-            When(level='division', then=Value(level_order['division'])),
-            When(level='zilla', then=Value(level_order['zilla'])),
-            When(level='upazila', then=Value(level_order['upazila'])),
-            When(level='union', then=Value(level_order['union'])),
-            default=Value(99),
-            output_field=IntegerField()
-        )
-    ).order_by('level_sort', 'parent__level', 'name')
-    
+
+    # Display only unions
+    locations = Location.objects.filter(level='union').select_related('parent__parent__parent')  # for full path
+
+    # Sort by Division > Zilla > Upazila > Union name
+    locations = sorted(locations, key=lambda loc: (
+        loc.parent.parent.parent.name if loc.parent and loc.parent.parent and loc.parent.parent.parent else '',
+        loc.parent.parent.name if loc.parent and loc.parent.parent else '',
+        loc.parent.name if loc.parent else '',
+        loc.name
+    ))
+
     return render(request, 'admin/location_manage.html', {
         'form': form,
         'locations': locations,
+        'all_locations': Location.objects.exclude(level='union')  # For dropdowns
     })
-
 
 @csrf_exempt
 def update_fee(request):
@@ -107,12 +109,12 @@ def update_fee(request):
         data = json.loads(request.body)
         location_id = data.get('location_id')
         delivery_fee = data.get('delivery_fee')
-        
+
         try:
             location = Location.objects.get(id=location_id)
             if location.level != 'union':
                 return JsonResponse({'success': False, 'message': 'Only union level locations can have delivery fees'})
-            
+
             location.delivery_fee = delivery_fee
             location.save()
             return JsonResponse({'success': True})
@@ -120,9 +122,8 @@ def update_fee(request):
             return JsonResponse({'success': False, 'message': 'Location not found'})
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)})
-    
-    return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 def location_delete(request, location_id):
     location = get_object_or_404(Location, id=location_id)
@@ -130,18 +131,15 @@ def location_delete(request, location_id):
         location.delete()
     return redirect('location_manage')
 
-
 def get_parents_by_level(request):
     level = request.GET.get('level', '').lower()
     data = []
-
     if level == 'zilla':
         data = Location.objects.filter(level='division').values('id', 'name')
     elif level == 'upazila':
         data = Location.objects.filter(level='zilla').values('id', 'name')
     elif level == 'union':
         data = Location.objects.filter(level='upazila').values('id', 'name')
-
     return JsonResponse(list(data), safe=False)
 
 
