@@ -435,7 +435,8 @@ def user_confirm(request):
             paymentMobile=temporary_order.paymentMobile,
             TxID=temporary_order.TxID,
             total=temporary_order.total,
-            status='Pending'
+            status='Pending',
+            for_stock=temporary_order.for_stock
         )
 
         # Delete the temporary order

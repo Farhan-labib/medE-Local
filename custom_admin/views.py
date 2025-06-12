@@ -520,36 +520,60 @@ def create_order(request):
             products = data['products']
             ordered_products = []
             total_amount = 0.0
+            print("Received products:", products)
 
+            # Build ordered_products list and calculate total_amount
             for product in products:
+                # product = [name, quantity, total_price, product_code]
                 ordered_products.append((product[0], product[1], product[2]))
                 total_amount += float(product[2])
 
-            temp = []
-            if data.get("delivery_address") and data["delivery_address"] != "null":
-                temp.append(data['delivery_address'])
-            
+            # Prepare delivery fee
             delivery_fee = 60
-            if temp:
-                union = temp[0].split(", ")
-                try:
-                    union_obj = Location.objects.get(name=union[3], level='union')
-                    if union_obj.delivery_fee:
-                        delivery_fee = float(union_obj.delivery_fee)
-                except Location.DoesNotExist:
-                    pass
-            
+            delivery_address = data.get("delivery_address")
+            if delivery_address and delivery_address != "null":
+                parts = delivery_address.split(", ")
+                if len(parts) > 3:
+                    union_name = parts[3]
+                    try:
+                        union_obj = Location.objects.get(name=union_name, level='union')
+                        if union_obj.delivery_fee:
+                            delivery_fee = float(union_obj.delivery_fee)
+                    except Location.DoesNotExist:
+                        pass
             total_amount += delivery_fee
 
+            # Prescriptions list
             prescriptions_list = []
             if data.get("prescriptions") and data["prescriptions"] != "null":
                 prescriptions_list.append(data['prescriptions'])
 
+            # Build for_stock dictionary keyed by main_product.p_id
+            for_stock = {}
+            for product in products:
+                product_code = product[3]
+                try:
+                    main_prod_obj = main_product.objects.get(product_code=product_code)
+                    # Use p_id as key (converted to string for JSON serializability)
+                    for_stock[str(main_prod_obj.p_id)] = {
+                        'packaging': 'Piece',
+                        'quantity': int(product[1]),
+                        'price': str(product[2]),
+                        'medPerStrip': float(main_prod_obj.medPerStrip),
+                        'stripPerBox': float(main_prod_obj.stripPerBox),
+                        'name': main_prod_obj.p_name,
+                        'image': main_prod_obj.p_image.url if main_prod_obj.p_image else ''
+                    }
+                except main_product.DoesNotExist:
+                    # Handle missing product gracefully
+                    for_stock[product_code] = {'error': f'Product with code {product_code} not found'}
+
+            # Create TemporaryOrders record
             temp_order = TemporaryOrders.objects.create(
                 phonenumber=data['phone_number'],
                 ordered_products=str(ordered_products),
                 total=total_amount,
-                del_adress=data['delivery_address'],
+                del_adress=delivery_address,
                 payment_options=data['payment_method'],
                 status="Pending",
                 TxID=data.get('TxID'),
@@ -557,8 +581,10 @@ def create_order(request):
                 prescriptions=prescriptions_list,
                 Delivery_status="Pending",
                 timestamp=timezone.now(),
+                for_stock=for_stock  # Make sure your model has JSONField for this
             )
 
+            # Send SMS via Twilio (optional)
             client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
             message_body = (
                 f"Dear Customer,\n"
@@ -567,7 +593,6 @@ def create_order(request):
                 f"http://127.0.0.1:8000/temp-order/{temp_order.id}/\n\n"
                 f"Thank you"
             )
-
             try:
                 client.messages.create(
                     body=message_body,
