@@ -139,6 +139,7 @@
       <th>Product Name</th>
       <th>Product Code</th>
       <th>Stock</th>
+      <th>sales</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -149,6 +150,7 @@
       <td>{{ product.p_name }}</td>
       <td>{{ product.product_code }}</td>
       <td>{{ product.Stock }}</td>
+      <td>{{ product.count }}</td>
       <td>
         <a href="{% url 'inventory_edit' product_id=product.p_id %}" class="action-button edit-button">Update</a>
       </td>
