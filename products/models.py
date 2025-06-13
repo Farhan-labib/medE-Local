@@ -42,6 +42,7 @@ class main_product(models.Model):
 
     p_id = models.AutoField(primary_key=True)
     product_code = models.CharField(max_length=255, blank=True)
+    parent_code = models.CharField(max_length=255, blank=True)
     otc_status = models.CharField(max_length=3, choices=OTC_CHOICES, default='yes')
     p_name = models.CharField(max_length=255)
     Brand = models.CharField(max_length=255, blank=True)
@@ -85,9 +86,11 @@ class main_product(models.Model):
     EXP_Date = models.DateField(blank=True, null=True)
     Stock = models.IntegerField(default=0)
     count= models.IntegerField(default=0)
+    sl=models.IntegerField(default=1)
     Purchase_Price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     Model = models.TextField(blank=True)
     Description = models.TextField(blank=True)
+
 
     def __str__(self):
         return self.p_name
@@ -98,9 +101,13 @@ class main_product(models.Model):
         name_part = self.p_name.replace(' ', '-') if self.p_name else ''
         type_part = self.p_type.replace(' ', '-') if self.p_type else ''
         size_variant_part = size_or_variant.replace(' ', '-') if size_or_variant else ''
-
-        self.p_link = f"{name_part}-{type_part}-{size_variant_part}"
-        super(main_product, self).save(*args, **kwargs)
+        if (self.sl == 1):
+            self.p_link = f"{name_part}-{type_part}-{size_variant_part}"
+            self.parent_code = self.product_code
+            super(main_product, self).save(*args, **kwargs)
+        else:
+            self.p_link = f"{name_part}-{type_part}-{size_variant_part}-{self.sl}"
+            super(main_product, self).save(*args, **kwargs)
 
 
 

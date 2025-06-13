@@ -13,6 +13,10 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from .models import Location, TemporaryOrders
 from twilio.rest import Client
 from django.conf import settings
+from django.db import transaction
+from copy import deepcopy
+from django.db import models
+
 
 
 class LocationForm(forms.ModelForm):
@@ -317,13 +321,13 @@ def product(request):
 
 @admin_required
 def medicine(request):
-    products = main_product.objects.filter(m_or_g='Medicines')
+    products = main_product.objects.filter(m_or_g='Medicines', sl=1)
     return render(request, 'admin/medicines.html', {'products': products})
 
 
 @admin_required
 def general(request):
-    products = main_product.objects.filter(m_or_g='Generals')
+    products = main_product.objects.filter(m_or_g='Generals', sl=1)
     return render(request, 'admin/general.html', {'products': products})
 
 
@@ -668,15 +672,18 @@ from django.db.models import Q
 
 def inventory(request):
     search_query = request.GET.get('search', '')
-    
-    products = main_product.objects.filter(
-        Q(m_or_g='Medicines') &
-        (
+
+    base_filter = Q(m_or_g='Medicines') & Q(sl=1)
+
+    if search_query:
+        search_filter = (
             Q(p_name__icontains=search_query) |
             Q(product_code__icontains=search_query) |
             Q(p_category__icontains=search_query)
-        ) if search_query else Q(m_or_g='Medicines')  # when no search
-    )
+        )
+        products = main_product.objects.filter(base_filter & search_filter)
+    else:
+        products = main_product.objects.filter(base_filter)
 
     return render(request, 'admin/inventory.html', {
         'products': products,
@@ -686,14 +693,17 @@ def inventory(request):
 def inventory_g(request):
     search_query = request.GET.get('search', '')
 
-    products = main_product.objects.filter(
-        Q(m_or_g='Generals') &
-        (
+    base_filter = Q(m_or_g='Generals') & Q(sl=1)
+
+    if search_query:
+        search_filter = (
             Q(p_name__icontains=search_query) |
             Q(product_code__icontains=search_query) |
             Q(p_category__icontains=search_query)
-        ) if search_query else Q(m_or_g='Generals')
-    )
+        )
+        products = main_product.objects.filter(base_filter & search_filter)
+    else:
+        products = main_product.objects.filter(base_filter)
 
     return render(request, 'admin/inventory_g.html', {
         'products': products,
@@ -738,8 +748,113 @@ class ProductEditForm(forms.Form):
     stripPerBox = forms.DecimalField(max_digits=10, decimal_places=2, required=False)
     inventory = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
+def inventory_delete_m(request, product_id):
+    if request.method == "POST":
+        product = get_object_or_404(main_product, p_id=product_id)
+        if product.sl == 1:
+            product.inventory = 0
+            product.save()
+        else:
+            product.delete()
+    return redirect('inventory_medicine')
+
+
+def inventory_delete_g(request, product_id):
+    if request.method == "POST":
+        product = get_object_or_404(main_product, p_id=product_id)
+        if product.sl == 1:
+            product.inventory = 0
+            product.save()
+        else:
+            product.delete()
+    return redirect('inventory_general')
+
 
 def inventory_edit(request, product_id):
+    product = get_object_or_404(main_product, p_id=product_id)
+
+    if request.method == 'POST':
+        form = ProductEditForm(request.POST)
+        if form.is_valid():
+            if product.inventory == 0:
+                # First-time inventory activation
+                product.p_type = form.cleaned_data['p_type']
+                product.p_name = form.cleaned_data['p_name']
+                product.product_code = form.cleaned_data['product_code']
+                product.SKU = form.cleaned_data['SKU']
+                product.Batch = form.cleaned_data['Batch']
+                product.MFG_Date = form.cleaned_data['MFG_Date']
+                product.EXP_Date = form.cleaned_data['EXP_Date']
+                product.Stock = form.cleaned_data['Stock']
+                product.Purchase_Price = form.cleaned_data['Purchase_Price']
+                product.p_price = form.cleaned_data['p_price']
+                product.p_discount = form.cleaned_data['p_discount']
+                product.medPerStrip = form.cleaned_data['medPerStrip']
+                product.stripPerBox = form.cleaned_data['stripPerBox']
+                product.bundling = ', '.join(form.cleaned_data['bundling'])
+                product.inventory = 1
+                product.sl = 1
+                product.parent_code = product.product_code  # Set its own parent_code
+                product.save()
+            else:
+                # Create a duplicate variant
+                with transaction.atomic():
+                    # Determine parent_code
+                    parent_code = product.parent_code if product.parent_code else product.product_code
+
+                    # Get max sl among variants with the same parent_code
+                    max_sl = (
+                        main_product.objects
+                        .filter(parent_code=parent_code)
+                        .aggregate(max_sl=models.Max('sl'))['max_sl']
+                    ) or 1
+
+                    new_sl = max_sl + 1
+
+                    # Create the new product
+                    new_product = deepcopy(product)
+                    new_product.pk = None
+                    new_product.sl = new_sl
+                    new_product.product_code = f"{parent_code}{new_sl}"
+                    new_product.parent_code = parent_code
+
+                    # Apply updated values
+                    new_product.p_type = form.cleaned_data['p_type']
+                    new_product.p_name = form.cleaned_data['p_name']
+                    new_product.SKU = form.cleaned_data['SKU']
+                    new_product.Batch = form.cleaned_data['Batch']
+                    new_product.MFG_Date = form.cleaned_data['MFG_Date']
+                    new_product.EXP_Date = form.cleaned_data['EXP_Date']
+                    new_product.Stock = form.cleaned_data['Stock']
+                    new_product.Purchase_Price = form.cleaned_data['Purchase_Price']
+                    new_product.p_price = form.cleaned_data['p_price']
+                    new_product.p_discount = form.cleaned_data['p_discount']
+                    new_product.medPerStrip = form.cleaned_data['medPerStrip']
+                    new_product.stripPerBox = form.cleaned_data['stripPerBox']
+                    new_product.bundling = ', '.join(form.cleaned_data['bundling'])
+                    new_product.inventory = 1
+
+                    new_product.save()
+
+            if product.m_or_g == "Medicines":
+                return redirect('inventory_medicine')
+            else:
+                return redirect('inventory_general')
+
+    else:
+        # Only provide initial data for the three read-only fields
+        initial_data = {
+            'p_type': product.p_type,
+            'product_code': product.product_code,
+            'p_name': product.p_name,
+            # Remove all other fields from initial_data so they appear empty
+        }
+        form = ProductEditForm(initial=initial_data)
+
+    return render(request, 'admin/edit_inventory.html', {'form': form, 'product': product})
+
+
+def update_inventory(request, product_id):
     product = get_object_or_404(main_product, p_id=product_id )
 
     if request.method == 'POST':
@@ -761,7 +876,11 @@ def inventory_edit(request, product_id):
             product.bundling = ', '.join(form.cleaned_data['bundling'])
             product.inventory = 1
             product.save()
-            return redirect('inventory_dashboard')
+
+            if product.m_or_g == "Medicines":
+                return redirect('inventory_medicine')
+            else:
+                return redirect('inventory_general')
     else:
         initial_data = {
             'p_type': product.p_type,
@@ -781,4 +900,4 @@ def inventory_edit(request, product_id):
         }
         form = ProductEditForm(initial=initial_data)
 
-    return render(request, 'admin/edit_inventory.html', {'form': form, 'product': product})
+    return render(request, 'admin/update_inventory.html', {'form': form, 'product': product})
