@@ -49,6 +49,36 @@ def category(request, p_category):
 
     return render(request, 'category-wise.html', context)
 
+def all_product(request):
+    products = main_product.objects.filter(
+        Stock__gt=0,
+        inventory__gt=0,
+        m_or_g='Generals').order_by('-count')
+
+    for product in products:
+        product.discounted_price = product.p_price - (product.p_price * (product.p_discount / 100))
+
+    context = {
+        'product_details': products,
+    }
+
+    return render(request, 'all_product.html', context)
+
+def all_medicine(request):
+    products = main_product.objects.filter(
+        Stock__gt=0,
+        inventory__gt=0,
+        m_or_g='Medicines').order_by('-count')
+
+    for product in products:
+        product.discounted_price = product.p_price - (product.p_price * (product.p_discount / 100))
+
+    context = {
+        'product_details': products,
+    }
+
+    return render(request, 'all_medicine.html', context)
+
 
 def live_search(request):
     if request.method == 'GET':

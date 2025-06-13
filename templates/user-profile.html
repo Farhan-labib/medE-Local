@@ -159,27 +159,13 @@
 						
 					</li>
 					<li class="menu-category">
-						<a href="{%url 'category' p_category='General Health'%}"class="menu-title">General Health</a>
-			
-
+						<a href="{%url 'all_medicine'%}"class="menu-title">All Medicines</a>
 					</li>
 					<li class="menu-category">
-						<a href="{%url 'category' p_category='Medical Devices'%}" class="menu-title">Medical Devices</a>
-
+						<a href="{%url 'all_product'%}" class="menu-title">All Products</a>
 					</li>
 					<li class="menu-category">
-						<a href="{%url 'category' p_category='Women Health'%}" class="menu-title">Women Health</a>
-			
-	
-					</li>
-					<li class="menu-category">
-						<a href="{%url 'category' p_category='Supplements & Nutrition'%}" class="menu-title">Supplements & Nutrition</a>
-			
-
-					</li>
-					<li class="menu-category">
-						<a href="{%url 'category' p_category='Personal Health' %}"class="menu-title">Personal Health</a>
-
+						<a href="{% url 'profile' %}" class="menu-title">Profile</a>
 					</li>
 				</ul>
 			</div>
@@ -209,6 +195,15 @@
 				<li class="menu-category">
 					<a href="{%url 'home'%}" class="menu-title">Home</a>
 				</li>
+				<li class="menu-category">
+						<a href="{%url 'all_medicine'%}"class="menu-title">All Medicines</a>
+					</li>
+					<li class="menu-category">
+						<a href="{%url 'all_product'%}" class="menu-title">All Products</a>
+					</li>
+					<li class="menu-category">
+						<a href="{% url 'profile' %}" class="menu-title">Profile</a>
+					</li>
 				<li class="menu-category">
 					<button class="accordion-menu" data-accordion-btn>
 						<p class="menu-title">Categories</p>

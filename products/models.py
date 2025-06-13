@@ -48,7 +48,7 @@ class main_product(models.Model):
     Manufacturer = models.CharField(max_length=255, blank=True)
     p_generics = models.CharField(max_length=255, blank=True)
     p_type = models.CharField(max_length=255, blank=True)
-    p_image=models.ImageField(upload_to='media/',default='static\cat-icons\syringe.png')  # 'images/' is the upload directory
+    p_image=models.ImageField(upload_to='media/',default='static/cat-icons/syringe.png') 
 
     p_Dosage_Strength = models.CharField(max_length=255, blank=True)
     Variant = models.CharField(max_length=255, blank=True)
@@ -84,6 +84,7 @@ class main_product(models.Model):
     MFG_Date = models.DateField(blank=True, null=True)
     EXP_Date = models.DateField(blank=True, null=True)
     Stock = models.IntegerField(default=0)
+    count= models.IntegerField(default=0)
     Purchase_Price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     Model = models.TextField(blank=True)
     Description = models.TextField(blank=True)

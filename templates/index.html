@@ -125,19 +125,13 @@
 						</div>
 					</li>
 					<li class="menu-category">
-						<a href="{%url 'category' p_category='General Health'%}"class="menu-title">General Health</a>
+						<a href="{%url 'all_medicine'%}"class="menu-title">All Medicines</a>
 					</li>
 					<li class="menu-category">
-						<a href="{%url 'category' p_category='Medical Devices'%}" class="menu-title">Medical Devices</a>
+						<a href="{%url 'all_product'%}" class="menu-title">All Products</a>
 					</li>
 					<li class="menu-category">
-						<a href="{%url 'category' p_category='Women Health'%}" class="menu-title">Women Health</a>
-					</li>
-					<li class="menu-category">
-						<a href="{%url 'category' p_category='Supplements & Nutrition'%}" class="menu-title">Supplements & Nutrition</a>
-					</li>
-					<li class="menu-category">
-						<a href="{%url 'category' p_category='Personal Health' %}"class="menu-title">Personal Health</a>
+						<a href="{% url 'profile' %}" class="menu-title">Profile</a>
 					</li>
 				</ul>
 			</div>
@@ -153,6 +147,19 @@
 				<li class="menu-category">
 					<a href="{%url 'home'%}" class="menu-title">Home</a>
 				</li>
+				<li class="menu-category">
+						<a href="{%url 'all_medicine'%}"class="menu-title">All Medicines</a>
+					</li>
+					<li class="menu-category">
+						<a href="{%url 'all_product'%}" class="menu-title">All Products</a>
+					</li>
+					<li class="menu-category">
+						<a href="{% url 'profile' %}" class="menu-title">Profile</a>
+					</li>
+
+
+
+
 				<li class="menu-category">
 					<button class="accordion-menu" data-accordion-btn>
 						<p class="menu-title">Categories</p>
@@ -311,8 +318,8 @@
 						</div>
 						<div class="category-content-box">
 							<div class="category-content-flex">
-								<h3 class="category-item-title">Cold & Allergies Remedies</h3>
-								<a href="{%url 'category' p_category='Cold & Allergies Remedies'%}" class="menu-title">Show All</a>
+								<h3 class="category-item-title">General Health</h3>
+								<a href="{% url 'category' p_category='General Health' %}">Show All</a>
 							</div>
 						</div>
 					</div>
@@ -322,8 +329,8 @@
 						</div>
 						<div class="category-content-box">
 							<div class="category-content-flex">
-								<h3 class="category-item-title">Heart Health</h3>
-								<a href="{%url 'category' p_category='Heart Health'%}" class="menu-title">Show All</a>
+								<h3 class="category-item-title">Medical Devices</h3>
+								<a href="{% url 'category' p_category='Medical Devices' %}">Show All</a>
 							</div>
 						</div>
 					</div>
@@ -344,8 +351,8 @@
 						</div>
 						<div class="category-content-box">
 							<div class="category-content-flex">
-								<h3 class="category-item-title">Lungs & Respiratory Health</h3>
-								<a href="{%url 'category' p_category='Lungs & Respiratory Health'%}" class="menu-title">Show All</a>
+								<h3 class="category-item-title">Women Health</h3>
+								<a href="{% url 'category' p_category='Women Health' %}">Show All</a>
 							</div>
 						</div>
 					</div>
@@ -355,8 +362,8 @@
 						</div>
 						<div class="category-content-box">
 							<div class="category-content-flex">
-								<h3 class="category-item-title">Digestive Health</h3>
-								<a href="{%url 'category' p_category='Digestive Health'%}">Show All</a>
+								<h3 class="category-item-title">Personal Health</h3>
+								<a href="{% url 'category' p_category='Personal Health' %}">Show All</a>
 							</div>
 						</div>
 					</div>
@@ -366,8 +373,8 @@
 						</div>
 						<div class="category-content-box">
 							<div class="category-content-flex">
-								<h3 class="category-item-title">Infection Management</h3>
-								<a href="{%url 'category' p_category='Infection Management'%}">Show All</a>
+								<h3 class="category-item-title">Supplements & Nutrition</h3>
+								<a href="{% url 'category' p_category='Supplements & Nutrition' %}">Show All</a>
 							</div>
 						</div>
 					</div>

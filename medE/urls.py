@@ -59,6 +59,8 @@ urlpatterns = [
 
     path('',firstactivity.home, name='home'),
     path("Category<str:p_category>/",secondactivity.category,name='category'),
+    path('all_product/', secondactivity.all_product, name='all_product'),
+    path('all_medicine/', secondactivity.all_medicine, name='all_medicine'),
     path('live_search/', secondactivity.live_search, name='live_search'),
     path('get_product_info/<int:p_id>/', secondactivity.get_product_info, name='get_product_info'),
     path('send_otp/', authenticationViews.send_otp, name='send_otp'),

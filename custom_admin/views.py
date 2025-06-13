@@ -499,6 +499,7 @@ def order_details(request, order_id):
 
                                 product = main_product.objects.get(p_id=product_id)
                                 product.Stock -= final_quantity
+                                product.count += 1
                                 product.save()
 
                             except (main_product.DoesNotExist, KeyError, Exception):
