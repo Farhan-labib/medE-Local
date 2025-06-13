@@ -36,48 +36,112 @@ def prod(request, p_link):
     return render(request, 'product_day.html', {'product_details': product})
 
 
-def category(request, p_category):
-    products = main_product.objects.filter(p_category=p_category, Stock__gt=0, inventory__gt=0)
+from django.db.models import Q
 
-    for product in products:
-        product.discounted_price = product.p_price - (product.p_price * (product.p_discount / 100))
+def category(request, p_category):
+    all_products = main_product.objects.filter(
+        p_category=p_category,
+        Stock__gt=0,
+        inventory__gt=0
+    )
+
+    grouped_products = {}
+    
+    for product in all_products:
+        parent = product.parent_code.strip()
+
+        if parent not in grouped_products:
+            grouped_products[parent] = []
+
+        grouped_products[parent].append(product)
+
+    final_products = []
+
+    for parent_code, product_group in grouped_products.items():
+        lowest_stock_product = min(product_group, key=lambda x: x.Stock)
+        lowest_stock_product.discounted_price = lowest_stock_product.p_price - (
+            lowest_stock_product.p_price * (lowest_stock_product.p_discount / 100)
+        )
+        final_products.append(lowest_stock_product)
+
+    final_products.sort(key=lambda x: x.count, reverse=True)
 
     context = {
-        'product_details': products,
+        'product_details': final_products,
         'category': p_category,
     }
 
     return render(request, 'category-wise.html', context)
 
 def all_product(request):
-    products = main_product.objects.filter(
+    all_products = main_product.objects.filter(
         Stock__gt=0,
         inventory__gt=0,
-        m_or_g='Generals').order_by('-count')
+        m_or_g='Generals'
+    )
 
-    for product in products:
-        product.discounted_price = product.p_price - (product.p_price * (product.p_discount / 100))
+    grouped_products = {}
+
+    for product in all_products:
+        parent = product.parent_code.strip()
+
+        if parent not in grouped_products:
+            grouped_products[parent] = []
+
+        grouped_products[parent].append(product)
+
+    final_products = []
+
+    for parent_code, product_group in grouped_products.items():
+        lowest_stock_product = min(product_group, key=lambda x: x.Stock)
+        lowest_stock_product.discounted_price = lowest_stock_product.p_price - (
+            lowest_stock_product.p_price * (lowest_stock_product.p_discount / 100)
+        )
+        final_products.append(lowest_stock_product)
+
+    final_products.sort(key=lambda x: x.count, reverse=True)
 
     context = {
-        'product_details': products,
+        'product_details': final_products,
     }
 
     return render(request, 'all_product.html', context)
 
+
 def all_medicine(request):
-    products = main_product.objects.filter(
+    all_products = main_product.objects.filter(
         Stock__gt=0,
         inventory__gt=0,
-        m_or_g='Medicines').order_by('-count')
+        m_or_g='Medicines'
+    )
 
-    for product in products:
-        product.discounted_price = product.p_price - (product.p_price * (product.p_discount / 100))
+    grouped_products = {}
+
+    for product in all_products:
+        parent = product.parent_code.strip()
+
+        if parent not in grouped_products:
+            grouped_products[parent] = []
+
+        grouped_products[parent].append(product)
+
+    final_products = []
+
+    for parent_code, product_group in grouped_products.items():
+        lowest_stock_product = min(product_group, key=lambda x: x.Stock)
+        lowest_stock_product.discounted_price = lowest_stock_product.p_price - (
+            lowest_stock_product.p_price * (lowest_stock_product.p_discount / 100)
+        )
+        final_products.append(lowest_stock_product)
+
+    final_products.sort(key=lambda x: x.count, reverse=True)
 
     context = {
-        'product_details': products,
+        'product_details': final_products,
     }
 
     return render(request, 'all_medicine.html', context)
+
 
 
 def live_search(request):
